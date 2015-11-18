@@ -18,14 +18,18 @@ import android.widget.Toast;
 public class ScanActivity extends AppCompatActivity {
 
     //Kas kiek laiko kartosis scan
-    int delay = 300; //Matuojant su maziau negu 300ms, po kurio laiko uzstringa
+    int delay = 500; //Matuojant su maziau negu 300ms, po kurio laiko uzstringa
 
     //Default BLE irenginio stiprumas
     int txPow = 50; //Reiksme [1-100] intervale
 
     private final static int REQUEST_ENABLE_BT = 1;
     private BluetoothAdapter mBluetoothAdapter;
-    TextView btInfo;
+
+    TextView btInfo, txVal, hintInfo;
+    EditText msVal;
+    Button setMs;
+    SeekBar txSlider;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -33,14 +37,27 @@ public class ScanActivity extends AppCompatActivity {
         setContentView(R.layout.activity_scan);
 
         btInfo = (TextView)findViewById(R.id.textView2);
-        final TextView txVal = (TextView)findViewById(R.id.textView5);
-        final EditText msVal = (EditText)findViewById(R.id.editText);
-        Button setMs = (Button)findViewById(R.id.button2);
-        SeekBar txSlider = (SeekBar)findViewById(R.id.seekBar);
+        txVal = (TextView)findViewById(R.id.textView5);
+        hintInfo = (TextView)findViewById(R.id.textView3);
+        msVal = (EditText)findViewById(R.id.editText);
+        setMs = (Button)findViewById(R.id.button2);
+        txSlider = (SeekBar)findViewById(R.id.seekBar);
 
         setMs.setOnClickListener(new Button.OnClickListener() {
             public void onClick(View v) {
-                delay = Integer.parseInt(msVal.getText().toString());
+                if (msVal.getText().toString().equals("")) {
+                    Toast.makeText(getApplicationContext(),
+                            "Neįvesta reikšmė!", Toast.LENGTH_SHORT).show();
+                }
+                else {
+                    int ivest = Integer.parseInt(msVal.getText().toString());
+                    if (ivest < 250 || ivest > 5000 || msVal.getText() == null) {
+                        Toast.makeText(getApplicationContext(),
+                                "Netinkamas intervalas!", Toast.LENGTH_SHORT).show();
+                    } else {
+                        delay = ivest;
+                    }
+                }
             }
         });
 
@@ -60,7 +77,9 @@ public class ScanActivity extends AppCompatActivity {
             }
         });
 
+        txSlider.setProgress(txPow);
         msVal.setText(Integer.toString(delay));
+        hintInfo.setText("Rekomenduotinos reikšmės intervale:\n[250; 5000], default - " + delay);
 
         createBT();
         checkBT();
@@ -92,7 +111,7 @@ public class ScanActivity extends AppCompatActivity {
                 btInfo.setText("Įrenginys: " + device.getName() +
                         "\nMAC: " + device.getAddress() +
                         "\nRSSI: " + rssi + "\n" +
-                        String.format("Apytikslis atstumas?: %.2f",calculateAccuracy(txPow, rssi)) + " m");
+                        String.format("Apytikslis atstumas?: %.2f", calculateAccuracy(txPow, rssi)) + " m");
                 mBluetoothAdapter.stopLeScan(this); //Scan stabdomas
             }
         });
