@@ -8,12 +8,17 @@ import android.widget.Button;
 
 public class MainActivity extends AppCompatActivity {
 
+    Button scan;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        Button scan = (Button)findViewById(R.id.button);
+        scan = (Button)findViewById(R.id.button);
+        setScanListener();
+    }
 
+    void setScanListener(){
         scan.setOnClickListener(
                 new Button.OnClickListener() {
                     public void onClick(View v) {
