@@ -25,7 +25,7 @@ import java.util.List;
 public class ScanActivity extends AppCompatActivity {
 
     //Kas kiek laiko kartosis scan
-    int delay = 500; //Matuojant su maziau negu 300ms, po kurio laiko uzstringa
+    int delay = 3000; //Matuojant su maziau negu 300ms, po kurio laiko uzstringa
 
     //Default BLE irenginio stiprumas
     int txPow = 50; //Reiksme [1-100] intervale
@@ -33,6 +33,12 @@ public class ScanActivity extends AppCompatActivity {
     private final static int REQUEST_ENABLE_BT = 1;
     private BluetoothAdapter mBluetoothAdapter;
     List<DevInfo> btDevList = new ArrayList<DevInfo>();
+
+    //---
+    CustomInfoAdapter listAdapter;
+    ArrayList<DevInfo> convertedList;
+    int k = 0;
+    //---
 
     TextView txVal, hintInfo;
     EditText msVal;
@@ -59,9 +65,16 @@ public class ScanActivity extends AppCompatActivity {
         msVal.setText(Integer.toString(delay));
         hintInfo.setText("Rekomenduotinos reikšmės intervale:\n[250; 5000], default - " + delay);
 
-        createBT();
+        /*createBT();
         checkBT();
+        contScanStop();*/
+
+        //---
+        convertedList = new ArrayList<DevInfo>();
+        listAdapter = new CustomInfoAdapter(this, convertedList);
+        btInfo.setAdapter(listAdapter);
         contScanStop();
+        //---
     }
 
     //Sukuriamas Bluetooth adapteris
@@ -94,12 +107,11 @@ public class ScanActivity extends AppCompatActivity {
                     for (int i = 0; i < btDevList.size(); i++) {
                         if (btDevList.get(i).getMac().equals(device.getAddress())) {
                             btDevList.get(i).updateRssi(rssi);
-                        }
-                        else {
+                        } else {
                             numDev++;
                         }
                     }
-                    if (numDev > btDevList.size() - 1){
+                    if (numDev > btDevList.size() - 1) {
                         btDevList.add(new DevInfo(device.getName(), device.getAddress(), rssi));
                     }
                 }
@@ -114,11 +126,23 @@ public class ScanActivity extends AppCompatActivity {
         final Handler h = new Handler();
         h.postDelayed(new Runnable() {
             public void run() {
-                startStopScan();
+                //startStopScan();
+                ListTestAdd();
                 h.postDelayed(this, delay);
             }
         }, delay);
     }
+
+    //---
+    void ListTestAdd(){
+        //btDevList.add(new DevInfo("Pavadinimas", "MAC", 100));
+        //convertedList.add(btDevList.get(k));
+        DevInfo nf = new DevInfo("Pavadinimas", "MAC", 100);
+        listAdapter.add(nf);
+        listAdapter.notifyDataSetChanged();
+        //k++;
+    }
+    //---
 
     //Reiksmes dedamos is List i Listview
     //Kodas visiskai neoptimalus - reikes keisti
