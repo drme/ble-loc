@@ -25,16 +25,16 @@ import java.util.List;
 public class ScanActivity extends AppCompatActivity {
 
     //Kas kiek laiko kartosis scan
-    int delay = 2000; //Matuojant su maziau negu 300ms, po kurio laiko uzstringa
+    int delay = 1000; //Matuojant su maziau negu 300ms, po kurio laiko uzstringa
 
-    //Default BLE irenginio stiprumas
-    int txPow = 50; //Reiksme [1-100] intervale
+    //Stiprumas ties metru
+    int txPow = 61; //Reiksme [1-100] intervale
 
     private final static int REQUEST_ENABLE_BT = 1;
     private BluetoothAdapter mBluetoothAdapter;
     List<DevInfo> btDevList = new ArrayList<DevInfo>();
 
-    TextView txVal, hintInfo;
+    TextView txVal, hintInfo, hintInfo2;
     EditText msVal;
     Button setMs;
     SeekBar txSlider;
@@ -45,9 +45,10 @@ public class ScanActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_scan);
 
-        btInfo = (ListView)findViewById(R.id.listView);
+       // btInfo = (ListView)findViewById(R.id.listView);
         txVal = (TextView)findViewById(R.id.textView5);
         hintInfo = (TextView)findViewById(R.id.textView3);
+        hintInfo2 = (TextView)findViewById(R.id.textView2);
         msVal = (EditText)findViewById(R.id.editText);
         setMs = (Button)findViewById(R.id.button2);
         txSlider = (SeekBar)findViewById(R.id.seekBar);
@@ -57,7 +58,7 @@ public class ScanActivity extends AppCompatActivity {
 
         txSlider.setProgress(txPow);
         msVal.setText(Integer.toString(delay));
-        hintInfo.setText("Rekomenduotinos reikšmės intervale:\n[250; 5000], default - " + delay);
+      //  hintInfo.setText("Rekomenduotinos reikšmės intervale:\n[250; 5000], default - " + delay);
 
         createBT();
         checkBT();
@@ -91,6 +92,8 @@ public class ScanActivity extends AppCompatActivity {
                 if (btDevList.isEmpty()) {
                     btDevList.add(new DevInfo(device.getName(), device.getAddress(), rssi));
                 } else {
+                    if (btDevList.size() > 2)
+                        koordinates();
                     for (int i = 0; i < btDevList.size(); i++) {
                         if (btDevList.get(i).getMac().equals(device.getAddress())) {
                             btDevList.get(i).updateRssi(rssi);
@@ -103,7 +106,8 @@ public class ScanActivity extends AppCompatActivity {
                         btDevList.add(new DevInfo(device.getName(), device.getAddress(), rssi));
                     }
                 }
-                convertList();
+                //convertList();
+
                 mBluetoothAdapter.stopLeScan(this); //Scan stabdomas
             }
         });
@@ -128,17 +132,41 @@ public class ScanActivity extends AppCompatActivity {
         for (int j = 0; j < btDevList.size(); j++){
             convertedList.add(btDevList.get(j).getInfo()+"\n"+String.format(
                     "Apytikslis atstumas?: %.2f", calculateAccuracy(txPow, btDevList.get(j).getRssi()))+" m");
-
         }
         listAdapter = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, convertedList);
         btInfo.setAdapter(listAdapter);
     }
 
-    //Funkcija rasta internete
-    //Veikimo principas panasus i funkcija randama iOS?
+    void koordinates(){
+        double x1 = 0;
+        double x2 = 1;
+        double x3 = 0;
+        double y1 = 0;
+        double y2 = 0;
+        double y3 = 1;
+
+        double r1 = calculateAccuracy(txPow, btDevList.get(0).getRssi());
+        double r2 = calculateAccuracy(txPow, btDevList.get(1).getRssi());
+        double r3 = calculateAccuracy(txPow, btDevList.get(2).getRssi());
+
+        double A=(-2*x1+ 2*x2);
+        double B=(-2*y1 + 2* y2);
+        double C=(r1*r1 -r2*r2 -x1*x1 + x2* x2 -y1 * y1 + y2 * y2);
+        double D=(-2*x2 + 2*x3);
+        double E=( -2*y2 + 2*y3);
+        double F=(r2*r2 -r3*r3 -x2*x2 + x3*x3 -y2*y2 +x3 * y2);
+
+        double x = (C*D - F*A)/(B*D - E*A );
+        double y = (A*E - D*B)/(C*E - F*B);
+
+        hintInfo.setText(String.format("X koordinatė: %.2f", x ));
+        hintInfo2.setText(String.format("Y koordinatė: %.2f", y ));
+
+    }
+
     protected static double calculateAccuracy(int txPower, double rssi) {
 
-            double eks = (-61-rssi)/(10*2.3);
+            double eks = (-txPower-rssi)/(10*2.3);
             return Math.pow(1*10, eks);
         }
 
