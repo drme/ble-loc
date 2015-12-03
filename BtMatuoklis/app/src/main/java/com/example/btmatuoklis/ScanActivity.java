@@ -5,6 +5,7 @@ import android.bluetooth.BluetoothDevice;
 import android.bluetooth.BluetoothManager;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Handler;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -25,8 +26,8 @@ public class ScanActivity extends AppCompatActivity {
     //Default BLE irenginio stiprumas
     static byte txPow = 50; //Reiksme [1-100] intervale
 
-    private final static byte REQUEST_ENABLE_BT = 1;
-    private BluetoothAdapter mBluetoothAdapter;
+    byte REQUEST_ENABLE_BT = 1;
+    BluetoothAdapter mBluetoothAdapter;
     ArrayList<DevInfo> btDevList;
     CustomInfoAdapter listAdapter;
 
@@ -56,10 +57,17 @@ public class ScanActivity extends AppCompatActivity {
         contScanStop();
     }
 
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
+        this.finish();
+    }
+
     //Sukuriamas Bluetooth adapteris
     void createBT(){
-        final BluetoothManager bluetoothManager =
+        BluetoothManager bluetoothManager =
                 (BluetoothManager)getSystemService(Context.BLUETOOTH_SERVICE);
+        //bluetoothManager
         mBluetoothAdapter = bluetoothManager.getAdapter();
     }
 
