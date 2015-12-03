@@ -43,12 +43,12 @@ public class CustomInfoAdapter extends ArrayAdapter<DevInfo> {
             return -1.0f; // if we cannot determine accuracy, return -1.
         }
 
-        float ratio = (float)(rssi*1.0/txPower);
+        float ratio = rssi*1.0f/txPower;
         if (ratio < 1.0) {
             return (float)Math.pow(ratio,10);
         }
         else {
-            float accuracy =  (float)((0.89976)*Math.pow(ratio,7.7095) + 0.111);
+            float accuracy =  (0.89976f)*(float)Math.pow(ratio,7.7095f) + 0.111f;
             return accuracy;
         }
     }
