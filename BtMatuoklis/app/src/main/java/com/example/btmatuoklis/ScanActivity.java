@@ -23,9 +23,9 @@ public class ScanActivity extends AppCompatActivity {
     short delay = 1000; //Matuojant su maziau negu 300ms, po kurio laiko uzstringa
 
     //Default BLE irenginio stiprumas
-    static short txPow = 50; //Reiksme [1-100] intervale
+    static byte txPow = 50; //Reiksme [1-100] intervale
 
-    private final static short REQUEST_ENABLE_BT = 1;
+    private final static byte REQUEST_ENABLE_BT = 1;
     private BluetoothAdapter mBluetoothAdapter;
     ArrayList<DevInfo> btDevList;
     CustomInfoAdapter listAdapter;
@@ -93,12 +93,12 @@ public class ScanActivity extends AppCompatActivity {
 
     void setSliderListener(){
         txSlider.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
-            short progressChanged = 0;
+            byte progressChanged = 0;
 
             public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
-                progressChanged = (short)progress;
+                progressChanged = (byte)progress;
                 txPow = progressChanged;
-                txVal.setText(Short.toString(txPow));
+                txVal.setText(Byte.toString(txPow));
             }
 
             public void onStartTrackingTouch(SeekBar seekBar) {}
@@ -122,19 +122,20 @@ public class ScanActivity extends AppCompatActivity {
         mBluetoothAdapter.startLeScan(new BluetoothAdapter.LeScanCallback() {
             @Override
             public void onLeScan(final BluetoothDevice device, int rssi, byte[] scanRecord) {
-                short numDev = 0;
+                byte numDev = 0;
+                byte currentRssi = (byte)rssi;
                 if (btDevList.isEmpty()) {
-                    btDevList.add(new DevInfo(device.getName(), device.getAddress(), (short)rssi));
+                    btDevList.add(new DevInfo(device.getName(), device.getAddress(), currentRssi));
                 } else {
-                    for (short i = 0; i < btDevList.size(); i++) {
+                    for (byte i = 0; i < btDevList.size(); i++) {
                         if (btDevList.get(i).getMac().equals(device.getAddress())) {
-                            btDevList.get(i).updateRssi((short)rssi);
+                            btDevList.get(i).updateRssi(currentRssi);
                         } else {
                             numDev++;
                         }
                     }
                     if (numDev > btDevList.size() - 1) {
-                        btDevList.add(new DevInfo(device.getName(), device.getAddress(), (short)rssi));
+                        btDevList.add(new DevInfo(device.getName(), device.getAddress(), currentRssi));
                     }
 
                 }
