@@ -6,10 +6,12 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.TextView;
-
 import java.util.ArrayList;
 
 public class CustomInfoAdapter extends ArrayAdapter<DevInfo> {
+
+    byte maxRange = 100; //Maksimalus teorinis BLE aptikimo atstumas metrais
+
     public CustomInfoAdapter(Context context, ArrayList<DevInfo> devices) {
         super(context, 0, devices);
     }
@@ -29,25 +31,33 @@ public class CustomInfoAdapter extends ArrayAdapter<DevInfo> {
         // Populate the data into the template view using the data object
         name_value.setText(device.getName());
         mac_value.setText(device.getMac());
-        rssi_value.setText(device.getRssi()+String.format(" Apytikslis atstumas: %.2f m", calculateAccuracy(ScanActivity.txPow, device.getRssi())));
+        rssi_value.setText(device.getRssi()+formatAccuracy(maxRange, ScanActivity.txPow, device.getRssi()));
         // Return the completed view to render on screen
         return convertView;
     }
 
     //Funkcija rasta internete
     //Veikimo principas panasus i funkcija randama iOS?
-    double calculateAccuracy(int txPower, double rssi) {
+    float calculateAccuracy(byte txPower, float rssi) {
         if (rssi == 0) {
-            return -1.0; // if we cannot determine accuracy, return -1.
+            return -1.0f; // if we cannot determine accuracy, return -1.
         }
 
-        double ratio = rssi*1.0/txPower;
+        float ratio = (float)(rssi*1.0/txPower);
         if (ratio < 1.0) {
-            return Math.pow(ratio,10);
+            return (float)Math.pow(ratio,10);
         }
         else {
-            double accuracy =  (0.89976)*Math.pow(ratio,7.7095) + 0.111;
+            float accuracy =  (float)((0.89976)*Math.pow(ratio,7.7095) + 0.111);
             return accuracy;
         }
+    }
+
+    //Gauto rezultato formatavimas
+    String formatAccuracy(byte maxRange, byte txPower, float rssi){
+        float val = calculateAccuracy(txPower, rssi);
+        if (val < maxRange)
+            return String.format(" Apytikslis atstumas: %.2f m", val);
+        else return " Apytikslis atstumas: >"+maxRange+" m";
     }
 }
