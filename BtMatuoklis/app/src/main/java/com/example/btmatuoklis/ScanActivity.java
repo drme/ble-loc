@@ -25,7 +25,7 @@ import java.util.List;
 public class ScanActivity extends AppCompatActivity {
 
     //Kas kiek laiko kartosis scan
-    int delay = 500; //Matuojant su maziau negu 300ms, po kurio laiko uzstringa
+    int delay = 2000; //Matuojant su maziau negu 300ms, po kurio laiko uzstringa
 
     //Default BLE irenginio stiprumas
     int txPow = 50; //Reiksme [1-100] intervale
@@ -94,12 +94,12 @@ public class ScanActivity extends AppCompatActivity {
                     for (int i = 0; i < btDevList.size(); i++) {
                         if (btDevList.get(i).getMac().equals(device.getAddress())) {
                             btDevList.get(i).updateRssi(rssi);
-                        }
-                        else {
+
+                        } else {
                             numDev++;
                         }
                     }
-                    if (numDev > btDevList.size() - 1){
+                    if (numDev > btDevList.size() - 1) {
                         btDevList.add(new DevInfo(device.getName(), device.getAddress(), rssi));
                     }
                 }
@@ -128,6 +128,7 @@ public class ScanActivity extends AppCompatActivity {
         for (int j = 0; j < btDevList.size(); j++){
             convertedList.add(btDevList.get(j).getInfo()+"\n"+String.format(
                     "Apytikslis atstumas?: %.2f", calculateAccuracy(txPow, btDevList.get(j).getRssi()))+" m");
+
         }
         listAdapter = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, convertedList);
         btInfo.setAdapter(listAdapter);
@@ -136,19 +137,10 @@ public class ScanActivity extends AppCompatActivity {
     //Funkcija rasta internete
     //Veikimo principas panasus i funkcija randama iOS?
     protected static double calculateAccuracy(int txPower, double rssi) {
-        if (rssi == 0) {
-            return -1.0; // if we cannot determine accuracy, return -1.
-        }
 
-        double ratio = rssi*1.0/txPower;
-        if (ratio < 1.0) {
-            return Math.pow(ratio,10);
+            double eks = (-61-rssi)/(10*2.3);
+            return Math.pow(1*10, eks);
         }
-        else {
-            double accuracy =  (0.89976)*Math.pow(ratio,7.7095) + 0.111;
-            return accuracy;
-        }
-    }
 
     void setMsButtonListener(){
         setMs.setOnClickListener(new Button.OnClickListener() {
