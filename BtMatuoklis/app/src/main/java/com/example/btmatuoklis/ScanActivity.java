@@ -9,28 +9,23 @@ import android.os.Handler;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
-import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.SeekBar;
-import android.widget.SimpleAdapter;
 import android.widget.TextView;
 import android.widget.Toast;
-
 import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
 
 public class ScanActivity extends AppCompatActivity {
 
     //Kas kiek laiko kartosis scan
-    int delay = 1000; //Matuojant su maziau negu 300ms, po kurio laiko uzstringa
+    short delay = 1000; //Matuojant su maziau negu 300ms, po kurio laiko uzstringa
 
     //Default BLE irenginio stiprumas
-    static int txPow = 50; //Reiksme [1-100] intervale
+    static short txPow = 50; //Reiksme [1-100] intervale
 
-    private final static int REQUEST_ENABLE_BT = 1;
+    private final static short REQUEST_ENABLE_BT = 1;
     private BluetoothAdapter mBluetoothAdapter;
     ArrayList<DevInfo> btDevList;
     CustomInfoAdapter listAdapter;
@@ -84,7 +79,7 @@ public class ScanActivity extends AppCompatActivity {
                     Toast.makeText(getApplicationContext(),
                             "Neįvesta reikšmė!", Toast.LENGTH_SHORT).show();
                 } else {
-                    int ivest = Integer.parseInt(msVal.getText().toString());
+                    short ivest = Short.parseShort(msVal.getText().toString());
                     if (ivest < 250 || ivest > 5000 || msVal.getText() == null) {
                         Toast.makeText(getApplicationContext(),
                                 "Netinkamas intervalas!", Toast.LENGTH_SHORT).show();
@@ -98,25 +93,22 @@ public class ScanActivity extends AppCompatActivity {
 
     void setSliderListener(){
         txSlider.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
-            int progressChanged = 0;
+            short progressChanged = 0;
 
             public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
-                progressChanged = progress;
+                progressChanged = (short)progress;
                 txPow = progressChanged;
-                txVal.setText(Integer.toString(txPow));
+                txVal.setText(Short.toString(txPow));
             }
 
-            public void onStartTrackingTouch(SeekBar seekBar) {
-            }
-
-            public void onStopTrackingTouch(SeekBar seekBar) {
-            }
+            public void onStartTrackingTouch(SeekBar seekBar) {}
+            public void onStopTrackingTouch(SeekBar seekBar) {}
         });
     }
 
     void setDefValues(){
         txSlider.setProgress(txPow);
-        msVal.setText(Integer.toString(delay));
+        msVal.setText(Short.toString(delay));
         hintInfo.setText("Rekomenduotinos reikšmės intervale:\n[250; 5000], default - " + delay);
         btDevList = new ArrayList<DevInfo>();
         listAdapter = new CustomInfoAdapter(this, btDevList);
@@ -130,19 +122,19 @@ public class ScanActivity extends AppCompatActivity {
         mBluetoothAdapter.startLeScan(new BluetoothAdapter.LeScanCallback() {
             @Override
             public void onLeScan(final BluetoothDevice device, int rssi, byte[] scanRecord) {
-                Integer numDev = 0;
+                short numDev = 0;
                 if (btDevList.isEmpty()) {
-                    btDevList.add(new DevInfo(device.getName(), device.getAddress(), rssi));
+                    btDevList.add(new DevInfo(device.getName(), device.getAddress(), (short)rssi));
                 } else {
-                    for (int i = 0; i < btDevList.size(); i++) {
+                    for (short i = 0; i < btDevList.size(); i++) {
                         if (btDevList.get(i).getMac().equals(device.getAddress())) {
-                            btDevList.get(i).updateRssi(rssi);
+                            btDevList.get(i).updateRssi((short)rssi);
                         } else {
                             numDev++;
                         }
                     }
                     if (numDev > btDevList.size() - 1) {
-                        btDevList.add(new DevInfo(device.getName(), device.getAddress(), rssi));
+                        btDevList.add(new DevInfo(device.getName(), device.getAddress(), (short)rssi));
                     }
 
                 }

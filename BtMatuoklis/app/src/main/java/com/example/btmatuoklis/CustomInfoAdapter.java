@@ -7,9 +7,6 @@ import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.TextView;
 
-import com.example.btmatuoklis.DevInfo;
-import com.example.btmatuoklis.R;
-
 import java.util.ArrayList;
 
 public class CustomInfoAdapter extends ArrayAdapter<DevInfo> {
@@ -32,7 +29,7 @@ public class CustomInfoAdapter extends ArrayAdapter<DevInfo> {
         // Populate the data into the template view using the data object
         name_value.setText(device.getName());
         mac_value.setText(device.getMac());
-        rssi_value.setText(device.getRssi().toString()+String.format("\nApytikslis atstumas: %.2f m", calculateAccuracy(ScanActivity.txPow, device.getRssi())));
+        rssi_value.setText(device.getRssi()+String.format(" Apytikslis atstumas: %.2f m", calculateAccuracy(ScanActivity.txPow, device.getRssi())));
         // Return the completed view to render on screen
         return convertView;
     }
