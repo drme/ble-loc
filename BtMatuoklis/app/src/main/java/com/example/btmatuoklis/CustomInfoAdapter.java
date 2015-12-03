@@ -32,8 +32,25 @@ public class CustomInfoAdapter extends ArrayAdapter<DevInfo> {
         // Populate the data into the template view using the data object
         name_value.setText(device.getName());
         mac_value.setText(device.getMac());
-        rssi_value.setText(device.getRssi());
+        rssi_value.setText(device.getRssi().toString()+String.format("\nApytikslis atstumas: %.2f m", calculateAccuracy(ScanActivity.txPow, device.getRssi())));
         // Return the completed view to render on screen
         return convertView;
+    }
+
+    //Funkcija rasta internete
+    //Veikimo principas panasus i funkcija randama iOS?
+    double calculateAccuracy(int txPower, double rssi) {
+        if (rssi == 0) {
+            return -1.0; // if we cannot determine accuracy, return -1.
+        }
+
+        double ratio = rssi*1.0/txPower;
+        if (ratio < 1.0) {
+            return Math.pow(ratio,10);
+        }
+        else {
+            double accuracy =  (0.89976)*Math.pow(ratio,7.7095) + 0.111;
+            return accuracy;
+        }
     }
 }

@@ -25,20 +25,15 @@ import java.util.List;
 public class ScanActivity extends AppCompatActivity {
 
     //Kas kiek laiko kartosis scan
-    int delay = 3000; //Matuojant su maziau negu 300ms, po kurio laiko uzstringa
+    int delay = 1000; //Matuojant su maziau negu 300ms, po kurio laiko uzstringa
 
     //Default BLE irenginio stiprumas
-    int txPow = 50; //Reiksme [1-100] intervale
+    static int txPow = 50; //Reiksme [1-100] intervale
 
     private final static int REQUEST_ENABLE_BT = 1;
     private BluetoothAdapter mBluetoothAdapter;
-    List<DevInfo> btDevList = new ArrayList<DevInfo>();
-
-    //---
+    ArrayList<DevInfo> btDevList;
     CustomInfoAdapter listAdapter;
-    ArrayList<DevInfo> convertedList;
-    int k = 0;
-    //---
 
     TextView txVal, hintInfo;
     EditText msVal;
@@ -60,21 +55,10 @@ public class ScanActivity extends AppCompatActivity {
 
         setMsButtonListener();
         setSliderListener();
-
-        txSlider.setProgress(txPow);
-        msVal.setText(Integer.toString(delay));
-        hintInfo.setText("Rekomenduotinos reikšmės intervale:\n[250; 5000], default - " + delay);
-
-        /*createBT();
+        setDefValues();
+        createBT();
         checkBT();
-        contScanStop();*/
-
-        //---
-        convertedList = new ArrayList<DevInfo>();
-        listAdapter = new CustomInfoAdapter(this, convertedList);
-        btInfo.setAdapter(listAdapter);
         contScanStop();
-        //---
     }
 
     //Sukuriamas Bluetooth adapteris
@@ -90,87 +74,6 @@ public class ScanActivity extends AppCompatActivity {
         if (mBluetoothAdapter == null || !mBluetoothAdapter.isEnabled()) {
             Intent enableBtIntent = new Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE);
             startActivityForResult(enableBtIntent, REQUEST_ENABLE_BT);
-        }
-    }
-
-    //Jeigu randamas BLE irenginys, pastoviai gaunama jo RSSI reiksme
-    //Per daug tikrinimu, reikia optimizuoti
-    void startStopScan(){
-        //Pradedamas scan
-        mBluetoothAdapter.startLeScan(new BluetoothAdapter.LeScanCallback() {
-            @Override
-            public void onLeScan(final BluetoothDevice device, int rssi, byte[] scanRecord) {
-                Integer numDev = 0;
-                if (btDevList.isEmpty()) {
-                    btDevList.add(new DevInfo(device.getName(), device.getAddress(), rssi));
-                } else {
-                    for (int i = 0; i < btDevList.size(); i++) {
-                        if (btDevList.get(i).getMac().equals(device.getAddress())) {
-                            btDevList.get(i).updateRssi(rssi);
-                        } else {
-                            numDev++;
-                        }
-                    }
-                    if (numDev > btDevList.size() - 1) {
-                        btDevList.add(new DevInfo(device.getName(), device.getAddress(), rssi));
-                    }
-                }
-                convertList();
-                mBluetoothAdapter.stopLeScan(this); //Scan stabdomas
-            }
-        });
-    }
-
-    //Nuolatos pradedamas ir stabdomas scan
-    void contScanStop(){
-        final Handler h = new Handler();
-        h.postDelayed(new Runnable() {
-            public void run() {
-                //startStopScan();
-                ListTestAdd();
-                h.postDelayed(this, delay);
-            }
-        }, delay);
-    }
-
-    //---
-    void ListTestAdd(){
-        //btDevList.add(new DevInfo("Pavadinimas", "MAC", 100));
-        //convertedList.add(btDevList.get(k));
-        DevInfo nf = new DevInfo("Pavadinimas", "MAC", 100);
-        listAdapter.add(nf);
-        listAdapter.notifyDataSetChanged();
-        //k++;
-    }
-    //---
-
-    //Reiksmes dedamos is List i Listview
-    //Kodas visiskai neoptimalus - reikes keisti
-    void convertList(){
-        ArrayAdapter<String> listAdapter;
-        ArrayList<String> convertedList = new ArrayList<String>();
-        for (int j = 0; j < btDevList.size(); j++){
-            convertedList.add(btDevList.get(j).getInfo()+"\n"+String.format(
-                    "Apytikslis atstumas?: %.2f", calculateAccuracy(txPow, btDevList.get(j).getRssi()))+" m");
-        }
-        listAdapter = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, convertedList);
-        btInfo.setAdapter(listAdapter);
-    }
-
-    //Funkcija rasta internete
-    //Veikimo principas panasus i funkcija randama iOS?
-    protected static double calculateAccuracy(int txPower, double rssi) {
-        if (rssi == 0) {
-            return -1.0; // if we cannot determine accuracy, return -1.
-        }
-
-        double ratio = rssi*1.0/txPower;
-        if (ratio < 1.0) {
-            return Math.pow(ratio,10);
-        }
-        else {
-            double accuracy =  (0.89976)*Math.pow(ratio,7.7095) + 0.111;
-            return accuracy;
         }
     }
 
@@ -203,8 +106,60 @@ public class ScanActivity extends AppCompatActivity {
                 txVal.setText(Integer.toString(txPow));
             }
 
-            public void onStartTrackingTouch(SeekBar seekBar) {}
-            public void onStopTrackingTouch(SeekBar seekBar) {}
+            public void onStartTrackingTouch(SeekBar seekBar) {
+            }
+
+            public void onStopTrackingTouch(SeekBar seekBar) {
+            }
         });
+    }
+
+    void setDefValues(){
+        txSlider.setProgress(txPow);
+        msVal.setText(Integer.toString(delay));
+        hintInfo.setText("Rekomenduotinos reikšmės intervale:\n[250; 5000], default - " + delay);
+        btDevList = new ArrayList<DevInfo>();
+        listAdapter = new CustomInfoAdapter(this, btDevList);
+        btInfo.setAdapter(listAdapter);
+    }
+
+    //Jeigu randamas BLE irenginys, pastoviai gaunama jo RSSI reiksme
+    //Per daug tikrinimu, reikia optimizuoti
+    void startStopScan(){
+        //Pradedamas scan
+        mBluetoothAdapter.startLeScan(new BluetoothAdapter.LeScanCallback() {
+            @Override
+            public void onLeScan(final BluetoothDevice device, int rssi, byte[] scanRecord) {
+                Integer numDev = 0;
+                if (btDevList.isEmpty()) {
+                    btDevList.add(new DevInfo(device.getName(), device.getAddress(), rssi));
+                } else {
+                    for (int i = 0; i < btDevList.size(); i++) {
+                        if (btDevList.get(i).getMac().equals(device.getAddress())) {
+                            btDevList.get(i).updateRssi(rssi);
+                        } else {
+                            numDev++;
+                        }
+                    }
+                    if (numDev > btDevList.size() - 1) {
+                        btDevList.add(new DevInfo(device.getName(), device.getAddress(), rssi));
+                    }
+
+                }
+                listAdapter.notifyDataSetChanged();
+                mBluetoothAdapter.stopLeScan(this); //Scan stabdomas
+            }
+        });
+    }
+
+    //Nuolatos pradedamas ir stabdomas scan
+    void contScanStop(){
+        final Handler h = new Handler();
+        h.postDelayed(new Runnable() {
+            public void run() {
+                startStopScan();
+                h.postDelayed(this, delay);
+            }
+        }, delay);
     }
 }
