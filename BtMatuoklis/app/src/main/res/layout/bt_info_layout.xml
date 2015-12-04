@@ -72,4 +72,62 @@
         android:layout_alignTop="@+id/textView7"
         android:layout_alignParentEnd="true"
         android:layout_toEndOf="@+id/textView7" />
+
+    <FrameLayout
+        style="?android:borderlessButtonStyle"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_alignBottom="@+id/checkBox"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentTop="false"
+        android:layout_alignTop="@+id/textView2"
+        android:layout_alignLeft="@+id/checkBox"
+        android:layout_alignRight="@+id/name_value"
+        android:clickable="true"
+        android:id="@+id/frame_layout"
+        android:visibility="visible">
+    </FrameLayout>
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceSmall"
+        android:text="Coord x: "
+        android:id="@+id/textView8"
+        android:layout_below="@+id/textView7"
+        android:layout_alignStart="@+id/textView7"
+        android:visibility="gone" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceSmall"
+        android:text="coord_x"
+        android:minEms="4"
+        android:id="@+id/coord_x"
+        android:layout_below="@+id/textView7"
+        android:layout_toEndOf="@+id/textView8"
+        android:visibility="gone" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceSmall"
+        android:text="coord_y"
+        android:minEms="4"
+        android:id="@+id/coord_y"
+        android:layout_below="@+id/textView7"
+        android:layout_toEndOf="@+id/textView11"
+        android:visibility="gone" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceSmall"
+        android:text="Coord y: "
+        android:id="@+id/textView11"
+        android:layout_below="@+id/textView7"
+        android:layout_toEndOf="@+id/coord_x"
+        android:visibility="gone" />
 </RelativeLayout>
