@@ -1,11 +1,14 @@
 package com.example.btmatuoklis;
 
+import android.app.AlertDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.CheckBox;
+import android.widget.EditText;
 import android.widget.FrameLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
@@ -16,6 +19,7 @@ import java.util.ArrayList;
 public class CustomInfoAdapter extends ArrayAdapter<DevInfo> {
 
     byte maxRange = 100; //Maksimalus teorinis BLE aptikimo atstumas metrais
+    boolean correctCoord = false;
 
     public CustomInfoAdapter(Context context, ArrayList<DevInfo> devices) {
         super(context, 0, devices);
@@ -41,7 +45,7 @@ public class CustomInfoAdapter extends ArrayAdapter<DevInfo> {
         FrameLayout infoOverlay = (FrameLayout) convertView.findViewById(R.id.frame_layout);
         CheckBox checkBox = (CheckBox) convertView.findViewById(R.id.checkBox);
 
-        setOverlayListener(infoOverlay, coord_x, coord_y, title_x, title_y,
+        setOverlayListener(position, infoOverlay, coord_x, coord_y, title_x, title_y,
                 checkBox, R.id.textView7, R.id.textView8);
 
         // Populate the data into the template view using the data object
@@ -69,24 +73,67 @@ public class CustomInfoAdapter extends ArrayAdapter<DevInfo> {
         cb.setLayoutParams(cb_p);
     }
 
-    void setOverlayListener(FrameLayout io, final TextView tv1, final TextView tv2,
+    void setOverlayListener(final int position, FrameLayout io, final TextView tv1, final TextView tv2,
                             final TextView tv3, final TextView tv4,
                             final CheckBox cb, final int base1, final int base2){
-        io.setOnClickListener(new View.OnClickListener(){
+        io.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (cb.isChecked()){
+                if (cb.isChecked()) {
                     cb.setChecked(false);
+                    //ScanActivity.btDevList.get(position).setCoords(0, 0);
                     expandInfo(tv1, tv2, tv3, tv4, View.GONE, cb, base1);
-                }
-                else
-                {
-                    cb.setChecked(true);
-
-                    expandInfo(tv1, tv2, tv3, tv4, View.VISIBLE, cb, base2);
+                } else {
+                    showCoordDialog(position);
+                    if (correctCoord){
+                        cb.setChecked(true);
+                        expandInfo(tv1, tv2, tv3, tv4, View.VISIBLE, cb, base2);
+                    }
                 }
             }
         });
+    }
+
+    void showCoordDialog(final int position){
+        LayoutInflater layoutInflater = LayoutInflater.from(this.getContext());
+        View promptView = layoutInflater.inflate(R.layout.coord_input_layout, null);
+        AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(this.getContext());
+        alertDialogBuilder.setView(promptView);
+
+        final EditText xCoordEdit = (EditText) promptView.findViewById(R.id.editText2);
+        final EditText yCoordEdit = (EditText) promptView.findViewById(R.id.editText3);
+        // setup a dialog window
+        alertDialogBuilder.setCancelable(false)
+                .setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int id) {
+                        if (xCoordEdit.getText().toString().equals("") || yCoordEdit.getText().toString().equals("")) {
+                            Toast.makeText(getContext(),
+                                    "Neįvesta reikšmė!", Toast.LENGTH_SHORT).show();
+                            correctCoord = false;
+                        } else {
+                            float value_x = Float.parseFloat(xCoordEdit.getText().toString());
+                            float value_y = Float.parseFloat(yCoordEdit.getText().toString());
+                            if (value_x > 100.00f || value_x < -100.00f || value_y > 100.00f || value_y < -100.00f) {
+                                Toast.makeText(getContext(),
+                                        "Netinkamas intervalas!", Toast.LENGTH_SHORT).show();
+                                correctCoord = false;
+                            } else {
+                                ScanActivity.btDevList.get(position).setCoords(value_x, value_y);
+                                correctCoord = true;
+                            }
+                        }
+                    }
+                })
+                .setNegativeButton("Cancel",
+                        new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog, int id) {
+                                dialog.cancel();
+                            }
+                        });
+
+        // create an alert dialog
+        AlertDialog alert = alertDialogBuilder.create();
+        alert.show();
     }
 
     //Funkcija rasta internete

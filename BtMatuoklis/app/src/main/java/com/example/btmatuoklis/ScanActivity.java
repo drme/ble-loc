@@ -30,7 +30,7 @@ public class ScanActivity extends AppCompatActivity {
 
     byte REQUEST_ENABLE_BT = 1;
     BluetoothAdapter mBluetoothAdapter;
-    ArrayList<DevInfo> btDevList;
+    static ArrayList<DevInfo> btDevList;
     ArrayList<DevInfo> savedDevList;
     CustomInfoAdapter listAdapter;
     SharedPreferences preferences;
