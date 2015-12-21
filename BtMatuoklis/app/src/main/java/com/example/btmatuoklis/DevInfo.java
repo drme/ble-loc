@@ -39,5 +39,6 @@ public class DevInfo {
     public float getX_val() { return this.X_val; }
 
     public float getY_val() { return this.Y_val; }
+
     public float getDistance() { return this.Distance; }
 }

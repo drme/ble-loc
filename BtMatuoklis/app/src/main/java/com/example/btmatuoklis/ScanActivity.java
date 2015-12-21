@@ -126,6 +126,9 @@ public class ScanActivity extends AppCompatActivity {
 
             public void onStartTrackingTouch(SeekBar seekBar) {
             }
+                txPow = (byte)progress;
+                txVal.setText(Byte.toString(txPow));
+            }
 
             public void onStopTrackingTouch(SeekBar seekBar) {
                 //pakeista reiksme is kart issaugoma ateiciai
@@ -157,8 +160,9 @@ public class ScanActivity extends AppCompatActivity {
             @Override
             public void onLeScan(final BluetoothDevice device, int rssi, byte[] scanRecord) {
                 byte numDev = 0;
-                byte listSize = (byte) btDevList.size();
-                byte currentRssi = (byte) rssi;
+                byte listSize = (byte)btDevList.size();
+                byte currentRssi = (byte)rssi;
+
                 if (listSize == 0) {
                     btDevList.add(new DevInfo(device.getName(), device.getAddress()));
                     btDevList.get(0).setRssi(currentRssi);
