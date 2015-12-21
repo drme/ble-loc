@@ -7,6 +7,7 @@ public class DevInfo {
     private boolean Coord_set = false;
     private float X_val;
     private float Y_val;
+    private float Distance;
 
     public DevInfo(){}
 
@@ -23,6 +24,8 @@ public class DevInfo {
         this.Coord_set = true;
     }
 
+    public void setDistance(float distance) { this.Distance = distance; }
+
     public boolean coordIsSet() { return this.Coord_set; }
 
     public String getName(){ return this.Name; }
@@ -36,4 +39,6 @@ public class DevInfo {
     public float getX_val() { return this.X_val; }
 
     public float getY_val() { return this.Y_val; }
+
+    public float getDistance() { return this.Distance; }
 }
