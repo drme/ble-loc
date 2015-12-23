@@ -7,6 +7,7 @@ import android.bluetooth.BluetoothManager;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.os.AsyncTask;
 import android.os.Handler;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -41,6 +42,7 @@ public class ScanActivity extends AppCompatActivity {
     Button setMs;
     SeekBar txSlider;
     ListView btInfo;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -105,7 +107,7 @@ public class ScanActivity extends AppCompatActivity {
                         edit.putInt("savedDelay", delay);
                         edit.apply();
                         //patvirtinus ivesti, paslepiama klaviatura
-                        InputMethodManager inputMethodManager =(InputMethodManager)getSystemService(Activity.INPUT_METHOD_SERVICE);
+                        InputMethodManager inputMethodManager = (InputMethodManager) getSystemService(Activity.INPUT_METHOD_SERVICE);
                         inputMethodManager.hideSoftInputFromWindow(v.getWindowToken(), 0);
                         msVal.clearFocus();
                     }
@@ -118,11 +120,13 @@ public class ScanActivity extends AppCompatActivity {
         txSlider.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
 
             public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
-                txPow = (byte)progress;
+                txPow = (byte) progress;
                 txVal.setText(Byte.toString(txPow));
             }
 
-            public void onStartTrackingTouch(SeekBar seekBar) {}
+            public void onStartTrackingTouch(SeekBar seekBar) {
+            }
+
             public void onStopTrackingTouch(SeekBar seekBar) {
                 //pakeista reiksme is kart issaugoma ateiciai
                 edit.putInt("savedTxPow", txPow);
@@ -149,43 +153,60 @@ public class ScanActivity extends AppCompatActivity {
     //Per daug tikrinimu, reikia optimizuoti
     void startStopScan(){
         //Pradedamas scan
-        mBluetoothAdapter.startLeScan(new BluetoothAdapter.LeScanCallback() {
-            @Override
-            public void onLeScan(final BluetoothDevice device, int rssi, byte[] scanRecord) {
-                byte numDev = 0;
-                byte listSize = (byte)btDevList.size();
-                byte currentRssi = (byte)rssi;
-                if (listSize == 0) {
-                    btDevList.add(new DevInfo(device.getName(), device.getAddress()));
-                    btDevList.get(0).setRssi(currentRssi);
-                } else {
-                    for (byte i = 0; i < listSize; i++) {
-                        if (btDevList.get(i).getMac().equals(device.getAddress())) {
-                            btDevList.get(i).setRssi(currentRssi);
-                        } else {
-                            numDev++;
-                        }
-                    }
-                    if (numDev > listSize - 1) {
-                        btDevList.add(new DevInfo(device.getName(), device.getAddress()));
-                        btDevList.get(numDev).setRssi(currentRssi);
-                    }
-
-                }
-                listAdapter.notifyDataSetChanged();
-                mBluetoothAdapter.stopLeScan(this); //Scan stabdomas
-            }
-        });
+        new asyncScan().execute();
     }
 
     //Nuolatos pradedamas ir stabdomas scan
     void contScanStop(){
-        final Handler h = new Handler();
-        h.postDelayed(new Runnable() {
+        final Handler handler = new Handler();
+        handler.postDelayed(new Runnable() {
             public void run() {
                 startStopScan();
-                h.postDelayed(this, delay);
+                listAdapter.notifyDataSetChanged();
+                handler.postDelayed(this, delay);
             }
         }, delay);
+    }
+
+    private class asyncScan extends AsyncTask<Void, Void, ArrayList<DevInfo>>{
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+        }
+
+        @Override
+        protected ArrayList<DevInfo> doInBackground(Void... params) {
+            mBluetoothAdapter.startLeScan(new BluetoothAdapter.LeScanCallback() {
+                @Override
+                public void onLeScan(final BluetoothDevice device, int rssi, byte[] scanRecord) {
+                    byte numDev = 0;
+                    byte listSize = (byte)btDevList.size();
+                    byte currentRssi = (byte)rssi;
+                    if (listSize == 0) {
+                        btDevList.add(new DevInfo(device.getName(), device.getAddress()));
+                        btDevList.get(0).setRssi(currentRssi);
+                    } else {
+                        for (byte i = 0; i < listSize; i++) {
+                            if (btDevList.get(i).getMac().equals(device.getAddress())) {
+                                btDevList.get(i).setRssi(currentRssi);
+                            } else {
+                                numDev++;
+                            }
+                        }
+                        if (numDev > listSize - 1) {
+                            btDevList.add(new DevInfo(device.getName(), device.getAddress()));
+                            btDevList.get(numDev).setRssi(currentRssi);
+                        }
+                    }
+                    mBluetoothAdapter.stopLeScan(this); //Scan stabdomas
+                }
+            });
+            return btDevList;
+        }
+
+        @Override
+        protected void onPostExecute(ArrayList<DevInfo> devList) {
+            super.onPostExecute(devList);
+        }
     }
 }
