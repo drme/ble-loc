@@ -215,8 +215,8 @@ public class SingleRoomActivity extends AppCompatActivity {
         Runnable backgroundRunnable2 = new Runnable(){
             @Override
             public void run() {
-                startStopScan();
                 if (scanning) {
+                    startStopScan();
                     handler2.postDelayed(uiRunnable2, settings.getDelay());
                     handler2.postDelayed(this, settings.getDelay());
                 }

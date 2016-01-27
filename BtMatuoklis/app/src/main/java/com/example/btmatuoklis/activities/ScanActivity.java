@@ -150,8 +150,8 @@ public class ScanActivity extends AppCompatActivity {
         Runnable backgroundRunnable = new Runnable(){
             @Override
             public void run() {
-                startStopScan();
                 if (scanning) {
+                    startStopScan();
                     handler.postDelayed(uiRunnable, settings.getDelay());
                     handler.postDelayed(this, settings.getDelay());
                 }
