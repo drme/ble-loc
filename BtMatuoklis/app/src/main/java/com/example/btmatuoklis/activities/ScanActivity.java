@@ -51,9 +51,7 @@ public class ScanActivity extends AppCompatActivity {
         setDefValues();
         createBT();
         checkBT();
-        //---
         setCustomList();
-        //---
         contScanStop();
     }
 
@@ -118,7 +116,7 @@ public class ScanActivity extends AppCompatActivity {
     void setDefValues(){
         btDevList = new ArrayList<DeviceInfo>();
         savedDevList = new ArrayList<String>();
-        listAdapter = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_multiple_choice, savedDevList);
+        listAdapter = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, savedDevList);
         btInfo.setAdapter(listAdapter);
     }
 

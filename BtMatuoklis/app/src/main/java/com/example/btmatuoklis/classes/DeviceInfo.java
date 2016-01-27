@@ -5,6 +5,7 @@ public class DeviceInfo {
     private String deviceMAC;
     private byte[] calibratedRSSI;
     private byte currentRSSI;
+    private byte previousRSSI;
 
     public DeviceInfo(){}
 
@@ -13,7 +14,10 @@ public class DeviceInfo {
         this.deviceMAC = mac;
     }
 
-    public void setRSSI(byte rssi) { this.currentRSSI = rssi; }
+    public void setRSSI(byte rssi) {
+        this.previousRSSI = this.currentRSSI;
+        this.currentRSSI = rssi;
+    }
 
     public void setCalibratedRSSI(byte[] rssiArray) {
         this.calibratedRSSI = rssiArray;
@@ -23,7 +27,9 @@ public class DeviceInfo {
 
     public String getMAC(){ return this.deviceMAC; }
 
-    public byte getRSSI() { return this.currentRSSI; }
+    public byte getCurrentRSSI() { return this.currentRSSI; }
+
+    public byte getPreviousRSSI() { return this.previousRSSI; }
 
     public byte[] getCalibratedRSSI() { return  this.calibratedRSSI; }
 
@@ -38,8 +44,9 @@ public class DeviceInfo {
     public String getCurrentInfo(byte txPower){
         String info = "Pavadinimas: " + this.deviceName;
         info += "\nMAC: " + this.deviceMAC;
-        info += "\nRSSI: " + this.currentRSSI;
-        info += " " + RangeCalculator.getRange(txPower, this.currentRSSI);
+        info += "\nPrevious RSSI: " + this.previousRSSI;
+        info += " Current RSSI: " + this.currentRSSI;
+        info += "\n" + RangeCalculator.getRange(txPower, this.currentRSSI);
         return info;
     }
 }
