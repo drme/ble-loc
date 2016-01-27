@@ -1,3 +1,19 @@
 <resources>
+
+    <string name="device_name">Name: </string>
+    <string name="device_mac">MAC: </string>
+    <string name="device_current_rssi">RSSI: </string>
+    <string name="device_range">Apytikslis atstumas: </string>
+
     <string name="app_name">BtMatuoklis</string>
+    <string name="main_subtitle">Pagrindinis</string>
+    <string name="scan_name">Rasti Įrenginiai:</string>
+    <string name="all_rooms_name">Visos patalpos</string>
+    <string name="new_room_add">Pridėti naują kambarį</string>
+    <string name="existing_room_remove">Pašalinti kambarį</string>
+    <string name="new_room_title">Nauja patalpa</string>
+    <string name="new_room_name_subtitle">Įveskite pavadinimą</string>
+    <string name="new_room_devices_subtitle">Pasirinkite įrenginius:</string>
+    <string name="existing_room">Patalpa</string>
+    <string name="settings_name">Nustatymai</string>
 </resources>
