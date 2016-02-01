@@ -13,6 +13,7 @@ import android.widget.Button;
 import android.widget.ListView;
 
 import com.example.btmatuoklis.R;
+import com.example.btmatuoklis.classes.Room;
 
 import java.util.ArrayList;
 
@@ -22,6 +23,8 @@ public class AllRoomsActivity extends AppCompatActivity {
     ListView allRoomsList;
     static ArrayList<String> roomsList;
     ArrayAdapter roomsAdapter;
+    //---
+    static ArrayList<Room> roomsArray;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -31,6 +34,9 @@ public class AllRoomsActivity extends AppCompatActivity {
         actionbar.setSubtitle(getText(R.string.all_rooms_name));
         allRoomsList = (ListView)findViewById(R.id.listAllRooms_DevicesList);
         roomsList = new ArrayList<String>();
+        //---
+        roomsArray = new ArrayList<Room>();
+        //---
         roomsAdapter = new ArrayAdapter(this, android.R.layout.simple_list_item_1, roomsList);
         allRoomsList.setAdapter(roomsAdapter);
     }

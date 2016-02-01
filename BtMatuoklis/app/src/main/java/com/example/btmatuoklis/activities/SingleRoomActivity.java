@@ -26,6 +26,7 @@ import android.widget.Toast;
 
 import com.example.btmatuoklis.R;
 import com.example.btmatuoklis.classes.DeviceInfo;
+import com.example.btmatuoklis.classes.Room;
 import com.example.btmatuoklis.classes.ScanTools;
 import com.example.btmatuoklis.classes.Settings;
 
@@ -51,7 +52,9 @@ public class SingleRoomActivity extends AppCompatActivity {
     MenuItem actionProgress;
     Settings settings;
     ScanTools scantools = new ScanTools();
-    int selectedDevices = 0;
+
+    ArrayList<Integer> selectedDevices;
+    int roomID = 0;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -95,6 +98,7 @@ public class SingleRoomActivity extends AppCompatActivity {
         actionbar.setSubtitle(getText(R.string.new_room_name_subtitle));
         newPavadinimas = (EditText)findViewById(R.id.editNewRoomName_Name);
         acceptBtn = (Button)findViewById(R.id.buttonNewRoomName_Set);
+        roomID = AllRoomsActivity.roomsArray.size();
         setFirstAcceptListener();
     }
 
@@ -106,7 +110,8 @@ public class SingleRoomActivity extends AppCompatActivity {
                             Toast.makeText(getApplicationContext(),
                                     "Neįvestas pavadinimas!", Toast.LENGTH_SHORT).show();
                         } else {
-                            AllRoomsActivity.roomsList.add(newPavadinimas.getText().toString());
+                            AllRoomsActivity.roomsArray.add(new Room(newPavadinimas.getText().toString()));
+                            AllRoomsActivity.roomsList.add(AllRoomsActivity.roomsArray.get(roomID).getName());
                             //patvirtinus ivesti, paslepiama klaviatura
                             InputMethodManager inputMethodManager = (InputMethodManager) getSystemService(Activity.INPUT_METHOD_SERVICE);
                             inputMethodManager.hideSoftInputFromWindow(v.getWindowToken(), 0);
@@ -128,6 +133,7 @@ public class SingleRoomActivity extends AppCompatActivity {
         createBT();
         settings = MainActivity.settings;
         btInfo = (ListView)findViewById(R.id.listNewRoom_DevicesList);
+        selectedDevices = new ArrayList<Integer>();
         btDevList = new ArrayList<DeviceInfo>();
         savedDevList = new ArrayList<String>();
         boundDevList = new ArrayList<String>();
@@ -142,9 +148,10 @@ public class SingleRoomActivity extends AppCompatActivity {
         acceptBtn.setOnClickListener(
                 new Button.OnClickListener() {
                     public void onClick(View v) {
-                        if (selectedDevices > 0){
+                        if (selectedDevices.size() > 0){
                             actionProgress.setVisible(true);
                             scanning = false;
+                            saveSelected();
                             existingRoom();
                         }
                         else {
@@ -162,14 +169,10 @@ public class SingleRoomActivity extends AppCompatActivity {
         actionbar.setTitle(getText(R.string.app_name));
         actionbar.setSubtitle(getText(R.string.existing_room));
         existingPavadinimas = (TextView)findViewById(R.id.textSingleRoom_ActiveName);
-        if (!newPavadinimas.getText().toString().equals("")){
-            existingPavadinimas.setText(AllRoomsActivity.roomsList.get(AllRoomsActivity.roomsList.size()-1));
-        }
-        //---
         boundBtList = (ListView)findViewById(R.id.listSingleRoom_DevicesList);
         listBoundAdapter = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, boundDevList);
         boundBtList.setAdapter(listBoundAdapter);
-        //---
+        existingPavadinimas.setText(AllRoomsActivity.roomsArray.get(roomID).getName());
     }
 
 
@@ -189,15 +192,21 @@ public class SingleRoomActivity extends AppCompatActivity {
                 CheckedTextView checkedTextView = ((CheckedTextView) view);
                 checkedTextView.setChecked(!checkedTextView.isChecked());
                 if (checkedTextView.isChecked()){
-                    boundDevList.add(btDevList.get(position).getInfo());
-                    selectedDevices++;
+                    selectedDevices.add(position);
                 }
                 else {
-                    boundDevList.remove(boundDevList.size()-1);
-                    selectedDevices--;
+                    selectedDevices.remove(selectedDevices.indexOf(position));
                 }
             }
         });
+    }
+
+    void saveSelected(){
+        for (int i = 0; i < selectedDevices.size(); i++){
+            AllRoomsActivity.roomsArray.get(roomID).addDevice(btDevList.get(selectedDevices.get(i)));
+            boundDevList.add(btDevList.get(selectedDevices.get(i)).getInfo());
+        }
+        selectedDevices.clear();
     }
 
     //Nuolatos pradedamas ir stabdomas scan
