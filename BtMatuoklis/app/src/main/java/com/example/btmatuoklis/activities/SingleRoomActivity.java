@@ -26,6 +26,7 @@ import android.widget.Toast;
 
 import com.example.btmatuoklis.R;
 import com.example.btmatuoklis.classes.DeviceInfo;
+import com.example.btmatuoklis.classes.ScanTools;
 import com.example.btmatuoklis.classes.Settings;
 
 import java.util.ArrayList;
@@ -49,6 +50,7 @@ public class SingleRoomActivity extends AppCompatActivity {
     ArrayList<String> boundDevList;
     MenuItem actionProgress;
     Settings settings;
+    ScanTools scantools = new ScanTools();
     int selectedDevices = 0;
 
     @Override
@@ -230,28 +232,7 @@ public class SingleRoomActivity extends AppCompatActivity {
         mBluetoothAdapter.startLeScan(new BluetoothAdapter.LeScanCallback() {
             @Override
             public void onLeScan(final BluetoothDevice device, int rssi, byte[] scanRecord) {
-                byte numDev = 0;
-                byte listSize = (byte) btDevList.size();
-                byte currentRssi = (byte) rssi;
-                if (listSize == 0) {
-                    btDevList.add(new DeviceInfo(device.getName(), device.getAddress()));
-                    btDevList.get(0).setRSSI(currentRssi);
-                    savedDevList.add(btDevList.get(0).getCurrentInfo(settings.getTxPow()));
-                } else {
-                    for (byte i = 0; i < listSize; i++) {
-                        if (btDevList.get(i).getMAC().equals(device.getAddress())) {
-                            btDevList.get(i).setRSSI(currentRssi);
-                            savedDevList.set(i, btDevList.get(i).getCurrentInfo(settings.getTxPow()));
-                        } else {
-                            numDev++;
-                        }
-                    }
-                    if (numDev > listSize - 1) {
-                        btDevList.add(new DeviceInfo(device.getName(), device.getAddress()));
-                        btDevList.get(numDev).setRSSI(currentRssi);
-                        savedDevList.add(numDev, btDevList.get(numDev).getCurrentInfo(settings.getTxPow()));
-                    }
-                }
+                scantools.scanLogic(device, rssi, settings.getTxPow(), btDevList, savedDevList);
                 mBluetoothAdapter.stopLeScan(this); //Scan stabdomas
             }
         });
