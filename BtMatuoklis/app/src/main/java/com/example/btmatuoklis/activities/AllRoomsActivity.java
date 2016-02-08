@@ -1,30 +1,33 @@
 package com.example.btmatuoklis.activities;
 
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.text.InputType;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
-import android.widget.Button;
+import android.widget.EditText;
 import android.widget.ListView;
+import android.widget.Toast;
 
 import com.example.btmatuoklis.R;
-import com.example.btmatuoklis.classes.Room;
-
-import java.util.ArrayList;
+import com.example.btmatuoklis.classes.GlobalClass;
 
 public class AllRoomsActivity extends AppCompatActivity {
 
     ActionBar actionbar;
     ListView allRoomsList;
-    static ArrayList<String> roomsList;
     ArrayAdapter roomsAdapter;
-    //---
-    static ArrayList<Room> roomsArray;
+    String roomName;
+
+    GlobalClass globalVariable;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -33,12 +36,10 @@ public class AllRoomsActivity extends AppCompatActivity {
         actionbar = getSupportActionBar();
         actionbar.setSubtitle(getText(R.string.all_rooms_name));
         allRoomsList = (ListView)findViewById(R.id.listAllRooms_DevicesList);
-        roomsList = new ArrayList<String>();
-        //---
-        roomsArray = new ArrayList<Room>();
-        //---
-        roomsAdapter = new ArrayAdapter(this, android.R.layout.simple_list_item_1, roomsList);
+        globalVariable = (GlobalClass) getApplicationContext();
+        roomsAdapter = new ArrayAdapter(this, android.R.layout.simple_list_item_1, globalVariable.getRoomsList());
         allRoomsList.setAdapter(roomsAdapter);
+        setListListener();
     }
 
     @Override
@@ -54,10 +55,10 @@ public class AllRoomsActivity extends AppCompatActivity {
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case R.id.action_settings:
-                startActivity(new Intent(AllRoomsActivity.this, SettingsActivity.class));
+                startActivity(new Intent(getBaseContext(), SettingsActivity.class));
                 return true;
             case R.id.action_add_room:
-                startActivity(new Intent(AllRoomsActivity.this, SingleRoomActivity.class));
+                roomNameEntry();
                 return true;
 
             default:
@@ -68,10 +69,51 @@ public class AllRoomsActivity extends AppCompatActivity {
     @Override
     public void onBackPressed() { this.finish(); }
 
-    @Override
-    public void onResume(){
-        super.onResume();
-        roomsAdapter.notifyDataSetChanged();
+    void setListListener(){
+        allRoomsList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                Intent intent = new Intent(getBaseContext(), SingleRoomActivity.class);
+                intent.putExtra("roomID", position);
+                startActivity(intent);
+            }
+        });
+    }
+
+    void roomNameEntry(){
+        final AlertDialog.Builder builder = new AlertDialog.Builder(AllRoomsActivity.this);
+        builder.setTitle("Naujos patalpos pavadinimas:");
+
+        final EditText input = new EditText(AllRoomsActivity.this);
+        input.setInputType(InputType.TYPE_CLASS_TEXT);
+        builder.setView(input);
+
+        builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                roomName = input.getText().toString();
+                if (roomName.equals("")){
+                    Toast.makeText(getApplicationContext(),
+                            "Neįvestas pavadinimas!", Toast.LENGTH_SHORT).show();
+                    dialog.cancel();
+                }
+                else {
+                    Intent intent = new Intent(getBaseContext(), NewRoomActivity.class);
+                    intent.putExtra("roomName", roomName);
+                    finish();
+                    startActivity(intent);
+                }
+            }
+        });
+
+        builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                dialog.cancel();
+            }
+        });
+
+        builder.show();
     }
 
 }

@@ -1,65 +1,53 @@
 package com.example.btmatuoklis.activities;
 
-import android.app.Activity;
-import android.bluetooth.BluetoothAdapter;
-import android.bluetooth.BluetoothDevice;
-import android.bluetooth.BluetoothManager;
-import android.content.Context;
 import android.content.Intent;
-import android.os.Handler;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
-import android.view.View;
-import android.view.inputmethod.InputMethodManager;
-import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
-import android.widget.Button;
-import android.widget.CheckedTextView;
-import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.btmatuoklis.R;
 import com.example.btmatuoklis.classes.DeviceInfo;
-import com.example.btmatuoklis.classes.Room;
-import com.example.btmatuoklis.classes.ScanTools;
-import com.example.btmatuoklis.classes.Settings;
+import com.example.btmatuoklis.classes.GlobalClass;
 
 import java.util.ArrayList;
 
 public class SingleRoomActivity extends AppCompatActivity {
 
     ActionBar actionbar;
-    Button acceptBtn;
-    EditText newPavadinimas;
     TextView existingPavadinimas;
 
-    //-----
-    BluetoothAdapter mBluetoothAdapter;
-    ListView btInfo;
     ListView boundBtList;
-    boolean scanning = false;
-    ArrayAdapter<String> listAdapter;
     ArrayAdapter<String> listBoundAdapter;
-    static ArrayList<DeviceInfo> btDevList;
-    ArrayList<String> savedDevList;
     ArrayList<String> boundDevList;
     MenuItem actionProgress;
-    Settings settings;
-    ScanTools scantools = new ScanTools();
 
-    ArrayList<Integer> selectedDevices;
-    int roomID = 0;
+    int roomID;
+
+    GlobalClass globalVariable;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        newFirstStep();
+        setContentView(R.layout.activity_single_room);
+        actionbar = getSupportActionBar();
+        actionbar.setTitle(getText(R.string.app_name));
+        actionbar.setSubtitle(getText(R.string.existing_room));
+        globalVariable = (GlobalClass) getApplicationContext();
+        roomID = getIntent().getExtras().getInt("roomID");
+        existingPavadinimas = (TextView)findViewById(R.id.textSingleRoom_ActiveName);
+        boundBtList = (ListView)findViewById(R.id.listSingleRoom_DevicesList);
+        boundDevList = new ArrayList<String>();
+        listBoundAdapter = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, boundDevList);
+        boundBtList.setAdapter(listBoundAdapter);
+        existingPavadinimas.setText(globalVariable.getRoomsArray().get(roomID).getName());
+        loadBoundDevices();
     }
 
     @Override
@@ -76,11 +64,14 @@ public class SingleRoomActivity extends AppCompatActivity {
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case R.id.action_settings:
-                startActivity(new Intent(SingleRoomActivity.this, SettingsActivity.class));
+                startActivity(new Intent(getBaseContext(), SettingsActivity.class));
                 return true;
             case R.id.action_remove_room:
-                Toast.makeText(getApplicationContext(),
-                        "Need to implement.", Toast.LENGTH_SHORT).show();
+                globalVariable.getRoomsArray().remove(roomID);
+                globalVariable.getRoomsList().remove(roomID);
+                Toast.makeText(getApplicationContext(), "Kambarys pašalintas.", Toast.LENGTH_SHORT).show();
+                this.finish();
+                startActivity(new Intent(getBaseContext(), AllRoomsActivity.class));
                 return true;
 
             default:
@@ -91,159 +82,11 @@ public class SingleRoomActivity extends AppCompatActivity {
     @Override
     public void onBackPressed() { this.finish(); }
 
-    void newFirstStep(){
-        setContentView(R.layout.activity_new_room_name);
-        actionbar = getSupportActionBar();
-        actionbar.setTitle(getText(R.string.new_room_title));
-        actionbar.setSubtitle(getText(R.string.new_room_name_subtitle));
-        newPavadinimas = (EditText)findViewById(R.id.editNewRoomName_Name);
-        acceptBtn = (Button)findViewById(R.id.buttonNewRoomName_Set);
-        roomID = AllRoomsActivity.roomsArray.size();
-        setFirstAcceptListener();
-    }
-
-    void setFirstAcceptListener(){
-        acceptBtn.setOnClickListener(
-                new Button.OnClickListener() {
-                    public void onClick(View v) {
-                        if (newPavadinimas.getText().toString().equals("")) {
-                            Toast.makeText(getApplicationContext(),
-                                    "Neįvestas pavadinimas!", Toast.LENGTH_SHORT).show();
-                        } else {
-                            AllRoomsActivity.roomsArray.add(new Room(newPavadinimas.getText().toString()));
-                            AllRoomsActivity.roomsList.add(AllRoomsActivity.roomsArray.get(roomID).getName());
-                            //patvirtinus ivesti, paslepiama klaviatura
-                            InputMethodManager inputMethodManager = (InputMethodManager) getSystemService(Activity.INPUT_METHOD_SERVICE);
-                            inputMethodManager.hideSoftInputFromWindow(v.getWindowToken(), 0);
-                            acceptBtn.clearFocus();
-                            newSecondStep();
-                        }
-                    }
-                }
-        );
-    }
-
-    void newSecondStep(){
-        setContentView(R.layout.activity_new_room_devices);
-        actionbar.setSubtitle(getText(R.string.new_room_devices_subtitle));
-        acceptBtn = (Button)findViewById(R.id.buttonNewRoomDevices_End);
-        setSecondAcceptListener();
-
-        //Bind devices code here
-        createBT();
-        settings = MainActivity.settings;
-        btInfo = (ListView)findViewById(R.id.listNewRoom_DevicesList);
-        selectedDevices = new ArrayList<Integer>();
-        btDevList = new ArrayList<DeviceInfo>();
-        savedDevList = new ArrayList<String>();
-        boundDevList = new ArrayList<String>();
-        listAdapter = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_multiple_choice, savedDevList);
-        btInfo.setAdapter(listAdapter);
-        setCustomList();
-        actionProgress.setVisible(true);
-        contScanStop();
-    }
-
-    void setSecondAcceptListener(){
-        acceptBtn.setOnClickListener(
-                new Button.OnClickListener() {
-                    public void onClick(View v) {
-                        if (selectedDevices.size() > 0){
-                            actionProgress.setVisible(true);
-                            scanning = false;
-                            saveSelected();
-                            existingRoom();
-                        }
-                        else {
-                            Toast.makeText(getApplicationContext(),
-                                    "Nepasirinktas nei vienas įrenginys!", Toast.LENGTH_SHORT).show();
-                        }
-                    }
-                }
-        );
-    }
-
-    void existingRoom(){
-        setContentView(R.layout.activity_single_room);
-        actionbar = getSupportActionBar();
-        actionbar.setTitle(getText(R.string.app_name));
-        actionbar.setSubtitle(getText(R.string.existing_room));
-        existingPavadinimas = (TextView)findViewById(R.id.textSingleRoom_ActiveName);
-        boundBtList = (ListView)findViewById(R.id.listSingleRoom_DevicesList);
-        listBoundAdapter = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, boundDevList);
-        boundBtList.setAdapter(listBoundAdapter);
-        existingPavadinimas.setText(AllRoomsActivity.roomsArray.get(roomID).getName());
-    }
-
-
-    //----------
-    //Sukuriamas Bluetooth adapteris
-    public void createBT(){
-        BluetoothManager bluetoothManager =
-                (BluetoothManager)getSystemService(Context.BLUETOOTH_SERVICE);
-        mBluetoothAdapter = bluetoothManager.getAdapter();
-    }
-
-    void setCustomList(){
-        btInfo.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                // change the checkbox state
-                CheckedTextView checkedTextView = ((CheckedTextView) view);
-                checkedTextView.setChecked(!checkedTextView.isChecked());
-                if (checkedTextView.isChecked()){
-                    selectedDevices.add(position);
-                }
-                else {
-                    selectedDevices.remove(selectedDevices.indexOf(position));
-                }
-            }
-        });
-    }
-
-    void saveSelected(){
-        for (int i = 0; i < selectedDevices.size(); i++){
-            AllRoomsActivity.roomsArray.get(roomID).addDevice(btDevList.get(selectedDevices.get(i)));
-            boundDevList.add(btDevList.get(selectedDevices.get(i)).getInfo());
+    void loadBoundDevices(){
+        ArrayList<DeviceInfo> btDevList = globalVariable.getRoomsArray().get(roomID).getDevices();
+        for (int i=0; i < btDevList.size(); i++){
+            boundDevList.add(btDevList.get(i).getInfo());
         }
-        selectedDevices.clear();
     }
 
-    //Nuolatos pradedamas ir stabdomas scan
-    void contScanStop(){
-        final Handler handler2 = new Handler();
-        scanning = true;
-        //Main Thread Runnable:
-        //pranesa, kad reikia atnaujinti irenginiu sarasa
-        final Runnable uiRunnable2 = new Runnable(){
-            @Override
-            public void run() {
-                listAdapter.notifyDataSetChanged();
-            }
-        };
-        //Background Runnable:
-        //nustatytais intervalais daro scan ir paleidzia Main Thread Runnable
-        Runnable backgroundRunnable2 = new Runnable(){
-            @Override
-            public void run() {
-                if (scanning) {
-                    startStopScan();
-                    handler2.postDelayed(uiRunnable2, settings.getDelay());
-                    handler2.postDelayed(this, settings.getDelay());
-                }
-            }
-        };
-        new Thread(backgroundRunnable2).start();
-    }
-
-    //Jeigu randamas BTLE irenginys, gaunama jo RSSI reiksme
-    void startStopScan(){
-        mBluetoothAdapter.startLeScan(new BluetoothAdapter.LeScanCallback() {
-            @Override
-            public void onLeScan(final BluetoothDevice device, int rssi, byte[] scanRecord) {
-                scantools.scanLogic(device, rssi, settings.getTxPow(), btDevList, savedDevList);
-                mBluetoothAdapter.stopLeScan(this); //Scan stabdomas
-            }
-        });
-    }
 }

@@ -47,7 +47,7 @@ public class MainActivity extends AppCompatActivity {
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case R.id.action_settings:
-                startActivity(new Intent(MainActivity.this, SettingsActivity.class));
+                startActivity(new Intent(getBaseContext(), SettingsActivity.class));
                 return true;
 
             default:
@@ -59,7 +59,7 @@ public class MainActivity extends AppCompatActivity {
         scan.setOnClickListener(
                 new Button.OnClickListener() {
                     public void onClick(View v) {
-                        startActivity(new Intent(MainActivity.this, ScanActivity.class));
+                        startActivity(new Intent(getBaseContext(), ScanActivity.class));
                     }
                 }
         );
@@ -69,7 +69,7 @@ public class MainActivity extends AppCompatActivity {
         allRoomsBtn.setOnClickListener(
                 new Button.OnClickListener() {
                     public void onClick(View v) {
-                        startActivity(new Intent(MainActivity.this, AllRoomsActivity.class));
+                        startActivity(new Intent(getBaseContext(), AllRoomsActivity.class));
                     }
                 }
         );

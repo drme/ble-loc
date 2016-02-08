@@ -14,9 +14,7 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
-import android.widget.CheckedTextView;
 import android.widget.ListView;
 
 import com.example.btmatuoklis.classes.DeviceInfo;
@@ -30,7 +28,6 @@ public class ScanActivity extends AppCompatActivity {
 
     Settings settings;
     ScanTools scantools = new ScanTools();
-
     ActionBar actionbar;
 
     boolean scanning = false;
@@ -70,7 +67,7 @@ public class ScanActivity extends AppCompatActivity {
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case R.id.action_settings:
-                startActivity(new Intent(ScanActivity.this, SettingsActivity.class));
+                startActivity(new Intent(getBaseContext(), SettingsActivity.class));
                 return true;
 
             default:

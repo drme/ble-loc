@@ -19,28 +19,8 @@ public class Room {
         this.name = nm;
     }
 
-    public void addDevice(DeviceInfo di){
-        this.devices.add(di);
-    }
-
-    public void addDeviceAtIndex(int in, DeviceInfo di){
-        this.devices.add(in, di);
-    }
-
-    public void removeDeviceAtIndex(int in){
-        this.devices.remove(in);
-    }
-
-    public void removeAllDevices(){
-        this.devices.clear();
-    }
-
     public String getName(){
         return this.name;
-    }
-
-    public int getSize(){
-        return this.devices.size();
     }
 
     public ArrayList<String> getMACList(){
