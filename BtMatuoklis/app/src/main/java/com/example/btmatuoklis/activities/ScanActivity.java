@@ -186,7 +186,7 @@ public class ScanActivity extends AppCompatActivity {
         protected ArrayList<DeviceInfo> doInBackground(Void... params) {
             mBluetoothAdapter.startLeScan(new BluetoothAdapter.LeScanCallback() {
                 @Override
-                public void onLeScan(final BluetoothDevice device, int rssi, byte[] scanRecord) {
+                public void onLeScan(BluetoothDevice device, int rssi, byte[] scanRecord) {
                     byte numDev = 0;
                     byte listSize = (byte)btDevList.size();
                     byte currentRssi = (byte)rssi;

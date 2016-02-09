@@ -1,13 +1,20 @@
 package com.example.btmatuoklis.activities;
 
+import android.bluetooth.BluetoothAdapter;
+import android.bluetooth.BluetoothDevice;
+import android.bluetooth.BluetoothManager;
+import android.content.Context;
 import android.content.Intent;
+import android.os.Handler;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
+import android.view.View;
 import android.widget.ArrayAdapter;
+import android.widget.Button;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -15,6 +22,9 @@ import android.widget.Toast;
 import com.example.btmatuoklis.R;
 import com.example.btmatuoklis.classes.DeviceInfo;
 import com.example.btmatuoklis.classes.GlobalClass;
+import com.example.btmatuoklis.classes.Room;
+import com.example.btmatuoklis.classes.ScanTools;
+import com.example.btmatuoklis.classes.Settings;
 
 import java.util.ArrayList;
 
@@ -27,6 +37,12 @@ public class SingleRoomActivity extends AppCompatActivity {
     ArrayAdapter<String> listBoundAdapter;
     ArrayList<String> boundDevList;
     MenuItem actionProgress;
+    Button calibrateButton;
+    BluetoothAdapter mBluetoothAdapter;
+    boolean scanning = false;
+    Settings settings;
+    ScanTools scantools = new ScanTools();
+    Room currentRoom;
 
     int roomID;
 
@@ -43,11 +59,16 @@ public class SingleRoomActivity extends AppCompatActivity {
         roomID = getIntent().getExtras().getInt("roomID");
         existingPavadinimas = (TextView)findViewById(R.id.textSingleRoom_ActiveName);
         boundBtList = (ListView)findViewById(R.id.listSingleRoom_DevicesList);
+        calibrateButton = (Button)findViewById(R.id.buttonSingleRoom_Calibrate);
+        settings = MainActivity.settings;
+        currentRoom = globalVariable.getRoomsArray().get(roomID);
         boundDevList = new ArrayList<String>();
         listBoundAdapter = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, boundDevList);
         boundBtList.setAdapter(listBoundAdapter);
         existingPavadinimas.setText(globalVariable.getRoomsArray().get(roomID).getName());
         loadBoundDevices();
+        createBT();
+        setCalibrateButtonListener();
     }
 
     @Override
@@ -80,13 +101,71 @@ public class SingleRoomActivity extends AppCompatActivity {
     }
 
     @Override
-    public void onBackPressed() { this.finish(); }
+    public void onBackPressed(){
+        scanning = false;
+        this.finish();
+    }
+
+    void setCalibrateButtonListener(){
+        calibrateButton.setOnClickListener(new Button.OnClickListener() {
+            public void onClick(View v) {
+                if (!scanning){
+                    contScanStop();
+                    actionProgress.setVisible(true);
+                    calibrateButton.setText("Baigti");
+                    calibrateButton.setEnabled(false);
+                }
+                else {
+                    scanning = false;
+                    actionProgress.setVisible(false);
+                    calibrateButton.setEnabled(false);
+                }
+            }
+        });
+    }
+
+    //Sukuriamas Bluetooth adapteris
+    public void createBT(){
+        BluetoothManager bluetoothManager =
+                (BluetoothManager)getSystemService(Context.BLUETOOTH_SERVICE);
+        mBluetoothAdapter = bluetoothManager.getAdapter();
+    }
 
     void loadBoundDevices(){
         ArrayList<DeviceInfo> btDevList = globalVariable.getRoomsArray().get(roomID).getDevices();
         for (int i=0; i < btDevList.size(); i++){
             boundDevList.add(btDevList.get(i).getInfo());
         }
+    }
+
+    //Nuolatos pradedamas ir stabdomas scan
+    void contScanStop(){
+        final Handler handler3 = new Handler();
+        scanning = true;
+        //Background Runnable:
+        //nustatytais intervalais daro scan ir paleidzia Main Thread Runnable
+        Runnable backgroundRunnable3 = new Runnable(){
+            @Override
+            public void run() {
+                if (scanning) {
+                    startStopScan();
+                    handler3.postDelayed(this, settings.getDelay());
+                }
+            }
+        };
+        new Thread(backgroundRunnable3).start();
+    }
+
+    void startStopScan(){
+        mBluetoothAdapter.startLeScan(new BluetoothAdapter.LeScanCallback() {
+            @Override
+            public void onLeScan(BluetoothDevice device, int rssi, byte[] scanRecord) {
+                if (scantools.calibrateLogic(device, rssi, currentRoom)){
+                    calibrateButton.setEnabled(true);
+                }
+                mBluetoothAdapter.stopLeScan(this); //Scan stabdomas
+            }
+        });
     }
 
 }

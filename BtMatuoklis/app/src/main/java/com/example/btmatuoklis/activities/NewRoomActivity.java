@@ -100,7 +100,10 @@ public class NewRoomActivity extends AppCompatActivity {
     }
 
     @Override
-    public void onBackPressed() { this.finish(); }
+    public void onBackPressed(){
+        scanning = false;
+        this.finish();
+    }
 
     void setAcceptListener() {
         acceptBtn.setOnClickListener(
@@ -188,7 +191,7 @@ public class NewRoomActivity extends AppCompatActivity {
     void startStopScan(){
         mBluetoothAdapter.startLeScan(new BluetoothAdapter.LeScanCallback() {
             @Override
-            public void onLeScan(final BluetoothDevice device, int rssi, byte[] scanRecord) {
+            public void onLeScan(BluetoothDevice device, int rssi, byte[] scanRecord) {
                 scantools.scanLogic(device, rssi, settings.getTxPow(), btDevList, savedDevList);
                 mBluetoothAdapter.stopLeScan(this); //Scan stabdomas
             }

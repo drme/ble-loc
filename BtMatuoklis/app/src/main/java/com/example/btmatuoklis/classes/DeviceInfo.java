@@ -1,9 +1,12 @@
 package com.example.btmatuoklis.classes;
 
+import java.util.ArrayList;
+
 public class DeviceInfo {
     private String deviceName;
     private String deviceMAC;
-    private byte[] calibratedRSSI;
+    //private byte[] calibratedRSSI;
+    private ArrayList<Byte> calibratedRSSI;
     private byte currentRSSI;
     private byte previousRSSI;
 
@@ -19,10 +22,6 @@ public class DeviceInfo {
         this.currentRSSI = rssi;
     }
 
-    public void setCalibratedRSSI(byte[] rssiArray) {
-        this.calibratedRSSI = rssiArray;
-    }
-
     public String getName(){ return this.deviceName; }
 
     public String getMAC(){ return this.deviceMAC; }
@@ -31,7 +30,9 @@ public class DeviceInfo {
 
     public byte getPreviousRSSI() { return this.previousRSSI; }
 
-    public byte[] getCalibratedRSSI() { return  this.calibratedRSSI; }
+    //public byte[] getCalibratedRSSI() { return this.calibratedRSSI; }
+
+    public ArrayList<Byte> getCalibratedRSSI() { return this.calibratedRSSI; }
 
     //BT irenginio informacija (List formavimui)
     public String getInfo() {

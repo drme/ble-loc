@@ -6,7 +6,10 @@ import android.content.Intent;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.text.Editable;
 import android.text.InputType;
+import android.text.TextUtils;
+import android.text.TextWatcher;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -92,15 +95,14 @@ public class AllRoomsActivity extends AppCompatActivity {
             @Override
             public void onClick(DialogInterface dialog, int which) {
                 roomName = input.getText().toString();
-                if (roomName.equals("")){
+                if (roomName.equals("")) {
                     Toast.makeText(getApplicationContext(),
                             "Neįvestas pavadinimas!", Toast.LENGTH_SHORT).show();
                     dialog.cancel();
-                }
-                else {
+                } else {
                     Intent intent = new Intent(getBaseContext(), NewRoomActivity.class);
                     intent.putExtra("roomName", roomName);
-                    finish();
+                    AllRoomsActivity.this.finish();
                     startActivity(intent);
                 }
             }
@@ -113,7 +115,28 @@ public class AllRoomsActivity extends AppCompatActivity {
             }
         });
 
-        builder.show();
+        final AlertDialog dialog = builder.create();
+        dialog.show();
+        dialog.getButton(AlertDialog.BUTTON_POSITIVE).setEnabled(false);
+
+        input.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+                if (TextUtils.isEmpty(s)) {
+                    dialog.getButton(AlertDialog.BUTTON_POSITIVE).setEnabled(false);
+                } else {
+                    dialog.getButton(AlertDialog.BUTTON_POSITIVE).setEnabled(true);
+                }
+            }
+        });
     }
 
 }

@@ -19,8 +19,8 @@ public class SettingsActivity extends AppCompatActivity {
 
     Settings settings;
     TextView txVal, hintInfo;
-    EditText msVal, averageVal;
-    Button setMs, setAverage;
+    EditText msVal;
+    Button setMs;
     SeekBar txSlider;
 
     @Override
@@ -33,14 +33,11 @@ public class SettingsActivity extends AppCompatActivity {
         txVal = (TextView)findViewById(R.id.textSettings_ActiveTxPower);
         hintInfo = (TextView)findViewById(R.id.textSettings_FrequencyHint);
         msVal = (EditText)findViewById(R.id.editSettings_Frequency);
-        averageVal = (EditText)findViewById(R.id.editSettings_Average);
         setMs = (Button)findViewById(R.id.buttonSettings_SetFrequency);
-        setAverage = (Button)findViewById(R.id.buttonSettings_SetAverage);
         txSlider = (SeekBar)findViewById(R.id.seekbarSettings_TxPower);
 
         setDefValues();
         setMsButtonListener();
-        setAverageButtonListener();
         setSliderListener();
     }
 
@@ -65,35 +62,6 @@ public class SettingsActivity extends AppCompatActivity {
                         //patvirtinus ivesti, paslepiama klaviatura
                         InputMethodManager inputMethodManager = (InputMethodManager) getSystemService(Activity.INPUT_METHOD_SERVICE);
                         inputMethodManager.hideSoftInputFromWindow(v.getWindowToken(), 0);
-                        msVal.clearFocus();
-                        averageVal.clearFocus();
-                        Toast.makeText(getApplicationContext(),
-                                "Išsaugota.", Toast.LENGTH_SHORT).show();
-                    }
-                }
-            }
-        });
-    }
-
-    void setAverageButtonListener(){
-        setAverage.setOnClickListener(new Button.OnClickListener() {
-            public void onClick(View v) {
-                if (averageVal.getText().toString().equals("")) {
-                    Toast.makeText(getApplicationContext(),
-                            "Neįvesta reikšmė!", Toast.LENGTH_SHORT).show();
-                } else {
-                    byte ivest = Byte.parseByte(averageVal.getText().toString());
-                    if (ivest < 1 || ivest > 10 || averageVal.getText() == null) {
-                        Toast.makeText(getApplicationContext(),
-                                "Netinkamas intervalas!", Toast.LENGTH_SHORT).show();
-                    } else {
-                        settings.setAverage(ivest);
-                        //pakeista reiksme is kart issaugoma ateiciai
-                        settings.saveAverage();
-                        //patvirtinus ivesti, paslepiama klaviatura
-                        InputMethodManager inputMethodManager = (InputMethodManager) getSystemService(Activity.INPUT_METHOD_SERVICE);
-                        inputMethodManager.hideSoftInputFromWindow(v.getWindowToken(), 0);
-                        averageVal.clearFocus();
                         msVal.clearFocus();
                         Toast.makeText(getApplicationContext(),
                                 "Išsaugota.", Toast.LENGTH_SHORT).show();
@@ -125,7 +93,6 @@ public class SettingsActivity extends AppCompatActivity {
     void setDefValues(){
         txSlider.setProgress(settings.getTxPow());
         txVal.setText(Byte.toString(settings.getTxPow()));
-        averageVal.setText(Byte.toString(settings.getAverage()));
         msVal.setText(Integer.toString(settings.getDelay()));
         hintInfo.setText("Rekomenduotinos reikšmės intervale:\n[250; 5000], default - " + settings.getDefaultDelay());
     }

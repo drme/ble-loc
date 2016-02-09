@@ -26,12 +26,23 @@ public class Room {
     public ArrayList<String> getMACList(){
         ArrayList<String> res = new ArrayList<String>();
         for (int i = 0; i < this.devices.size(); i++){
-            res.add(devices.get(i).getMAC());
+            res.add(this.devices.get(i).getMAC());
         }
         return res;
     }
 
     public ArrayList<DeviceInfo> getDevices(){
-        return devices;
+        return this.devices;
+    }
+
+    //Grazina false, jeigu bent vienas irenginys neturi
+    //nei vienos RSSI reiksmes kalibravimo masyve
+    public boolean isCalibrated(){
+        for (int i = 0; i < this.devices.size(); i++){
+            if (this.devices.get(i).getCalibratedRSSI().size() == 0){
+                return false;
+            }
+        }
+        return true;
     }
 }

@@ -20,10 +20,6 @@ public class Settings {
     //"Default" BTLE irenginio stiprumas
     private byte txPow = 50;//Reiksme [1-100] intervale
 
-    //Matavimu kiekis, vieno beacon'o vidutinei RSSI reiksmei surasti
-    private byte defaultAverage = 1;
-    private byte average = defaultAverage;
-
     public Settings(Context context){
         preferences = context.getSharedPreferences(
                 Settings.class.getSimpleName(), Activity.MODE_PRIVATE);
@@ -31,7 +27,6 @@ public class Settings {
         //Nuskaitomi paskutiniai naudoti nustatymai
         txPow = (byte)preferences.getInt("savedTxPow", txPow);
         delay = (short)preferences.getInt("savedDelay", delay);
-        average = (byte)preferences.getInt("savedAverage", average);
     }
 
     public byte getMaxRange(){ return this.maxRange; }
@@ -40,19 +35,13 @@ public class Settings {
 
     public short getDelay(){ return this.delay; }
 
-    public byte getAverage(){ return this.average; }
-
     public short getDefaultDelay() { return this.defaultDelay; }
-
-    public byte getDefaultAverage() { return this.defaultAverage; }
 
     public void setMaxRange(byte mr) { this.maxRange = mr; }
 
     public void setTxPow(byte tx){ this.txPow = tx; }
 
     public void setDelay(short dl){ this.delay = dl; }
-
-    public void setAverage(byte av){ this.average = av; }
 
     public void saveDelay(){
         edit.putInt("savedDelay", delay);
@@ -61,11 +50,6 @@ public class Settings {
 
     public void saveTxPow(){
         edit.putInt("savedTxPow", txPow);
-        edit.apply();
-    }
-
-    public void saveAverage(){
-        edit.putInt("savedAverage", average);
         edit.apply();
     }
 }
