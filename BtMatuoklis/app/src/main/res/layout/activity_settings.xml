@@ -84,5 +84,35 @@
         android:layout_below="@+id/buttonSettings_SetFrequency"
         android:layout_centerHorizontal="true" />
 
+    <View style="@style/Divider"
+        android:id="@+id/view2"
+        android:layout_below="@+id/textSettings_FrequencyHint" />
+
+    <EditText
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:inputType="numberDecimal"
+        android:ems="10"
+        android:id="@+id/editSettings_Average"
+        android:layout_below="@+id/view2"
+        android:layout_centerHorizontal="true" />
+
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Nustatyti Vidurkio Reikšmių Kiekį"
+        android:id="@+id/buttonSettings_SetAverage"
+        android:layout_below="@+id/editSettings_Average"
+        android:layout_centerHorizontal="true" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceSmall"
+        android:text="Hint"
+        android:id="@+id/textSettings_AverageHint"
+        android:layout_below="@+id/buttonSettings_SetAverage"
+        android:layout_centerHorizontal="true" />
+    
 </RelativeLayout>
 </ScrollView>
