@@ -61,7 +61,9 @@ public class SingleRoomActivity extends AppCompatActivity {
         roomID = getIntent().getExtras().getInt("roomID");
         existingPavadinimas = (TextView)findViewById(R.id.textSingleRoom_ActiveName);
         boundBtList = (ListView)findViewById(R.id.listSingleRoom_DevicesList);
-        boundBtList.setChoiceMode(boundBtList.CHOICE_MODE_MULTIPLE);
+        //----
+        boundBtList.setChoiceMode(boundBtList.CHOICE_MODE_NONE);
+        //----
         calibrateButton = (Button)findViewById(R.id.buttonSingleRoom_Calibrate);
         settings = MainActivity.settings;
         currentRoom = globalVariable.getRoomsArray().get(roomID);
@@ -122,7 +124,20 @@ public class SingleRoomActivity extends AppCompatActivity {
                     scanning = false;
                     actionProgress.setVisible(false);
                     calibrateButton.setEnabled(false);
+                    setListListener();
                 }
+            }
+        });
+    }
+
+    void setListListener(){
+        boundBtList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                Intent intent = new Intent(getBaseContext(), SingleDeviceActivity.class);
+                intent.putExtra("roomID", roomID);
+                intent.putExtra("deviceID", position);
+                startActivity(intent);
             }
         });
     }
@@ -151,6 +166,7 @@ public class SingleRoomActivity extends AppCompatActivity {
             checkCalibratedDevices();
             calibrateButton.setText("Baigti");
             calibrateButton.setEnabled(false);
+            setListListener();
         }
     }
 
@@ -166,6 +182,9 @@ public class SingleRoomActivity extends AppCompatActivity {
                 loadBoundDevices();
                 checkCalibratedDevices();
                 listBoundAdapter.notifyDataSetChanged();
+                if (currentRoom.isCalibrated()){
+                    calibrateButton.setEnabled(true);
+                }
             }
         };
         //Background Runnable:
@@ -188,9 +207,6 @@ public class SingleRoomActivity extends AppCompatActivity {
             @Override
             public void onLeScan(BluetoothDevice device, int rssi, byte[] scanRecord) {
                 scantools.calibrateLogic(device, rssi, currentRoom);
-                if (currentRoom.isCalibrated()){
-                    calibrateButton.setEnabled(true);
-                }
                 mBluetoothAdapter.stopLeScan(this); //Scan stabdomas
             }
         });
