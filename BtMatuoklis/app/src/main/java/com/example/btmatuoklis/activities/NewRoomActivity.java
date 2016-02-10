@@ -68,7 +68,7 @@ public class NewRoomActivity extends AppCompatActivity {
         savedDevList = new ArrayList<String>();
         listAdapter = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_multiple_choice, savedDevList);
         btInfo.setAdapter(listAdapter);
-        setCustomList();
+        setListListener();
         contScanStop();
     }
 
@@ -131,7 +131,7 @@ public class NewRoomActivity extends AppCompatActivity {
         mBluetoothAdapter = bluetoothManager.getAdapter();
     }
 
-    void setCustomList(){
+    void setListListener(){
         btInfo.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {

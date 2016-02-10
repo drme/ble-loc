@@ -53,5 +53,6 @@
         android:layout_alignParentEnd="true"
         android:layout_alignParentStart="true"
         android:layout_below="@+id/textSingleRoom_StaticDevices"
-        android:layout_above="@+id/buttonSingleRoom_Calibrate" />
+        android:layout_above="@+id/buttonSingleRoom_Calibrate"
+        tools:listitem="@android:layout/simple_list_item_checked" />
 </RelativeLayout>

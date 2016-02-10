@@ -34,21 +34,14 @@ public class ScanTools{
         }
     }
 
-    public boolean calibrateLogic(BluetoothDevice device, int rssi, Room room){
+    public void calibrateLogic(BluetoothDevice device, int rssi, Room room){
         ArrayList<String> macs = room.getMACList();
         String currentMAC = device.getAddress();
         byte currentRSSI = (byte)rssi;
         if (macs.contains(currentMAC)){
             int macPosition = macs.indexOf(currentMAC);
-            //--------
-            //cia gaunamas NullPointerException
             room.getDevices().get(macPosition).getCalibratedRSSI().add(currentRSSI);
-            //--------
         }
-        //--------
-        //cia taip pat NullPointerException
-        return room.isCalibrated();
-        //--------
     }
 
 }

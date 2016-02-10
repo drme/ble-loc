@@ -5,16 +5,18 @@ import java.util.ArrayList;
 public class DeviceInfo {
     private String deviceName;
     private String deviceMAC;
-    //private byte[] calibratedRSSI;
     private ArrayList<Byte> calibratedRSSI;
     private byte currentRSSI;
     private byte previousRSSI;
 
-    public DeviceInfo(){}
+    public DeviceInfo(){
+        this.calibratedRSSI = new ArrayList<Byte>();
+    }
 
     public DeviceInfo(String name, String mac){
         this.deviceName = name;
         this.deviceMAC = mac;
+        this.calibratedRSSI = new ArrayList<Byte>();
     }
 
     public void setRSSI(byte rssi) {
@@ -29,8 +31,6 @@ public class DeviceInfo {
     public byte getCurrentRSSI() { return this.currentRSSI; }
 
     public byte getPreviousRSSI() { return this.previousRSSI; }
-
-    //public byte[] getCalibratedRSSI() { return this.calibratedRSSI; }
 
     public ArrayList<Byte> getCalibratedRSSI() { return this.calibratedRSSI; }
 
@@ -48,6 +48,13 @@ public class DeviceInfo {
         info += "\nPrevious RSSI: " + this.previousRSSI;
         info += " Current RSSI: " + this.currentRSSI;
         info += "\n" + RangeCalculator.getRange(txPower, this.currentRSSI);
+        return info;
+    }
+
+    public String getCalibrationCount(){
+        String info = "Pavadinimas: " + this.deviceName;
+        info += "\nMAC: " + this.deviceMAC;
+        info += "\nKalibracijos RSSI reikšmių: " + this.calibratedRSSI.size();
         return info;
     }
 }

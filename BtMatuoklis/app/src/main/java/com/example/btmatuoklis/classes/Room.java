@@ -31,6 +31,27 @@ public class Room {
         return res;
     }
 
+    public ArrayList<String> getDevicesCalibrationCount(){
+        ArrayList<String> res = new ArrayList<String>();
+        for (int i = 0; i < this.devices.size(); i++){
+            res.add(this.devices.get(i).getCalibrationCount());
+        }
+        return res;
+    }
+
+    public ArrayList<Boolean> getCalibratedDevices(){
+        ArrayList<Boolean> res = new ArrayList<Boolean>();
+        for (int i = 0; i < this.devices.size(); i++){
+            if (this.devices.get(i).getCalibratedRSSI().size() == 0){
+                res.add(i, false);
+            }
+            else {
+                res.add(i, true);
+            }
+        }
+        return res;
+    }
+
     public ArrayList<DeviceInfo> getDevices(){
         return this.devices;
     }

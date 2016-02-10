@@ -13,8 +13,10 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.CheckedTextView;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -59,13 +61,14 @@ public class SingleRoomActivity extends AppCompatActivity {
         roomID = getIntent().getExtras().getInt("roomID");
         existingPavadinimas = (TextView)findViewById(R.id.textSingleRoom_ActiveName);
         boundBtList = (ListView)findViewById(R.id.listSingleRoom_DevicesList);
+        boundBtList.setChoiceMode(boundBtList.CHOICE_MODE_MULTIPLE);
         calibrateButton = (Button)findViewById(R.id.buttonSingleRoom_Calibrate);
         settings = MainActivity.settings;
         currentRoom = globalVariable.getRoomsArray().get(roomID);
         boundDevList = new ArrayList<String>();
-        listBoundAdapter = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, boundDevList);
+        listBoundAdapter = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_checked, boundDevList);
         boundBtList.setAdapter(listBoundAdapter);
-        existingPavadinimas.setText(globalVariable.getRoomsArray().get(roomID).getName());
+        existingPavadinimas.setText(currentRoom.getName());
         loadBoundDevices();
         createBT();
         setCalibrateButtonListener();
@@ -109,13 +112,12 @@ public class SingleRoomActivity extends AppCompatActivity {
     void setCalibrateButtonListener(){
         calibrateButton.setOnClickListener(new Button.OnClickListener() {
             public void onClick(View v) {
-                if (!scanning){
+                if (!scanning) {
                     contScanStop();
                     actionProgress.setVisible(true);
                     calibrateButton.setText("Baigti");
                     calibrateButton.setEnabled(false);
-                }
-                else {
+                } else {
                     scanning = false;
                     actionProgress.setVisible(false);
                     calibrateButton.setEnabled(false);
@@ -132,9 +134,14 @@ public class SingleRoomActivity extends AppCompatActivity {
     }
 
     void loadBoundDevices(){
-        ArrayList<DeviceInfo> btDevList = globalVariable.getRoomsArray().get(roomID).getDevices();
-        for (int i=0; i < btDevList.size(); i++){
-            boundDevList.add(btDevList.get(i).getInfo());
+        boundDevList.clear();
+        boundDevList.addAll(globalVariable.getRoomsArray().get(roomID).getDevicesCalibrationCount());
+    }
+
+    void checkCalibratedDevices(){
+        ArrayList<Boolean> calibratedDevices = currentRoom.getCalibratedDevices();
+        for (int i = 0; i < calibratedDevices.size(); i++){
+            boundBtList.setItemChecked(i, calibratedDevices.get(i));
         }
     }
 
@@ -142,6 +149,16 @@ public class SingleRoomActivity extends AppCompatActivity {
     void contScanStop(){
         final Handler handler3 = new Handler();
         scanning = true;
+        //Main Thread Runnable:
+        //pranesa, kad reikia atnaujinti irenginiu sarasa
+        final Runnable uiRunnable3 = new Runnable(){
+            @Override
+            public void run() {
+                loadBoundDevices();
+                checkCalibratedDevices();
+                listBoundAdapter.notifyDataSetChanged();
+            }
+        };
         //Background Runnable:
         //nustatytais intervalais daro scan ir paleidzia Main Thread Runnable
         Runnable backgroundRunnable3 = new Runnable(){
@@ -149,6 +166,7 @@ public class SingleRoomActivity extends AppCompatActivity {
             public void run() {
                 if (scanning) {
                     startStopScan();
+                    handler3.postDelayed(uiRunnable3, settings.getDelay());
                     handler3.postDelayed(this, settings.getDelay());
                 }
             }
@@ -160,7 +178,8 @@ public class SingleRoomActivity extends AppCompatActivity {
         mBluetoothAdapter.startLeScan(new BluetoothAdapter.LeScanCallback() {
             @Override
             public void onLeScan(BluetoothDevice device, int rssi, byte[] scanRecord) {
-                if (scantools.calibrateLogic(device, rssi, currentRoom)){
+                scantools.calibrateLogic(device, rssi, currentRoom);
+                if (currentRoom.isCalibrated()){
                     calibrateButton.setEnabled(true);
                 }
                 mBluetoothAdapter.stopLeScan(this); //Scan stabdomas
