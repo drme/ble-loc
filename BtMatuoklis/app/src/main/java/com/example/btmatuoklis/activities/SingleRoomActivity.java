@@ -69,9 +69,10 @@ public class SingleRoomActivity extends AppCompatActivity {
         listBoundAdapter = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_checked, boundDevList);
         boundBtList.setAdapter(listBoundAdapter);
         existingPavadinimas.setText(currentRoom.getName());
-        loadBoundDevices();
         createBT();
         setCalibrateButtonListener();
+        loadBoundDevices();
+        checkCompleted();
     }
 
     @Override
@@ -142,6 +143,14 @@ public class SingleRoomActivity extends AppCompatActivity {
         ArrayList<Boolean> calibratedDevices = currentRoom.getCalibratedDevices();
         for (int i = 0; i < calibratedDevices.size(); i++){
             boundBtList.setItemChecked(i, calibratedDevices.get(i));
+        }
+    }
+
+    void checkCompleted(){
+        if (currentRoom.isCalibrated()){
+            checkCalibratedDevices();
+            calibrateButton.setText("Baigti");
+            calibrateButton.setEnabled(false);
         }
     }
 
