@@ -55,5 +55,5 @@
         android:layout_below="@+id/textSingleRoom_StaticDevices"
         android:layout_above="@+id/buttonSingleRoom_Calibrate"
         tools:listitem="@android:layout/simple_list_item_checked"
-        android:choiceMode="multipleChoice" />
+        android:choiceMode="multipleChoiceModal" />
 </RelativeLayout>

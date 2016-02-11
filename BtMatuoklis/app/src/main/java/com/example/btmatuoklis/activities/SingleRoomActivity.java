@@ -9,20 +9,20 @@ import android.os.Handler;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.view.ActionMode;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.AbsListView;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
-import android.widget.CheckedTextView;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.btmatuoklis.R;
-import com.example.btmatuoklis.classes.DeviceInfo;
 import com.example.btmatuoklis.classes.GlobalClass;
 import com.example.btmatuoklis.classes.Room;
 import com.example.btmatuoklis.classes.ScanTools;
@@ -61,9 +61,6 @@ public class SingleRoomActivity extends AppCompatActivity {
         roomID = getIntent().getExtras().getInt("roomID");
         existingPavadinimas = (TextView)findViewById(R.id.textSingleRoom_ActiveName);
         boundBtList = (ListView)findViewById(R.id.listSingleRoom_DevicesList);
-        //----
-        boundBtList.setChoiceMode(boundBtList.CHOICE_MODE_NONE);
-        //----
         calibrateButton = (Button)findViewById(R.id.buttonSingleRoom_Calibrate);
         settings = MainActivity.settings;
         currentRoom = globalVariable.getRoomsArray().get(roomID);
@@ -72,6 +69,7 @@ public class SingleRoomActivity extends AppCompatActivity {
         boundBtList.setAdapter(listBoundAdapter);
         existingPavadinimas.setText(currentRoom.getName());
         createBT();
+        setChoiceListener();
         setCalibrateButtonListener();
         loadBoundDevices();
         checkCompleted();
@@ -138,6 +136,34 @@ public class SingleRoomActivity extends AppCompatActivity {
                 intent.putExtra("roomID", roomID);
                 intent.putExtra("deviceID", position);
                 startActivity(intent);
+            }
+        });
+    }
+
+    //Neleidzia rankiniu budu keisti "checkmark" busenu
+    void setChoiceListener(){
+        boundBtList.setMultiChoiceModeListener(new AbsListView.MultiChoiceModeListener() {
+            @Override
+            public void onItemCheckedStateChanged(ActionMode mode, int position, long id, boolean checked) {
+            }
+
+            @Override
+            public boolean onCreateActionMode(ActionMode mode, Menu menu) {
+                return false;
+            }
+
+            @Override
+            public boolean onPrepareActionMode(ActionMode mode, Menu menu) {
+                return false;
+            }
+
+            @Override
+            public boolean onActionItemClicked(ActionMode mode, MenuItem item) {
+                return false;
+            }
+
+            @Override
+            public void onDestroyActionMode(ActionMode mode) {
             }
         });
     }
