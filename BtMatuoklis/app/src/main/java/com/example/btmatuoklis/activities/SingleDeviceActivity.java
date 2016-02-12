@@ -9,18 +9,24 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.FrameLayout;
 import android.widget.TextView;
 
 import com.example.btmatuoklis.R;
 import com.example.btmatuoklis.classes.GlobalClass;
 import com.example.btmatuoklis.classes.Room;
 
+import java.util.ArrayList;
+import java.util.Collections;
+
 public class SingleDeviceActivity extends AppCompatActivity {
 
     ActionBar actionbar;
-    TextView roomPavadinimas, deviceInfo, rssiArray;
+    TextView roomPavadinimas, deviceInfo, rssiList, rssiNum, rssiAverage, rssiMax, rssiMin;
+    FrameLayout arrayFrame;
     GlobalClass globalVariable;
     Room currentRoom;
+    ArrayList<Byte> rssiArray;
     int roomID, deviceID;
 
     @Override
@@ -35,12 +41,19 @@ public class SingleDeviceActivity extends AppCompatActivity {
         deviceID = getIntent().getExtras().getInt("deviceID");
         roomPavadinimas = (TextView)findViewById(R.id.textSingleDevice_ActiveName);
         deviceInfo = (TextView)findViewById(R.id.textSingleDevice_Info);
-        rssiArray = (TextView)findViewById(R.id.textSingleDevice_ActiveArray);
+        rssiList = (TextView)findViewById(R.id.textSingleDevice_ActiveArray);
+        arrayFrame = (FrameLayout)findViewById(R.id.frameSingleDevice_RSSIArray);
+        rssiNum = (TextView)findViewById(R.id.textSingleDevice_ActiveRSSINum);
+        rssiAverage = (TextView)findViewById(R.id.textSingleDevice_ActiveAverage);
+        rssiMax = (TextView)findViewById(R.id.textSingleDevice_ActiveRSSIMax);
+        rssiMin = (TextView)findViewById(R.id.textSingleDevice_ActiveRSSIMin);
         currentRoom = globalVariable.getRoomsArray().get(roomID);
+        rssiArray = currentRoom.getDevices().get(deviceID).getCalibratedRSSI();
         roomPavadinimas.setText(currentRoom.getName());
         deviceInfo.setText(currentRoom.getDevices().get(deviceID).getInfo());
-        rssiArray.setText(currentRoom.getDevices().get(deviceID).getCalibratedRSSI().toString());
+        rssiList.setText(currentRoom.getDevices().get(deviceID).getCalibratedRSSI().toString());
         setRSSIArrayListener();
+        setInfoValues();
     }
 
     @Override
@@ -70,20 +83,38 @@ public class SingleDeviceActivity extends AppCompatActivity {
 
     //RSSI reiksmiu vaizdo keitimas tarp vienos elutes daugelio eiluciu
     void setRSSIArrayListener(){
-        rssiArray.setOnClickListener(new View.OnClickListener() {
+        arrayFrame.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (rssiArray.getMaxLines() == 1){
-                    rssiArray.setSingleLine(false);
-                    rssiArray.setMaxLines(Integer.MAX_VALUE);
-                    rssiArray.setEllipsize(null);
-                }
-                else {
-                    rssiArray.setSingleLine(true);
-                    rssiArray.setMaxLines(1);
-                    rssiArray.setEllipsize(TextUtils.TruncateAt.END);
+                if (rssiList.getMaxLines() == 1) {
+                    rssiList.setSingleLine(false);
+                    rssiList.setMaxLines(Integer.MAX_VALUE);
+                    rssiList.setEllipsize(null);
+                } else {
+                    rssiList.setSingleLine(true);
+                    rssiList.setMaxLines(1);
+                    rssiList.setEllipsize(TextUtils.TruncateAt.END);
                 }
             }
         });
+    }
+
+    void setInfoValues(){
+        rssiNum.setText(Integer.toString(rssiArray.size()));
+        rssiAverage.setText(Byte.toString(calculateAverage(rssiArray)));
+        rssiMax.setText(Byte.toString(Collections.min(rssiArray)));
+        rssiMin.setText(Byte.toString(Collections.max(rssiArray)));
+    }
+
+    private byte calculateAverage(ArrayList<Byte> array){
+        int sum = 0;
+        int size = array.size();
+        if(!array.isEmpty()){
+            for (int i = 0; i < size; i++){
+                sum += array.get(i);
+            }
+            return (byte)(sum/size);
+        }
+        return (byte)sum;
     }
 }

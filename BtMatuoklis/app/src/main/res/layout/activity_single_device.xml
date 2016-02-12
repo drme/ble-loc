@@ -73,5 +73,99 @@
         android:layout_below="@+id/textSingleDevice_StaticArray"
         android:layout_alignParentStart="true"
         android:layout_alignParentEnd="true" />
+
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_above="@+id/view3"
+        android:layout_below="@+id/view2"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentEnd="true"
+        android:id="@+id/frameSingleDevice_RSSIArray"
+        android:clickable="true"></FrameLayout>
+
+    <View style="@style/Divider"
+        android:id="@+id/view3"
+        android:layout_below="@+id/textSingleDevice_ActiveArray" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceMedium"
+        android:text="RSSI Kiekis: "
+        android:id="@+id/textSingleDevice_StaticRSSINum"
+        android:layout_below="@+id/view3"
+        android:layout_alignParentStart="true" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceMedium"
+        android:text="Num"
+        android:id="@+id/textSingleDevice_ActiveRSSINum"
+        android:layout_alignParentEnd="true"
+        android:layout_alignTop="@+id/textSingleDevice_StaticRSSINum"
+        android:layout_toEndOf="@+id/textSingleDevice_StaticRSSINum" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceMedium"
+        android:text="RSSI reikšmių vidurkis: "
+        android:id="@+id/textSingleDevice_StaticAverage"
+        android:layout_below="@+id/textSingleDevice_StaticRSSINum"
+        android:layout_alignParentStart="true" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceMedium"
+        android:text="Vidurkis"
+        android:id="@+id/textSingleDevice_ActiveAverage"
+        android:layout_alignParentEnd="true"
+        android:layout_toEndOf="@+id/textSingleDevice_StaticAverage"
+        android:layout_alignTop="@+id/textSingleDevice_StaticAverage" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceMedium"
+        android:text="RSSI Max: "
+        android:id="@+id/textSingleDevice_StaticRSSIMax"
+        android:layout_below="@+id/textSingleDevice_StaticAverage"
+        android:layout_alignParentStart="true" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceMedium"
+        android:text="Max"
+        android:id="@+id/textSingleDevice_ActiveRSSIMax"
+        android:layout_alignParentEnd="true"
+        android:layout_toEndOf="@+id/textSingleDevice_StaticRSSIMax"
+        android:layout_alignTop="@+id/textSingleDevice_StaticRSSIMax" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceMedium"
+        android:text="RSSI Min: "
+        android:id="@+id/textSingleDevice_StaticRSSIMin"
+        android:layout_alignParentStart="true"
+        android:layout_below="@+id/textSingleDevice_StaticRSSIMax" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceMedium"
+        android:text="Min"
+        android:id="@+id/textSingleDevice_ActiveRSSIMin"
+        android:layout_alignParentEnd="true"
+        android:layout_toEndOf="@+id/textSingleDevice_StaticRSSIMin"
+        android:layout_alignTop="@+id/textSingleDevice_StaticRSSIMin" />
+
+    <View style="@style/Divider"
+        android:id="@+id/view4"
+        android:layout_below="@+id/textSingleDevice_StaticRSSIMin" />
 </RelativeLayout>
 </ScrollView>
