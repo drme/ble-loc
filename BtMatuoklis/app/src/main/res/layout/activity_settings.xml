@@ -113,6 +113,38 @@
         android:id="@+id/textSettings_AverageHint"
         android:layout_below="@+id/buttonSettings_SetAverage"
         android:layout_centerHorizontal="true" />
-    
+
+    <View style="@style/Divider"
+        android:id="@+id/view3"
+        android:layout_below="@+id/textSettings_AverageHint" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceMedium"
+        android:textColor="#000000"
+        android:text="Debug: "
+        android:id="@+id/textSettings_StaticDebug"
+        android:layout_below="@+id/view3"
+        android:layout_alignParentStart="true" />
+
+    <Switch
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Įrenginių generavimas"
+        android:id="@+id/switchSettings_FakeValues"
+        android:layout_alignTop="@+id/textSettings_StaticDebug"
+        android:layout_alignParentEnd="true"
+        android:checked="false" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceSmall"
+        android:text="Hint"
+        android:id="@+id/textSettings_FakeValuesHint"
+        android:layout_below="@+id/switchSettings_FakeValues"
+        android:layout_centerHorizontal="true" />
+
 </RelativeLayout>
 </ScrollView>

@@ -8,12 +8,17 @@
     <string name="app_name">BtMatuoklis</string>
     <string name="main_subtitle">Pagrindinis</string>
     <string name="scan_name">Rasti Įrenginiai:</string>
+    <string name="settings_name">Nustatymai</string>
     <string name="all_rooms_name">Visos patalpos</string>
+    <string name="existing_room">Patalpa</string>
+    <string name="new_room_title">Nauja patalpa</string>
+    <string name="existing_device">Įrenginys</string>
+
     <string name="new_room_add">Pridėti naują kambarį</string>
     <string name="existing_room_remove">Pašalinti kambarį</string>
-    <string name="new_room_title">Nauja patalpa</string>
     <string name="new_room_name_subtitle">Įveskite pavadinimą</string>
     <string name="new_room_devices_subtitle">Pasirinkite įrenginius:</string>
-    <string name="existing_room">Patalpa</string>
-    <string name="settings_name">Nustatymai</string>
+
+    <string name="generator_hint">Netikrų įrenginių ir jų RSSI reikšmių generatorius</string>
+    <string name="frequency_hint">Rekomenduotinos reikšmės intervale: [250; 5000], default - </string>
 </resources>

@@ -21,9 +21,11 @@ public class Settings {
     private byte txPow = 50;//Reiksme [1-100] intervale
 
     //Matavimu kiekis, vieno beacon'o vidutinei RSSI reiksmei surasti
-        private byte defaultAverage = 1;
-        private byte average = defaultAverage;
+    private byte defaultAverage = 1;
+    private byte average = defaultAverage;
 
+    //Debug - netikru irenginiu generatoriaus ijungimo reiksme
+    private boolean generator = false;
 
     public Settings(Context context){
         preferences = context.getSharedPreferences(
@@ -33,6 +35,7 @@ public class Settings {
         txPow = (byte)preferences.getInt("savedTxPow", txPow);
         delay = (short)preferences.getInt("savedDelay", delay);
         average = (byte)preferences.getInt("savedAverage", average);
+        generator = preferences.getBoolean("savedGenerator", generator);
     }
 
     public byte getMaxRange(){ return this.maxRange; }
@@ -47,6 +50,8 @@ public class Settings {
 
     public byte getDefaultAverage() { return this.defaultAverage; }
 
+    public boolean getGenerator() { return this.generator; }
+
     public void setMaxRange(byte mr) { this.maxRange = mr; }
 
     public void setTxPow(byte tx){ this.txPow = tx; }
@@ -54,6 +59,8 @@ public class Settings {
     public void setDelay(short dl){ this.delay = dl; }
 
     public void setAverage(byte av){ this.average = av; }
+
+    public void setGenerator(boolean vg) { this.generator = vg; }
 
     public void saveDelay(){
         edit.putInt("savedDelay", delay);
@@ -68,5 +75,10 @@ public class Settings {
     public void saveAverage(){
             edit.putInt("savedAverage", average);
             edit.apply();
+    }
+
+    public void saveGenerator(){
+        edit.putBoolean("savedGenerator", generator);
+        edit.apply();
     }
 }

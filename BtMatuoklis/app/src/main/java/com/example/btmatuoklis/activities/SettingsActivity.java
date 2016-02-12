@@ -7,8 +7,10 @@ import android.os.Bundle;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
+import android.widget.CompoundButton;
 import android.widget.EditText;
 import android.widget.SeekBar;
+import android.widget.Switch;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -18,10 +20,11 @@ import com.example.btmatuoklis.classes.Settings;
 public class SettingsActivity extends AppCompatActivity {
 
     Settings settings;
-    TextView txVal, hintInfo;
+    TextView txVal, hintFrequency, hintGenerator;
     EditText msVal, averageVal;
     Button setMs, setAverage;
     SeekBar txSlider;
+    Switch valuesGenerator;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -31,17 +34,20 @@ public class SettingsActivity extends AppCompatActivity {
         settings = MainActivity.settings;
 
         txVal = (TextView)findViewById(R.id.textSettings_ActiveTxPower);
-        hintInfo = (TextView)findViewById(R.id.textSettings_FrequencyHint);
+        hintFrequency = (TextView)findViewById(R.id.textSettings_FrequencyHint);
         msVal = (EditText)findViewById(R.id.editSettings_Frequency);
         averageVal = (EditText)findViewById(R.id.editSettings_Average);
         setMs = (Button)findViewById(R.id.buttonSettings_SetFrequency);
         setAverage = (Button)findViewById(R.id.buttonSettings_SetAverage);
         txSlider = (SeekBar)findViewById(R.id.seekbarSettings_TxPower);
+        valuesGenerator = (Switch)findViewById(R.id.switchSettings_FakeValues);
+        hintGenerator = (TextView)findViewById(R.id.textSettings_FakeValuesHint);
 
         setDefValues();
         setMsButtonListener();
         setAverageButtonListener();
         setSliderListener();
+        setGeneratorSwitchListener();
     }
 
     @Override
@@ -120,6 +126,16 @@ public class SettingsActivity extends AppCompatActivity {
         });
     }
 
+    void setGeneratorSwitchListener(){
+        valuesGenerator.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                settings.setGenerator(isChecked);
+                settings.saveGenerator();
+            }
+        });
+    }
+
     //Nustatomos "default" reiksmes
     //Jeigu programa leidziama ne pirma karta - nustatomos issaugotos reiksmes
     void setDefValues(){
@@ -127,6 +143,8 @@ public class SettingsActivity extends AppCompatActivity {
         txVal.setText(Byte.toString(settings.getTxPow()));
         averageVal.setText(Byte.toString(settings.getAverage()));
         msVal.setText(Integer.toString(settings.getDelay()));
-        hintInfo.setText("Rekomenduotinos reikšmės intervale:\n[250; 5000], default - " + settings.getDefaultDelay());
+        hintFrequency.setText(getText(R.string.frequency_hint) + Short.toString(settings.getDefaultDelay()));
+        valuesGenerator.setChecked(settings.getGenerator());
+        hintGenerator.setText(getText(R.string.generator_hint));
     }
 }

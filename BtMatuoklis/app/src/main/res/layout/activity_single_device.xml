@@ -42,7 +42,8 @@
         android:text="Įrenginio info"
         android:id="@+id/textSingleDevice_Info"
         android:layout_below="@+id/view"
-        android:layout_alignParentStart="true" />
+        android:layout_alignParentStart="true"
+        android:layout_alignParentEnd="true" />
 
     <View style="@style/Divider"
         android:id="@+id/view2"
@@ -55,15 +56,22 @@
         android:text="Išsaugotos RSSI reikšmės: "
         android:id="@+id/textSingleDevice_StaticArray"
         android:layout_below="@+id/view2"
-        android:layout_alignParentStart="true" />
+        android:layout_alignParentStart="true"
+        android:layout_alignParentEnd="true" />
 
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:textAppearance="?android:attr/textAppearanceMedium"
         android:text="RSSI reikšmės"
+
+        android:singleLine="true"
+        android:maxLines="1"
+        android:ellipsize="end"
+
         android:id="@+id/textSingleDevice_ActiveArray"
         android:layout_below="@+id/textSingleDevice_StaticArray"
-        android:layout_alignParentStart="true" />
+        android:layout_alignParentStart="true"
+        android:layout_alignParentEnd="true" />
 </RelativeLayout>
 </ScrollView>
