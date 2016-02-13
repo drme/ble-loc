@@ -10,23 +10,23 @@
         app:actionLayout="@layout/action_view_progress" />
 
     <item
-        android:id="@+id/action_add_room"
+        android:id="@+id/action_add"
         android:icon="@android:drawable/ic_menu_add"
-        android:title="@string/new_room_add"
+        android:title="@string/bartext_new_room_add"
         android:visible="false"
         app:showAsAction="ifRoom"/>
 
     <item
-        android:id="@+id/action_remove_room"
+        android:id="@+id/action_remove"
         android:icon="@android:drawable/ic_menu_delete"
-        android:title="@string/existing_room_remove"
+        android:title="@string/bartext_existing_room_remove"
         android:visible="false"
         app:showAsAction="ifRoom"/>
 
     <item
         android:id="@+id/action_settings"
         android:icon="@android:drawable/ic_menu_preferences"
-        android:title="@string/settings_name"
+        android:title="@string/subtitle_settings"
         android:visible="true"
         app:showAsAction="ifRoom"/>
 

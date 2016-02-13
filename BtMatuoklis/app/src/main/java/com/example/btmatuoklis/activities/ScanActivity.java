@@ -17,7 +17,7 @@ import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
 
-import com.example.btmatuoklis.classes.DeviceInfo;
+import com.example.btmatuoklis.classes.Beacon;
 import com.example.btmatuoklis.R;
 import com.example.btmatuoklis.classes.ScanTools;
 import com.example.btmatuoklis.classes.Settings;
@@ -33,7 +33,7 @@ public class ScanActivity extends AppCompatActivity {
     boolean scanning = false;
 
     BluetoothAdapter mBluetoothAdapter;
-    ArrayList<DeviceInfo> btDevList;
+    ArrayList<Beacon> btDevList;
     ArrayList<String> savedDevList;
     ArrayAdapter<String> listAdapter;
 
@@ -44,7 +44,7 @@ public class ScanActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_scan);
         actionbar = getSupportActionBar();
-        actionbar.setSubtitle(getText(R.string.scan_name));
+        actionbar.setSubtitle(getText(R.string.subtitle_scan));
         settings = MainActivity.settings;
         btInfo = (ListView)findViewById(R.id.listScan_DevicesList);
 
@@ -113,7 +113,7 @@ public class ScanActivity extends AppCompatActivity {
     //Nustatomos "default" reiksmes
     //Jeigu programa leidziama ne pirma karta - nustatomos issaugotos reiksmes
     void setDefValues(){
-        btDevList = new ArrayList<DeviceInfo>();
+        btDevList = new ArrayList<Beacon>();
         savedDevList = new ArrayList<String>();
         listAdapter = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, savedDevList);
         btInfo.setAdapter(listAdapter);
@@ -176,14 +176,14 @@ public class ScanActivity extends AppCompatActivity {
         }, settings.getDelay());
     }
 
-    private class asyncScan extends AsyncTask<Void, Void, ArrayList<DeviceInfo>>{
+    private class asyncScan extends AsyncTask<Void, Void, ArrayList<Beacon>>{
         @Override
         protected void onPreExecute() {
             super.onPreExecute();
         }
 
         @Override
-        protected ArrayList<DeviceInfo> doInBackground(Void... params) {
+        protected ArrayList<Beacon> doInBackground(Void... params) {
             mBluetoothAdapter.startLeScan(new BluetoothAdapter.LeScanCallback() {
                 @Override
                 public void onLeScan(BluetoothDevice device, int rssi, byte[] scanRecord) {
@@ -191,7 +191,7 @@ public class ScanActivity extends AppCompatActivity {
                     byte listSize = (byte)btDevList.size();
                     byte currentRssi = (byte)rssi;
                     if (listSize == 0) {
-                        btDevList.add(new DeviceInfo(device.getName(), device.getAddress()));
+                        btDevList.add(new Beacon(device.getName(), device.getAddress()));
                         btDevList.get(0).setRssi(currentRssi);
                     } else {
                         for (byte i = 0; i < listSize; i++) {
@@ -202,7 +202,7 @@ public class ScanActivity extends AppCompatActivity {
                             }
                         }
                         if (numDev > listSize - 1) {
-                            btDevList.add(new DeviceInfo(device.getName(), device.getAddress()));
+                            btDevList.add(new Beacon(device.getName(), device.getAddress()));
                             btDevList.get(numDev).setRssi(currentRssi);
                         }
                     }
@@ -213,7 +213,7 @@ public class ScanActivity extends AppCompatActivity {
         }
 
         @Override
-        protected void onPostExecute(ArrayList<DeviceInfo> devList) {
+        protected void onPostExecute(ArrayList<Beacon> devList) {
             super.onPostExecute(devList);
         }
     }*/

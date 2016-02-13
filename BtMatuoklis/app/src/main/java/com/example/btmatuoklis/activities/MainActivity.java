@@ -25,7 +25,7 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         actionbar = getSupportActionBar();
-        actionbar.setSubtitle(getText(R.string.main_subtitle));
+        actionbar.setSubtitle(getText(R.string.subtitle_main));
         Context context = getApplicationContext();
         settings = new Settings(context);
         scan = (Button)findViewById(R.id.buttonMain_Scan);

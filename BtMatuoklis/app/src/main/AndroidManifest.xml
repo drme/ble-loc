@@ -30,9 +30,9 @@
             android:name=".activities.SettingsActivity"
             android:label="@string/app_name" />
         <activity android:name=".activities.AllRoomsActivity" />
-        <activity android:name=".activities.SingleRoomActivity" />
+        <activity android:name=".activities.RoomActivity" />
         <activity android:name=".activities.NewRoomActivity" />
-        <activity android:name=".activities.SingleDeviceActivity"></activity>
+        <activity android:name=".activities.BeaconActivity"></activity>
     </application>
 
 </manifest>

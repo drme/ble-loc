@@ -4,15 +4,15 @@ import java.util.ArrayList;
 
 public class Room {
     private String name;
-    private ArrayList<DeviceInfo> devices;
+    private ArrayList<Beacon> beacons;
 
     public Room(){
-        this.devices = new ArrayList<DeviceInfo>();
+        this.beacons = new ArrayList<Beacon>();
     }
 
     public Room(String nm){
         this.name = nm;
-        this.devices = new ArrayList<DeviceInfo>();
+        this.beacons = new ArrayList<Beacon>();
     }
 
     public void setName(String nm){
@@ -25,24 +25,24 @@ public class Room {
 
     public ArrayList<String> getMACList(){
         ArrayList<String> res = new ArrayList<String>();
-        for (int i = 0; i < this.devices.size(); i++){
-            res.add(this.devices.get(i).getMAC());
+        for (int i = 0; i < this.beacons.size(); i++){
+            res.add(this.beacons.get(i).getMAC());
         }
         return res;
     }
 
-    public ArrayList<String> getDevicesCalibrationCount(){
+    public ArrayList<String> getBeaconsCalibrationCount(){
         ArrayList<String> res = new ArrayList<String>();
-        for (int i = 0; i < this.devices.size(); i++){
-            res.add(this.devices.get(i).getCalibrationCount());
+        for (int i = 0; i < this.beacons.size(); i++){
+            res.add(this.beacons.get(i).getCalibrationCount());
         }
         return res;
     }
 
-    public ArrayList<Boolean> getCalibratedDevices(){
+    public ArrayList<Boolean> getCalibratedBeacons(){
         ArrayList<Boolean> res = new ArrayList<Boolean>();
-        for (int i = 0; i < this.devices.size(); i++){
-            if (this.devices.get(i).getCalibratedRSSI().size() == 0){
+        for (int i = 0; i < this.beacons.size(); i++){
+            if (this.beacons.get(i).getCalibratedRSSI().size() == 0){
                 res.add(i, false);
             }
             else {
@@ -52,13 +52,13 @@ public class Room {
         return res;
     }
 
-    public ArrayList<DeviceInfo> getDevices(){
-        return this.devices;
+    public ArrayList<Beacon> getBeacons(){
+        return this.beacons;
     }
 
     //Grazina false, jeigu bent vienas irenginys neturi
     //nei vienos RSSI reiksmes kalibravimo masyve
     public boolean isCalibrated(){
-        return !getCalibratedDevices().contains(false);
+        return !getCalibratedBeacons().contains(false);
     }
 }

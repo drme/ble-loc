@@ -22,12 +22,17 @@ import android.widget.Toast;
 
 import com.example.btmatuoklis.R;
 import com.example.btmatuoklis.classes.GlobalClass;
+import com.example.btmatuoklis.classes.Room;
+
+import java.util.ArrayList;
 
 public class AllRoomsActivity extends AppCompatActivity {
 
     ActionBar actionbar;
     ListView allRoomsList;
     ArrayAdapter roomsAdapter;
+    ArrayList<Room> allRoomsArray;
+    ArrayList<String> allRoomsStringList;
     String roomName;
 
     GlobalClass globalVariable;
@@ -37,10 +42,13 @@ public class AllRoomsActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_all_rooms);
         actionbar = getSupportActionBar();
-        actionbar.setSubtitle(getText(R.string.all_rooms_name));
+        actionbar.setSubtitle(getText(R.string.subtitle_all_rooms));
         allRoomsList = (ListView)findViewById(R.id.listAllRooms_DevicesList);
+        allRoomsStringList = new ArrayList<String>();
         globalVariable = (GlobalClass) getApplicationContext();
-        roomsAdapter = new ArrayAdapter(this, android.R.layout.simple_list_item_1, globalVariable.getRoomsList());
+        allRoomsArray = globalVariable.getRoomsArray();
+        allRoomsStringList = globalVariable.getRoomsList();
+        roomsAdapter = new ArrayAdapter(this, android.R.layout.simple_list_item_1, allRoomsStringList);
         allRoomsList.setAdapter(roomsAdapter);
         setListListener();
     }
@@ -50,7 +58,13 @@ public class AllRoomsActivity extends AppCompatActivity {
     {
         MenuInflater inflater = getMenuInflater();
         inflater.inflate(R.menu.action_bar, menu);
-        menu.findItem(R.id.action_add_room).setVisible(true);
+        menu.findItem(R.id.action_remove).setTitle(getText(R.string.bartext_all_rooms_remove));
+        menu.findItem(R.id.action_progress).setShowAsAction(MenuItem.SHOW_AS_ACTION_NEVER);
+        menu.findItem(R.id.action_add).setShowAsAction(MenuItem.SHOW_AS_ACTION_ALWAYS);
+        menu.findItem(R.id.action_remove).setShowAsAction(MenuItem.SHOW_AS_ACTION_ALWAYS);
+        menu.findItem(R.id.action_settings).setShowAsAction(MenuItem.SHOW_AS_ACTION_ALWAYS);
+        menu.findItem(R.id.action_add).setVisible(true);
+        menu.findItem(R.id.action_remove).setVisible(true);
         return true;
     }
 
@@ -60,8 +74,11 @@ public class AllRoomsActivity extends AppCompatActivity {
             case R.id.action_settings:
                 startActivity(new Intent(getBaseContext(), SettingsActivity.class));
                 return true;
-            case R.id.action_add_room:
+            case R.id.action_add:
                 roomNameEntry();
+                return true;
+            case R.id.action_remove:
+                removeAllRoomsConfirm();
                 return true;
 
             default:
@@ -76,7 +93,7 @@ public class AllRoomsActivity extends AppCompatActivity {
         allRoomsList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                Intent intent = new Intent(getBaseContext(), SingleRoomActivity.class);
+                Intent intent = new Intent(getBaseContext(), RoomActivity.class);
                 intent.putExtra("roomID", position);
                 startActivity(intent);
             }
@@ -85,7 +102,7 @@ public class AllRoomsActivity extends AppCompatActivity {
 
     void roomNameEntry(){
         final AlertDialog.Builder builder = new AlertDialog.Builder(AllRoomsActivity.this);
-        builder.setTitle("Naujos patalpos pavadinimas:");
+        builder.setTitle(getText(R.string.dialog_new_room_name));
 
         final EditText input = new EditText(AllRoomsActivity.this);
         input.setInputType(InputType.TYPE_CLASS_TEXT);
@@ -97,7 +114,7 @@ public class AllRoomsActivity extends AppCompatActivity {
                 roomName = input.getText().toString();
                 if (roomName.equals("")) {
                     Toast.makeText(getApplicationContext(),
-                            "Neįvestas pavadinimas!", Toast.LENGTH_SHORT).show();
+                            getText(R.string.toast_warning_empty_entry), Toast.LENGTH_SHORT).show();
                     dialog.cancel();
                 } else {
                     Intent intent = new Intent(getBaseContext(), NewRoomActivity.class);
@@ -137,4 +154,27 @@ public class AllRoomsActivity extends AppCompatActivity {
         });
     }
 
+    void removeAllRoomsConfirm() {
+        final AlertDialog.Builder builder1 = new AlertDialog.Builder(AllRoomsActivity.this);
+        builder1.setTitle(getText(R.string.dialog_remove_all_rooms));
+
+        builder1.setPositiveButton("OK", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                allRoomsArray.clear();
+                allRoomsStringList.clear();
+                roomsAdapter.notifyDataSetChanged();
+                Toast.makeText(getApplicationContext(),
+                        getText(R.string.toast_info_removed), Toast.LENGTH_SHORT).show();
+            }
+        });
+
+        builder1.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                dialog.cancel();
+            }
+        });
+        builder1.show();
+    }
 }

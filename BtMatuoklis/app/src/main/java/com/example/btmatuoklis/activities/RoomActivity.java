@@ -1,9 +1,11 @@
 package com.example.btmatuoklis.activities;
 
+import android.app.AlertDialog;
 import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;
 import android.bluetooth.BluetoothManager;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Handler;
 import android.support.v7.app.ActionBar;
@@ -30,7 +32,7 @@ import com.example.btmatuoklis.classes.Settings;
 
 import java.util.ArrayList;
 
-public class SingleRoomActivity extends AppCompatActivity {
+public class RoomActivity extends AppCompatActivity {
 
     ActionBar actionbar;
     TextView existingPavadinimas;
@@ -53,10 +55,10 @@ public class SingleRoomActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_single_room);
+        setContentView(R.layout.activity_room);
         actionbar = getSupportActionBar();
         actionbar.setTitle(getText(R.string.app_name));
-        actionbar.setSubtitle(getText(R.string.existing_room));
+        actionbar.setSubtitle(getText(R.string.subtitle_existing_room));
         globalVariable = (GlobalClass) getApplicationContext();
         roomID = getIntent().getExtras().getInt("roomID");
         existingPavadinimas = (TextView)findViewById(R.id.textSingleRoom_ActiveName);
@@ -80,7 +82,7 @@ public class SingleRoomActivity extends AppCompatActivity {
     {
         MenuInflater inflater = getMenuInflater();
         inflater.inflate(R.menu.action_bar, menu);
-        menu.findItem(R.id.action_remove_room).setVisible(true);
+        menu.findItem(R.id.action_remove).setVisible(true);
         actionProgress = menu.findItem(R.id.action_progress);
         return true;
     }
@@ -91,16 +93,25 @@ public class SingleRoomActivity extends AppCompatActivity {
             case R.id.action_settings:
                 startActivity(new Intent(getBaseContext(), SettingsActivity.class));
                 return true;
-            case R.id.action_remove_room:
-                globalVariable.getRoomsArray().remove(roomID);
-                globalVariable.getRoomsList().remove(roomID);
-                Toast.makeText(getApplicationContext(), "Kambarys pašalintas.", Toast.LENGTH_SHORT).show();
-                this.finish();
-                startActivity(new Intent(getBaseContext(), AllRoomsActivity.class));
+            case R.id.action_remove:
+                removeRoomConfirm();
                 return true;
 
             default:
                 return super.onOptionsItemSelected(item);
+        }
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        loadBoundDevices();
+        checkCalibratedDevices();
+        if (currentRoom.isCalibrated()) {
+            setListListener();
+        }
+        else {
+            boundBtList.setOnItemClickListener(null);
         }
     }
 
@@ -132,9 +143,9 @@ public class SingleRoomActivity extends AppCompatActivity {
         boundBtList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                Intent intent = new Intent(getBaseContext(), SingleDeviceActivity.class);
+                Intent intent = new Intent(getBaseContext(), BeaconActivity.class);
                 intent.putExtra("roomID", roomID);
-                intent.putExtra("deviceID", position);
+                intent.putExtra("beaconID", position);
                 startActivity(intent);
             }
         });
@@ -168,6 +179,33 @@ public class SingleRoomActivity extends AppCompatActivity {
         });
     }
 
+    void removeRoomConfirm() {
+        final AlertDialog.Builder builder2 = new AlertDialog.Builder(RoomActivity.this);
+        builder2.setTitle(getText(R.string.dialog_remove_room));
+
+        builder2.setPositiveButton("OK", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                scanning = false;
+                globalVariable.getRoomsArray().remove(roomID);
+                globalVariable.getRoomsList().remove(roomID);
+                Toast.makeText(getApplicationContext(),
+                        getText(R.string.toast_info_removed), Toast.LENGTH_SHORT).show();
+                RoomActivity.this.finish();
+                startActivity(new Intent(getBaseContext(), AllRoomsActivity.class));
+            }
+        });
+
+        builder2.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                dialog.cancel();
+            }
+        });
+
+        builder2.show();
+    }
+
     //Sukuriamas Bluetooth adapteris
     public void createBT(){
         BluetoothManager bluetoothManager =
@@ -177,11 +215,11 @@ public class SingleRoomActivity extends AppCompatActivity {
 
     void loadBoundDevices(){
         boundDevList.clear();
-        boundDevList.addAll(globalVariable.getRoomsArray().get(roomID).getDevicesCalibrationCount());
+        boundDevList.addAll(globalVariable.getRoomsArray().get(roomID).getBeaconsCalibrationCount());
     }
 
     void checkCalibratedDevices(){
-        ArrayList<Boolean> calibratedDevices = currentRoom.getCalibratedDevices();
+        ArrayList<Boolean> calibratedDevices = currentRoom.getCalibratedBeacons();
         for (int i = 0; i < calibratedDevices.size(); i++){
             boundBtList.setItemChecked(i, calibratedDevices.get(i));
         }
@@ -207,9 +245,9 @@ public class SingleRoomActivity extends AppCompatActivity {
             public void run() {
                 loadBoundDevices();
                 checkCalibratedDevices();
-                listBoundAdapter.notifyDataSetChanged();
                 if (currentRoom.isCalibrated()){
                     calibrateButton.setEnabled(true);
+                    setListListener();
                 }
             }
         };

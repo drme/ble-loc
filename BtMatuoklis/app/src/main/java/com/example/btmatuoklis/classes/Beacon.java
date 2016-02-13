@@ -2,20 +2,20 @@ package com.example.btmatuoklis.classes;
 
 import java.util.ArrayList;
 
-public class DeviceInfo {
-    private String deviceName;
-    private String deviceMAC;
+public class Beacon {
+    private String beaconName;
+    private String beaconMAC;
     private ArrayList<Byte> calibratedRSSI;
     private byte currentRSSI;
     private byte previousRSSI;
 
-    public DeviceInfo(){
+    public Beacon(){
         this.calibratedRSSI = new ArrayList<Byte>();
     }
 
-    public DeviceInfo(String name, String mac){
-        this.deviceName = name;
-        this.deviceMAC = mac;
+    public Beacon(String name, String mac){
+        this.beaconName = name;
+        this.beaconMAC = mac;
         this.calibratedRSSI = new ArrayList<Byte>();
     }
 
@@ -24,9 +24,9 @@ public class DeviceInfo {
         this.currentRSSI = rssi;
     }
 
-    public String getName(){ return this.deviceName; }
+    public String getName(){ return this.beaconName; }
 
-    public String getMAC(){ return this.deviceMAC; }
+    public String getMAC(){ return this.beaconMAC; }
 
     public byte getCurrentRSSI() { return this.currentRSSI; }
 
@@ -36,15 +36,15 @@ public class DeviceInfo {
 
     //BT irenginio informacija (List formavimui)
     public String getInfo() {
-        String info = "Pavadinimas: " + this.deviceName;
-        info += "\nMAC: " + this.deviceMAC;
+        String info = "Pavadinimas: " + this.beaconName;
+        info += "\nMAC: " + this.beaconMAC;
         return info;
     }
 
     //BT irenginio papildoma informacija (List formavimui)
     public String getCurrentInfo(byte txPower){
-        String info = "Pavadinimas: " + this.deviceName;
-        info += "\nMAC: " + this.deviceMAC;
+        String info = "Pavadinimas: " + this.beaconName;
+        info += "\nMAC: " + this.beaconMAC;
         info += "\nPrevious RSSI: " + this.previousRSSI;
         info += " Current RSSI: " + this.currentRSSI;
         info += "\n" + RangeCalculator.getRange(txPower, this.currentRSSI);
@@ -52,8 +52,8 @@ public class DeviceInfo {
     }
 
     public String getCalibrationCount(){
-        String info = "Pavadinimas: " + this.deviceName;
-        info += "\nMAC: " + this.deviceMAC;
+        String info = "Pavadinimas: " + this.beaconName;
+        info += "\nMAC: " + this.beaconMAC;
         info += "\nKalibracijos RSSI reikšmių: " + this.calibratedRSSI.size();
         return info;
     }

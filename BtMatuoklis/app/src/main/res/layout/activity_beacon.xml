@@ -7,7 +7,7 @@
     android:paddingLeft="@dimen/activity_horizontal_margin"
     android:paddingRight="@dimen/activity_horizontal_margin"
     android:paddingTop="@dimen/activity_vertical_margin"
-    tools:context=".activities.SingleDeviceActivity">
+    tools:context=".activities.BeaconActivity">
 <RelativeLayout
     android:layout_width="match_parent"
     android:layout_height="match_parent">
@@ -17,7 +17,7 @@
         android:layout_height="wrap_content"
         android:textAppearance="?android:attr/textAppearanceLarge"
         android:text="Patalpa: "
-        android:id="@+id/textSingleDevice_StaticName"
+        android:id="@+id/textBeacon_StaticName"
         android:layout_alignParentTop="true"
         android:layout_alignParentStart="true" />
 
@@ -26,35 +26,35 @@
         android:layout_height="wrap_content"
         android:textAppearance="?android:attr/textAppearanceLarge"
         android:text="Patalpos Pav."
-        android:id="@+id/textSingleDevice_ActiveName"
+        android:id="@+id/textBeacon_ActiveName"
         android:layout_alignParentTop="true"
         android:layout_alignParentEnd="true"
-        android:layout_toEndOf="@+id/textSingleDevice_StaticName" />
+        android:layout_toEndOf="@+id/textBeacon_StaticName" />
 
     <View style="@style/Divider"
         android:id="@+id/view"
-        android:layout_below="@+id/textSingleDevice_StaticName" />
+        android:layout_below="@+id/textBeacon_StaticName" />
 
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:textAppearance="?android:attr/textAppearanceMedium"
         android:text="Įrenginio info"
-        android:id="@+id/textSingleDevice_Info"
+        android:id="@+id/textBeacon_Info"
         android:layout_below="@+id/view"
         android:layout_alignParentStart="true"
         android:layout_alignParentEnd="true" />
 
     <View style="@style/Divider"
         android:id="@+id/view2"
-        android:layout_below="@+id/textSingleDevice_Info" />
+        android:layout_below="@+id/textBeacon_Info" />
 
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:textAppearance="?android:attr/textAppearanceMedium"
         android:text="Išsaugotos RSSI reikšmės: "
-        android:id="@+id/textSingleDevice_StaticArray"
+        android:id="@+id/textBeacon_StaticArray"
         android:layout_below="@+id/view2"
         android:layout_alignParentStart="true"
         android:layout_alignParentEnd="true" />
@@ -69,8 +69,8 @@
         android:maxLines="1"
         android:ellipsize="end"
 
-        android:id="@+id/textSingleDevice_ActiveArray"
-        android:layout_below="@+id/textSingleDevice_StaticArray"
+        android:id="@+id/textBeacon_ActiveArray"
+        android:layout_below="@+id/textBeacon_StaticArray"
         android:layout_alignParentStart="true"
         android:layout_alignParentEnd="true" />
 
@@ -81,19 +81,19 @@
         android:layout_below="@+id/view2"
         android:layout_alignParentStart="true"
         android:layout_alignParentEnd="true"
-        android:id="@+id/frameSingleDevice_RSSIArray"
+        android:id="@+id/frameBeacon_RSSIArray"
         android:clickable="true"></FrameLayout>
 
     <View style="@style/Divider"
         android:id="@+id/view3"
-        android:layout_below="@+id/textSingleDevice_ActiveArray" />
+        android:layout_below="@+id/textBeacon_ActiveArray" />
 
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:textAppearance="?android:attr/textAppearanceMedium"
         android:text="RSSI Kiekis: "
-        android:id="@+id/textSingleDevice_StaticRSSINum"
+        android:id="@+id/textBeacon_StaticRSSINum"
         android:layout_below="@+id/view3"
         android:layout_alignParentStart="true" />
 
@@ -102,18 +102,18 @@
         android:layout_height="wrap_content"
         android:textAppearance="?android:attr/textAppearanceMedium"
         android:text="Num"
-        android:id="@+id/textSingleDevice_ActiveRSSINum"
+        android:id="@+id/textBeacon_ActiveRSSINum"
         android:layout_alignParentEnd="true"
-        android:layout_alignTop="@+id/textSingleDevice_StaticRSSINum"
-        android:layout_toEndOf="@+id/textSingleDevice_StaticRSSINum" />
+        android:layout_alignTop="@+id/textBeacon_StaticRSSINum"
+        android:layout_toEndOf="@+id/textBeacon_StaticRSSINum" />
 
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:textAppearance="?android:attr/textAppearanceMedium"
         android:text="RSSI reikšmių vidurkis: "
-        android:id="@+id/textSingleDevice_StaticAverage"
-        android:layout_below="@+id/textSingleDevice_StaticRSSINum"
+        android:id="@+id/textBeacon_StaticAverage"
+        android:layout_below="@+id/textBeacon_StaticRSSINum"
         android:layout_alignParentStart="true" />
 
     <TextView
@@ -121,18 +121,18 @@
         android:layout_height="wrap_content"
         android:textAppearance="?android:attr/textAppearanceMedium"
         android:text="Vidurkis"
-        android:id="@+id/textSingleDevice_ActiveAverage"
+        android:id="@+id/textBeacon_ActiveAverage"
         android:layout_alignParentEnd="true"
-        android:layout_toEndOf="@+id/textSingleDevice_StaticAverage"
-        android:layout_alignTop="@+id/textSingleDevice_StaticAverage" />
+        android:layout_toEndOf="@+id/textBeacon_StaticAverage"
+        android:layout_alignTop="@+id/textBeacon_StaticAverage" />
 
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:textAppearance="?android:attr/textAppearanceMedium"
         android:text="RSSI Max: "
-        android:id="@+id/textSingleDevice_StaticRSSIMax"
-        android:layout_below="@+id/textSingleDevice_StaticAverage"
+        android:id="@+id/textBeacon_StaticRSSIMax"
+        android:layout_below="@+id/textBeacon_StaticAverage"
         android:layout_alignParentStart="true" />
 
     <TextView
@@ -140,32 +140,32 @@
         android:layout_height="wrap_content"
         android:textAppearance="?android:attr/textAppearanceMedium"
         android:text="Max"
-        android:id="@+id/textSingleDevice_ActiveRSSIMax"
+        android:id="@+id/textBeacon_ActiveRSSIMax"
         android:layout_alignParentEnd="true"
-        android:layout_toEndOf="@+id/textSingleDevice_StaticRSSIMax"
-        android:layout_alignTop="@+id/textSingleDevice_StaticRSSIMax" />
+        android:layout_toEndOf="@+id/textBeacon_StaticRSSIMax"
+        android:layout_alignTop="@+id/textBeacon_StaticRSSIMax" />
 
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:textAppearance="?android:attr/textAppearanceMedium"
         android:text="RSSI Min: "
-        android:id="@+id/textSingleDevice_StaticRSSIMin"
+        android:id="@+id/textBeacon_StaticRSSIMin"
         android:layout_alignParentStart="true"
-        android:layout_below="@+id/textSingleDevice_StaticRSSIMax" />
+        android:layout_below="@+id/textBeacon_StaticRSSIMax" />
 
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:textAppearance="?android:attr/textAppearanceMedium"
         android:text="Min"
-        android:id="@+id/textSingleDevice_ActiveRSSIMin"
+        android:id="@+id/textBeacon_ActiveRSSIMin"
         android:layout_alignParentEnd="true"
-        android:layout_toEndOf="@+id/textSingleDevice_StaticRSSIMin"
-        android:layout_alignTop="@+id/textSingleDevice_StaticRSSIMin" />
+        android:layout_toEndOf="@+id/textBeacon_StaticRSSIMin"
+        android:layout_alignTop="@+id/textBeacon_StaticRSSIMin" />
 
     <View style="@style/Divider"
         android:id="@+id/view4"
-        android:layout_below="@+id/textSingleDevice_StaticRSSIMin" />
+        android:layout_below="@+id/textBeacon_StaticRSSIMin" />
 </RelativeLayout>
 </ScrollView>

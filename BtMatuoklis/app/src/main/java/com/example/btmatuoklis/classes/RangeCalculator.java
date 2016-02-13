@@ -1,9 +1,5 @@
 package com.example.btmatuoklis.classes;
 
-import android.content.res.Resources;
-
-import com.example.btmatuoklis.R;
-
 public class RangeCalculator {
 
     private static byte maxRange;
@@ -12,7 +8,6 @@ public class RangeCalculator {
 
     public static String getRange(byte txPower, byte rssi){
         maxRange = Settings.maxRange;
-        //String textInfo = Resources.getSystem().getString(R.string.device_range);
         String textInfo = "Apytikslis atstumas: ";
         float val = calculateAccuracy(txPower, rssi);
         if (val < maxRange)
