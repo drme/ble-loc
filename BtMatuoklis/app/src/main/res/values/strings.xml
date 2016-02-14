@@ -12,7 +12,7 @@
     <string name="subtitle_new_room_beacons">Pasirinkite įrenginius:</string>
     <string name="subtitle_existing_beacon">Įrenginys</string>
 
-    <!--ActionBar tekstai-->
+    <!--ActionBar elementu tekstai-->
     <string name="bartext_loading">Progresas</string>
     <string name="bartext_new_room_add">Pridėti naują patalpą</string>
     <string name="bartext_new_room_cancel">Atšaukti kūrimą</string>
@@ -42,12 +42,44 @@
 
     <!--Beacon informacijos tekstai-->
     <!--Siuo metu niekur nepanaudoti-->
-    <string name="beacon_name">Name: </string>
-    <string name="beacon_mac">MAC: </string>
-    <string name="beacon_rssi">RSSI: </string>
-    <string name="beacon_range">Apytikslis atstumas: </string>
+    <string name="beacon_name">Name:\u0020</string>
+    <string name="beacon_mac">MAC:\u0020</string>
+    <string name="beacon_rssi">RSSI:\u0020</string>
+    <string name="beacon_range">Apytikslis atstumas:\u0020</string>
 
-    <!--SettingsActivity tekstai-->
+    <!--Bendrai naudojami tekstai-->
+    <string name="generic_hint">Hint</string>
+    <string name="generic_value">value</string>
+
+    <!--MainActivity elementu tekstai-->
+    <string name="mainactivity_button_scan">Scan</string>
+    <string name="mainactivity_button_allrooms">Patalpos</string>
+
+    <!--SettingsActivity elementu tekstai-->
+    <string name="settingsactivity_text_txpower">TxPower:</string>
+    <string name="settingsactivity_value_txpower">value</string>
+    <string name="settingsactivity_button_frequency">Nustatyti matavimų dažnį</string>
+    <string name="settingsactivity_button_average">Nustatyti Vidurkio Reikšmių Kiekį</string>
+    <string name="settingsactivity_text_debug">Debug:\u0020</string>
+    <string name="settingsactivity_slider_generator">Įrenginių generavimas</string>
     <string name="settingsactivity_hint_generator">Netikrų įrenginių ir jų RSSI reikšmių generatorius</string>
-    <string name="settingsactivity_hint_frequency">Rekomenduotinos reikšmės intervale: [250; 5000], default - </string>
+    <string name="settingsactivity_hint_frequency">Rekomenduotinos reikšmės intervale: [250; 5000], default -\u0020</string>
+
+    <!--NewRoomActivity elementu tekstai-->
+    <string name="newroomactivity_button_finish">Baigti</string>
+
+    <!--RoomActivity elementu tekstai-->
+    <string name="roomactivity_text_name">Pavadinimas:\u0020</string>
+    <string name="roomactivity_text_bound_devices">Susieti įrenginiai:</string>
+    <string name="roomactivity_button_calibrate">Kalibruoti įrenginius</string>
+    <string name="roomactivity_button_finish_calib">Baigti kalibraciją</string>
+    <string name="roomactivity_button_resume_calib">Tęsti kalibraciją</string>
+
+    <!--BeaconActivity elementu tekstai-->
+    <string name="beaconactivity_text_name">Patalpa:\u0020</string>
+    <string name="beaconactivity_text_saved_rssi">Išsaugotos RSSI reikšmės:\u0020</string>
+    <string name="beaconactivity_text_rssi_num">RSSI Kiekis:\u0020</string>
+    <string name="beaconactivity_text_rssi_average">RSSI reikšmių vidurkis:\u0020</string>
+    <string name="beaconactivity_text_rssi_max">RSSI Max:\u0020</string>
+    <string name="beaconactivity_text_rssi_min">RSSI Min:\u0020</string>
 </resources>

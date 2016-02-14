@@ -10,22 +10,22 @@
     tools:context=".activities.BeaconActivity">
 <RelativeLayout
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="wrap_content">
 
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:textAppearance="?android:attr/textAppearanceLarge"
-        android:text="Patalpa: "
         android:id="@+id/textBeacon_StaticName"
         android:layout_alignParentTop="true"
-        android:layout_alignParentStart="true" />
+        android:layout_alignParentStart="true"
+        android:text="@string/beaconactivity_text_name" />
 
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:textAppearance="?android:attr/textAppearanceLarge"
-        android:text="Patalpos Pav."
+        android:text="@string/generic_value"
         android:id="@+id/textBeacon_ActiveName"
         android:layout_alignParentTop="true"
         android:layout_alignParentEnd="true"
@@ -39,7 +39,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:textAppearance="?android:attr/textAppearanceMedium"
-        android:text="Įrenginio info"
+        android:text="@string/generic_value"
         android:id="@+id/textBeacon_Info"
         android:layout_below="@+id/lineCategory"
         android:layout_alignParentStart="true"
@@ -53,17 +53,17 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:textAppearance="?android:attr/textAppearanceMedium"
-        android:text="Išsaugotos RSSI reikšmės: "
         android:id="@+id/textBeacon_StaticArray"
         android:layout_below="@+id/view2"
         android:layout_alignParentStart="true"
-        android:layout_alignParentEnd="true" />
+        android:layout_alignParentEnd="true"
+        android:text="@string/beaconactivity_text_saved_rssi" />
 
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:textAppearance="?android:attr/textAppearanceMedium"
-        android:text="RSSI reikšmės"
+        android:text="@string/generic_value"
 
         android:singleLine="true"
         android:maxLines="1"
@@ -92,16 +92,16 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:textAppearance="?android:attr/textAppearanceMedium"
-        android:text="RSSI Kiekis: "
         android:id="@+id/textBeacon_StaticRSSINum"
         android:layout_below="@+id/view3"
-        android:layout_alignParentStart="true" />
+        android:layout_alignParentStart="true"
+        android:text="@string/beaconactivity_text_rssi_num" />
 
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:textAppearance="?android:attr/textAppearanceMedium"
-        android:text="Num"
+        android:text="@string/generic_value"
         android:id="@+id/textBeacon_ActiveRSSINum"
         android:layout_alignParentEnd="true"
         android:layout_alignTop="@+id/textBeacon_StaticRSSINum"
@@ -111,16 +111,16 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:textAppearance="?android:attr/textAppearanceMedium"
-        android:text="RSSI reikšmių vidurkis: "
         android:id="@+id/textBeacon_StaticAverage"
         android:layout_below="@+id/textBeacon_StaticRSSINum"
-        android:layout_alignParentStart="true" />
+        android:layout_alignParentStart="true"
+        android:text="@string/beaconactivity_text_rssi_average" />
 
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:textAppearance="?android:attr/textAppearanceMedium"
-        android:text="Vidurkis"
+        android:text="@string/generic_value"
         android:id="@+id/textBeacon_ActiveAverage"
         android:layout_alignParentEnd="true"
         android:layout_toEndOf="@+id/textBeacon_StaticAverage"
@@ -130,16 +130,16 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:textAppearance="?android:attr/textAppearanceMedium"
-        android:text="RSSI Max: "
         android:id="@+id/textBeacon_StaticRSSIMax"
         android:layout_below="@+id/textBeacon_StaticAverage"
-        android:layout_alignParentStart="true" />
+        android:layout_alignParentStart="true"
+        android:text="@string/beaconactivity_text_rssi_max" />
 
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:textAppearance="?android:attr/textAppearanceMedium"
-        android:text="Max"
+        android:text="@string/generic_value"
         android:id="@+id/textBeacon_ActiveRSSIMax"
         android:layout_alignParentEnd="true"
         android:layout_toEndOf="@+id/textBeacon_StaticRSSIMax"
@@ -149,16 +149,16 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:textAppearance="?android:attr/textAppearanceMedium"
-        android:text="RSSI Min: "
         android:id="@+id/textBeacon_StaticRSSIMin"
         android:layout_alignParentStart="true"
-        android:layout_below="@+id/textBeacon_StaticRSSIMax" />
+        android:layout_below="@+id/textBeacon_StaticRSSIMax"
+        android:text="@string/beaconactivity_text_rssi_min" />
 
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:textAppearance="?android:attr/textAppearanceMedium"
-        android:text="Min"
+        android:text="@string/generic_value"
         android:id="@+id/textBeacon_ActiveRSSIMin"
         android:layout_alignParentEnd="true"
         android:layout_toEndOf="@+id/textBeacon_StaticRSSIMin"

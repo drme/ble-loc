@@ -13,16 +13,16 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:textAppearance="?android:attr/textAppearanceLarge"
-        android:text="Pavadinimas: "
         android:id="@+id/textSingleRoom_StaticName"
         android:layout_alignParentTop="true"
-        android:layout_alignParentStart="true" />
+        android:layout_alignParentStart="true"
+        android:text="@string/roomactivity_text_name" />
 
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:textAppearance="?android:attr/textAppearanceLarge"
-        android:text="Patalpos Pav."
+        android:text="@string/generic_value"
         android:id="@+id/textSingleRoom_ActiveName"
         android:layout_alignParentTop="true"
         android:layout_alignParentEnd="true"
@@ -31,7 +31,7 @@
     <Button
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Kalibruoti įrenginius"
+        android:text="@string/roomactivity_button_calibrate"
         android:id="@+id/buttonSingleRoom_Calibrate"
         android:layout_alignParentBottom="true"
         android:layout_centerHorizontal="true" />
@@ -40,11 +40,11 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:textAppearance="?android:attr/textAppearanceSmall"
-        android:text="Susieti įrenginiai:"
         android:id="@+id/textSingleRoom_StaticDevices"
         android:layout_below="@+id/textSingleRoom_StaticName"
         android:layout_alignParentStart="true"
-        android:layout_alignEnd="@+id/textSingleRoom_ActiveName" />
+        android:layout_alignEnd="@+id/textSingleRoom_ActiveName"
+        android:text="@string/roomactivity_text_bound_devices" />
 
     <ListView
         android:layout_width="wrap_content"

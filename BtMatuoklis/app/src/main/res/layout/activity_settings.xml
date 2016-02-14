@@ -18,17 +18,17 @@
         android:layout_height="wrap_content"
         android:textAppearance="?android:attr/textAppearanceMedium"
         android:textColor="#000000"
-        android:text="TxPower: "
         android:id="@+id/textSettings_StaticTxPower"
         android:layout_alignParentTop="true"
-        android:layout_alignParentStart="true" />
+        android:layout_alignParentStart="true"
+        android:text="@string/settingsactivity_text_txpower" />
 
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:textAppearance="?android:attr/textAppearanceMedium"
         android:textColor="#000000"
-        android:text="50"
+        android:text="@string/generic_value"
         android:id="@+id/textSettings_ActiveTxPower"
         android:layout_alignParentTop="true"
         android:layout_alignParentEnd="true" />
@@ -48,7 +48,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:textAppearance="?android:attr/textAppearanceSmall"
-        android:text="Hint"
+        android:text="@string/generic_hint"
         android:id="@+id/textSettings_TxPowerHint"
         android:layout_below="@+id/seekbarSettings_TxPower"
         android:layout_centerHorizontal="true" />
@@ -69,16 +69,16 @@
     <Button
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Nustatyti matavimų dažnį"
         android:id="@+id/buttonSettings_SetFrequency"
         android:layout_below="@+id/editSettings_Frequency"
-        android:layout_centerHorizontal="true" />
+        android:layout_centerHorizontal="true"
+        android:text="@string/settingsactivity_button_frequency" />
 
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:textAppearance="?android:attr/textAppearanceSmall"
-        android:text="Hint"
+        android:text="@string/generic_hint"
         android:id="@+id/textSettings_FrequencyHint"
         android:textAlignment="center"
         android:layout_below="@+id/buttonSettings_SetFrequency"
@@ -100,16 +100,16 @@
     <Button
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Nustatyti Vidurkio Reikšmių Kiekį"
         android:id="@+id/buttonSettings_SetAverage"
         android:layout_below="@+id/editSettings_Average"
-        android:layout_centerHorizontal="true" />
+        android:layout_centerHorizontal="true"
+        android:text="@string/settingsactivity_button_average" />
 
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:textAppearance="?android:attr/textAppearanceSmall"
-        android:text="Hint"
+        android:text="@string/generic_hint"
         android:id="@+id/textSettings_AverageHint"
         android:layout_below="@+id/buttonSettings_SetAverage"
         android:layout_centerHorizontal="true" />
@@ -123,25 +123,25 @@
         android:layout_height="wrap_content"
         android:textAppearance="?android:attr/textAppearanceMedium"
         android:textColor="#000000"
-        android:text="Debug: "
         android:id="@+id/textSettings_StaticDebug"
         android:layout_below="@+id/view3"
-        android:layout_alignParentStart="true" />
+        android:layout_alignParentStart="true"
+        android:text="@string/settingsactivity_text_debug" />
 
     <Switch
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Įrenginių generavimas"
         android:id="@+id/switchSettings_FakeValues"
         android:layout_alignTop="@+id/textSettings_StaticDebug"
         android:layout_alignParentEnd="true"
-        android:checked="false" />
+        android:checked="false"
+        android:text="@string/settingsactivity_slider_generator" />
 
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:textAppearance="?android:attr/textAppearanceSmall"
-        android:text="Hint"
+        android:text="@string/generic_hint"
         android:id="@+id/textSettings_FakeValuesHint"
         android:layout_below="@+id/switchSettings_FakeValues"
         android:layout_centerHorizontal="true" />
