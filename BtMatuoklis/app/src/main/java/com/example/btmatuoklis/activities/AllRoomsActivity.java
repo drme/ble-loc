@@ -103,6 +103,7 @@ public class AllRoomsActivity extends AppCompatActivity {
     void roomNameEntry(){
         final AlertDialog.Builder builder = new AlertDialog.Builder(AllRoomsActivity.this);
         builder.setTitle(getText(R.string.dialog_new_room_name));
+        builder.setIcon(android.R.drawable.ic_dialog_info);
 
         final EditText input = new EditText(AllRoomsActivity.this);
         input.setInputType(InputType.TYPE_CLASS_TEXT);
@@ -157,6 +158,7 @@ public class AllRoomsActivity extends AppCompatActivity {
     void removeAllRoomsConfirm() {
         final AlertDialog.Builder builder1 = new AlertDialog.Builder(AllRoomsActivity.this);
         builder1.setTitle(getText(R.string.dialog_remove_all_rooms));
+        builder1.setIcon(android.R.drawable.ic_dialog_alert);
 
         builder1.setPositiveButton("OK", new DialogInterface.OnClickListener() {
             @Override

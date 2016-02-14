@@ -141,6 +141,7 @@ public class NewRoomActivity extends AppCompatActivity {
     void cancelCreationConfirm(){
         final AlertDialog.Builder builder3 = new AlertDialog.Builder(NewRoomActivity.this);
         builder3.setTitle(getText(R.string.dialog_cancel_room_creation));
+        builder3.setIcon(android.R.drawable.ic_dialog_alert);
 
         builder3.setPositiveButton("OK", new DialogInterface.OnClickListener() {
             @Override

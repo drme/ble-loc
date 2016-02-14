@@ -182,6 +182,7 @@ public class RoomActivity extends AppCompatActivity {
     void removeRoomConfirm() {
         final AlertDialog.Builder builder2 = new AlertDialog.Builder(RoomActivity.this);
         builder2.setTitle(getText(R.string.dialog_remove_room));
+        builder2.setIcon(android.R.drawable.ic_dialog_alert);
 
         builder2.setPositiveButton("OK", new DialogInterface.OnClickListener() {
             @Override

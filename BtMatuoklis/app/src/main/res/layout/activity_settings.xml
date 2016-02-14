@@ -54,7 +54,7 @@
         android:layout_centerHorizontal="true" />
 
     <View style="@style/Divider"
-        android:id="@+id/view"
+        android:id="@+id/lineCategory"
         android:layout_below="@+id/textSettings_TxPowerHint" />
 
     <EditText
@@ -63,7 +63,7 @@
         android:inputType="numberDecimal"
         android:ems="10"
         android:id="@+id/editSettings_Frequency"
-        android:layout_below="@+id/view"
+        android:layout_below="@+id/lineCategory"
         android:layout_centerHorizontal="true" />
 
     <Button

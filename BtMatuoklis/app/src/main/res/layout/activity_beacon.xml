@@ -32,7 +32,7 @@
         android:layout_toEndOf="@+id/textBeacon_StaticName" />
 
     <View style="@style/Divider"
-        android:id="@+id/view"
+        android:id="@+id/lineCategory"
         android:layout_below="@+id/textBeacon_StaticName" />
 
     <TextView
@@ -41,7 +41,7 @@
         android:textAppearance="?android:attr/textAppearanceMedium"
         android:text="Įrenginio info"
         android:id="@+id/textBeacon_Info"
-        android:layout_below="@+id/view"
+        android:layout_below="@+id/lineCategory"
         android:layout_alignParentStart="true"
         android:layout_alignParentEnd="true" />
 

@@ -118,6 +118,7 @@ public class BeaconActivity extends AppCompatActivity {
     void removeCalibrationConfirm() {
         final AlertDialog.Builder builder4 = new AlertDialog.Builder(BeaconActivity.this);
         builder4.setTitle(getText(R.string.dialog_remove_calibration));
+        builder4.setIcon(android.R.drawable.ic_dialog_alert);
 
         builder4.setPositiveButton("OK", new DialogInterface.OnClickListener() {
             @Override
@@ -141,6 +142,7 @@ public class BeaconActivity extends AppCompatActivity {
     void removeBeaconConfirm() {
         final AlertDialog.Builder builder5 = new AlertDialog.Builder(BeaconActivity.this);
         builder5.setTitle(getText(R.string.dialog_remove_beacon));
+        builder5.setIcon(android.R.drawable.ic_dialog_alert);
 
         builder5.setPositiveButton("OK", new DialogInterface.OnClickListener() {
             @Override
