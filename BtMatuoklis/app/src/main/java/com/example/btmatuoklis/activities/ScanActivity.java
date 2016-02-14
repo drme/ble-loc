@@ -16,6 +16,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
+import android.widget.Toast;
 
 import com.example.btmatuoklis.classes.Beacon;
 import com.example.btmatuoklis.R;
@@ -58,7 +59,7 @@ public class ScanActivity extends AppCompatActivity {
     public boolean onCreateOptionsMenu(Menu menu)
     {
         MenuInflater inflater = getMenuInflater();
-        inflater.inflate(R.menu.action_bar, menu);
+        inflater.inflate(R.menu.actionbar_scan, menu);
         menu.findItem(R.id.action_progress).setVisible(true);
         return true;
     }
@@ -66,6 +67,10 @@ public class ScanActivity extends AppCompatActivity {
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
+            case R.id.action_help:
+                //Work in progress
+                Toast.makeText(getApplicationContext(), "Not implemented.", Toast.LENGTH_SHORT).show();
+                return true;
             case R.id.action_settings:
                 startActivity(new Intent(getBaseContext(), SettingsActivity.class));
                 return true;

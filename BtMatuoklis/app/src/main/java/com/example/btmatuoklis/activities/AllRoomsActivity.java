@@ -57,28 +57,25 @@ public class AllRoomsActivity extends AppCompatActivity {
     public boolean onCreateOptionsMenu(Menu menu)
     {
         MenuInflater inflater = getMenuInflater();
-        inflater.inflate(R.menu.action_bar, menu);
-        menu.findItem(R.id.action_remove).setTitle(getText(R.string.bartext_all_rooms_remove));
-        menu.findItem(R.id.action_progress).setShowAsAction(MenuItem.SHOW_AS_ACTION_NEVER);
-        menu.findItem(R.id.action_add).setShowAsAction(MenuItem.SHOW_AS_ACTION_ALWAYS);
-        menu.findItem(R.id.action_remove).setShowAsAction(MenuItem.SHOW_AS_ACTION_ALWAYS);
-        menu.findItem(R.id.action_settings).setShowAsAction(MenuItem.SHOW_AS_ACTION_ALWAYS);
-        menu.findItem(R.id.action_add).setVisible(true);
-        menu.findItem(R.id.action_remove).setVisible(true);
+        inflater.inflate(R.menu.actionbar_allrooms, menu);
         return true;
     }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
-            case R.id.action_settings:
-                startActivity(new Intent(getBaseContext(), SettingsActivity.class));
-                return true;
             case R.id.action_add:
                 roomNameEntry();
                 return true;
             case R.id.action_remove:
                 removeAllRoomsConfirm();
+                return true;
+            case R.id.action_help:
+                //Work in progress
+                Toast.makeText(getApplicationContext(), "Not implemented.", Toast.LENGTH_SHORT).show();
+                return true;
+            case R.id.action_settings:
+                startActivity(new Intent(getBaseContext(), SettingsActivity.class));
                 return true;
 
             default:
@@ -109,7 +106,7 @@ public class AllRoomsActivity extends AppCompatActivity {
         input.setInputType(InputType.TYPE_CLASS_TEXT);
         builder.setView(input);
 
-        builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
+        builder.setPositiveButton(getText(R.string.dialog_button_ok), new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
                 roomName = input.getText().toString();
@@ -126,7 +123,7 @@ public class AllRoomsActivity extends AppCompatActivity {
             }
         });
 
-        builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+        builder.setNegativeButton(getText(R.string.dialog_button_cancel), new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
                 dialog.cancel();
@@ -160,7 +157,7 @@ public class AllRoomsActivity extends AppCompatActivity {
         builder1.setTitle(getText(R.string.dialog_remove_all_rooms));
         builder1.setIcon(android.R.drawable.ic_dialog_alert);
 
-        builder1.setPositiveButton("OK", new DialogInterface.OnClickListener() {
+        builder1.setPositiveButton(getText(R.string.dialog_button_ok), new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
                 allRoomsArray.clear();
@@ -171,7 +168,7 @@ public class AllRoomsActivity extends AppCompatActivity {
             }
         });
 
-        builder1.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+        builder1.setNegativeButton(getText(R.string.dialog_button_cancel), new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
                 dialog.cancel();

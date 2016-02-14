@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <item
+        android:id="@+id/action_progress"
+        android:title="@string/bartext_loading"
+        android:visible="true"
+        app:showAsAction="always"
+        app:actionLayout="@layout/action_view_progress" />
+
+    <item
+        android:id="@+id/action_cancel"
+        android:icon="@android:drawable/ic_menu_close_clear_cancel"
+        android:title="@string/bartext_new_room_cancel"
+        android:visible="true"
+        app:showAsAction="ifRoom"/>
+
+    <item
+        android:id="@+id/action_help"
+        android:icon="@android:drawable/ic_menu_help"
+        android:title="@string/bartext_help"
+        android:visible="true"
+        app:showAsAction="ifRoom"/>
+
+    <item
+        android:id="@+id/action_settings"
+        android:icon="@android:drawable/ic_menu_preferences"
+        android:title="@string/bartext_settings"
+        android:visible="true"
+        app:showAsAction="ifRoom"/>
+
+</menu>

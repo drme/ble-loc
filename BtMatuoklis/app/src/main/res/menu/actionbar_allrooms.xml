@@ -3,30 +3,30 @@
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <item
-        android:id="@+id/action_progress"
-        android:title="Loading..."
-        android:visible="false"
-        app:showAsAction="always"
-        app:actionLayout="@layout/action_view_progress" />
-
-    <item
         android:id="@+id/action_add"
         android:icon="@android:drawable/ic_menu_add"
         android:title="@string/bartext_new_room_add"
-        android:visible="false"
+        android:visible="true"
         app:showAsAction="ifRoom"/>
 
     <item
         android:id="@+id/action_remove"
         android:icon="@android:drawable/ic_menu_delete"
-        android:title="@string/bartext_existing_room_remove"
-        android:visible="false"
+        android:title="@string/bartext_all_rooms_remove"
+        android:visible="true"
+        app:showAsAction="ifRoom"/>
+
+    <item
+        android:id="@+id/action_help"
+        android:icon="@android:drawable/ic_menu_help"
+        android:title="@string/bartext_help"
+        android:visible="true"
         app:showAsAction="ifRoom"/>
 
     <item
         android:id="@+id/action_settings"
         android:icon="@android:drawable/ic_menu_preferences"
-        android:title="@string/subtitle_settings"
+        android:title="@string/bartext_settings"
         android:visible="true"
         app:showAsAction="ifRoom"/>
 

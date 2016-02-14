@@ -78,20 +78,22 @@ public class NewRoomActivity extends AppCompatActivity {
     public boolean onCreateOptionsMenu(Menu menu)
     {
         MenuInflater inflater = getMenuInflater();
-        inflater.inflate(R.menu.action_bar, menu);
-        menu.findItem(R.id.action_progress).setVisible(true);
-        menu.findItem(R.id.action_remove).setVisible(true);
+        inflater.inflate(R.menu.actionbar_newroom, menu);
         return true;
     }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
+            case R.id.action_cancel:
+                cancelCreationConfirm();
+                return true;
+            case R.id.action_help:
+                //Work in progress
+                Toast.makeText(getApplicationContext(), "Not implemented.", Toast.LENGTH_SHORT).show();
+                return true;
             case R.id.action_settings:
                 startActivity(new Intent(getBaseContext(), SettingsActivity.class));
-                return true;
-            case R.id.action_remove:
-                cancelCreationConfirm();
                 return true;
 
             default:
@@ -143,7 +145,7 @@ public class NewRoomActivity extends AppCompatActivity {
         builder3.setTitle(getText(R.string.dialog_cancel_room_creation));
         builder3.setIcon(android.R.drawable.ic_dialog_alert);
 
-        builder3.setPositiveButton("OK", new DialogInterface.OnClickListener() {
+        builder3.setPositiveButton(getText(R.string.dialog_button_ok), new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
                 scanning = false;
@@ -154,7 +156,7 @@ public class NewRoomActivity extends AppCompatActivity {
             }
         });
 
-        builder3.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+        builder3.setNegativeButton(getText(R.string.dialog_button_cancel), new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
                 dialog.cancel();

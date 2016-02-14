@@ -62,20 +62,22 @@ public class BeaconActivity extends AppCompatActivity {
     public boolean onCreateOptionsMenu(Menu menu)
     {
         MenuInflater inflater = getMenuInflater();
-        inflater.inflate(R.menu.action_bar, menu);
-        menu.findItem(R.id.action_remove).setTitle(getText(R.string.bartext_existing_calibration_remove));
-        menu.findItem(R.id.action_remove).setVisible(true);
+        inflater.inflate(R.menu.actionbar_beacon, menu);
         return true;
     }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
-            case R.id.action_settings:
-                startActivity(new Intent(getBaseContext(), SettingsActivity.class));
-                return true;
             case R.id.action_remove:
                 removeBeaconConfirm();
+                return true;
+            case R.id.action_help:
+                //Work in progress
+                Toast.makeText(getApplicationContext(), "Not implemented.", Toast.LENGTH_SHORT).show();
+                return true;
+            case R.id.action_settings:
+                startActivity(new Intent(getBaseContext(), SettingsActivity.class));
                 return true;
 
             default:
@@ -120,7 +122,7 @@ public class BeaconActivity extends AppCompatActivity {
         builder4.setTitle(getText(R.string.dialog_remove_calibration));
         builder4.setIcon(android.R.drawable.ic_dialog_alert);
 
-        builder4.setPositiveButton("OK", new DialogInterface.OnClickListener() {
+        builder4.setPositiveButton(getText(R.string.dialog_button_ok), new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
                 currentRoom.getBeacons().get(beaconID).getCalibratedRSSI().clear();
@@ -129,7 +131,7 @@ public class BeaconActivity extends AppCompatActivity {
             }
         });
 
-        builder4.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+        builder4.setNegativeButton(getText(R.string.dialog_button_cancel), new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
                 dialog.cancel();
@@ -144,7 +146,7 @@ public class BeaconActivity extends AppCompatActivity {
         builder5.setTitle(getText(R.string.dialog_remove_beacon));
         builder5.setIcon(android.R.drawable.ic_dialog_alert);
 
-        builder5.setPositiveButton("OK", new DialogInterface.OnClickListener() {
+        builder5.setPositiveButton(getText(R.string.dialog_button_ok), new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
                 currentRoom.getBeacons().remove(beaconID);
@@ -153,7 +155,7 @@ public class BeaconActivity extends AppCompatActivity {
             }
         });
 
-        builder5.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+        builder5.setNegativeButton(getText(R.string.dialog_button_cancel), new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
                 dialog.cancel();

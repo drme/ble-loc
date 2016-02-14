@@ -5,6 +5,7 @@
     <string name="subtitle_main">Pagrindinis</string>
     <string name="subtitle_scan">Rasti Įrenginiai:</string>
     <string name="subtitle_settings">Nustatymai</string>
+    <string name="subtitle_help">Pagalba</string>
     <string name="subtitle_all_rooms">Visos patalpos</string>
     <string name="subtitle_existing_room">Patalpa</string>
     <string name="subtitle_new_room">Nauja patalpa</string>
@@ -12,12 +13,18 @@
     <string name="subtitle_existing_beacon">Įrenginys</string>
 
     <!--ActionBar tekstai-->
-    <string name="bartext_new_room_add">Pridėti naują kambarį</string>
-    <string name="bartext_all_rooms_remove">Pašalinti visus kambarius</string>
-    <string name="bartext_existing_room_remove">Pašalinti kambarį</string>
-    <string name="bartext_existing_calibration_remove">Pašalinti kalibraciją</string>
+    <string name="bartext_loading">Progresas</string>
+    <string name="bartext_new_room_add">Pridėti naują patalpą</string>
+    <string name="bartext_new_room_cancel">Atšaukti kūrimą</string>
+    <string name="bartext_all_rooms_remove">Pašalinti visas patalpas</string>
+    <string name="bartext_existing_room_remove">Pašalinti patalpą</string>
+    <string name="bartext_existing_beacon_remove">Pašalinti įrenginį</string>
+    <string name="bartext_settings">Nustatymai</string>
+    <string name="bartext_help">Pagalba</string>
 
     <!--AlertDialog antrastes-->
+    <string name="dialog_button_ok">OK</string>
+    <string name="dialog_button_cancel">Cancel</string>
     <string name="dialog_new_room_name">Naujos patalpos pavadinimas:</string>
     <string name="dialog_cancel_room_creation">Atšaukti naujos patalpos kūrimą?</string>
     <string name="dialog_remove_all_rooms">Pašalinti visas patalpas?</string>
