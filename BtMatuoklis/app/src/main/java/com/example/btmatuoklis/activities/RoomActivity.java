@@ -71,7 +71,6 @@ public class RoomActivity extends AppCompatActivity {
         existingPavadinimas.setText(currentRoom.getName());
         createBT();
         setChoiceListener();
-        setCalibrateButtonListener();
         loadBoundDevices();
         checkCompleted();
     }
@@ -83,25 +82,6 @@ public class RoomActivity extends AppCompatActivity {
         inflater.inflate(R.menu.actionbar_room, menu);
         actionProgress = menu.findItem(R.id.action_progress);
         return true;
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        switch (item.getItemId()) {
-            case R.id.action_remove:
-                removeRoomConfirm();
-                return true;
-            case R.id.action_help:
-                //Work in progress
-                Toast.makeText(getApplicationContext(), "Not implemented.", Toast.LENGTH_SHORT).show();
-                return true;
-            case R.id.action_settings:
-                startActivity(new Intent(getBaseContext(), SettingsActivity.class));
-                return true;
-
-            default:
-                return super.onOptionsItemSelected(item);
-        }
     }
 
     @Override
@@ -123,15 +103,18 @@ public class RoomActivity extends AppCompatActivity {
         this.finish();
     }
 
-    void setCalibrateButtonListener(){
-        calibrateButton.setOnClickListener(new Button.OnClickListener() {
-            public void onClick(View v) {
-                calibrateButtonActions();
-            }
-        });
+    public void onRemoveActionClick(MenuItem irem){ removeRoomConfirm(); }
+
+    public void onHelpActionClick(MenuItem irem){
+        //Work in progress
+        Toast.makeText(getApplicationContext(), "Not implemented.", Toast.LENGTH_SHORT).show();
     }
 
-    void calibrateButtonActions(){
+    public void onSettingsActionClick(MenuItem irem){
+        startActivity(new Intent(getBaseContext(), SettingsActivity.class));
+    }
+
+    public void onCalibrateButtonClick(View view){
         if (!globalVariable.isScanning() && !currentRoom.isCalibrated()) {
             StartCalibration();
         } else if (globalVariable.isScanning() && currentRoom.isCalibrated()) {
@@ -192,7 +175,8 @@ public class RoomActivity extends AppCompatActivity {
     void setChoiceListener(){
         boundBtList.setMultiChoiceModeListener(new AbsListView.MultiChoiceModeListener() {
             @Override
-            public void onItemCheckedStateChanged(ActionMode mode, int position, long id, boolean checked) {}
+            public void onItemCheckedStateChanged(ActionMode mode, int position, long id, boolean checked) {
+            }
 
             @Override
             public boolean onCreateActionMode(ActionMode mode, Menu menu) {
@@ -280,11 +264,13 @@ public class RoomActivity extends AppCompatActivity {
         final Runnable uiRunnable3 = new Runnable(){
             @Override
             public void run() {
-                loadBoundDevices();
-                checkCalibratedDevices();
-                if (currentRoom.isCalibrated()){
-                    calibrateButton.setEnabled(true);
-                    setListListener();
+                if (globalVariable.isScanning()) {
+                    loadBoundDevices();
+                    checkCalibratedDevices();
+                    if (currentRoom.isCalibrated()) {
+                        calibrateButton.setEnabled(true);
+                        setListListener();
+                    }
                 }
             }
         };

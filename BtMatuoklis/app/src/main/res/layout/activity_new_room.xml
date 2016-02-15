@@ -9,7 +9,8 @@
         android:text="@string/newroomactivity_button_finish"
         android:id="@+id/buttonNewRoom_End"
         android:layout_alignParentBottom="true"
-        android:layout_centerHorizontal="true" />
+        android:layout_centerHorizontal="true"
+        android:onClick="onAcceptButtonClick" />
 
     <ListView
         android:layout_width="wrap_content"

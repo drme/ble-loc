@@ -21,7 +21,6 @@ public class MainActivity extends AppCompatActivity {
 
     public static Settings settings;
     ActionBar actionbar;
-    Button scan, allRoomsBtn;
     BluetoothAdapter mBluetoothAdapter;
 
     @Override
@@ -32,10 +31,6 @@ public class MainActivity extends AppCompatActivity {
         actionbar.setSubtitle(getText(R.string.subtitle_main));
         Context context = getApplicationContext();
         settings = new Settings(context);
-        scan = (Button)findViewById(R.id.buttonMain_Scan);
-        allRoomsBtn = (Button)findViewById(R.id.buttonMain_AllRooms);
-        setScanListener();
-        setAllRoomsListener();
         createBT();
         checkBT();
     }
@@ -48,40 +43,21 @@ public class MainActivity extends AppCompatActivity {
         return true;
     }
 
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        switch (item.getItemId()) {
-            case R.id.action_help:
-                //Work in progress
-                Toast.makeText(getApplicationContext(), "Not implemented.", Toast.LENGTH_SHORT).show();
-                return true;
-            case R.id.action_settings:
-                startActivity(new Intent(getBaseContext(), SettingsActivity.class));
-                return true;
-
-            default:
-                return super.onOptionsItemSelected(item);
-        }
+    public void onHelpActionClick(MenuItem item){
+        //Work in progress
+        Toast.makeText(getApplicationContext(), "Not implemented.", Toast.LENGTH_SHORT).show();
     }
 
-    void setScanListener(){
-        scan.setOnClickListener(
-                new Button.OnClickListener() {
-                    public void onClick(View v) {
-                        startActivity(new Intent(getBaseContext(), ScanActivity.class));
-                    }
-                }
-        );
+    public void onSettingsActionClick(MenuItem item){
+        startActivity(new Intent(getBaseContext(), SettingsActivity.class));
     }
 
-    void setAllRoomsListener(){
-        allRoomsBtn.setOnClickListener(
-                new Button.OnClickListener() {
-                    public void onClick(View v) {
-                        startActivity(new Intent(getBaseContext(), AllRoomsActivity.class));
-                    }
-                }
-        );
+    public void onScanButtonClick(View view){
+        startActivity(new Intent(getBaseContext(), ScanActivity.class));
+    }
+
+    public void onAllRoomsButtonClick(View view){
+        startActivity(new Intent(getBaseContext(), AllRoomsActivity.class));
     }
 
     //Sukuriamas Bluetooth adapteris

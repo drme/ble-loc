@@ -62,29 +62,24 @@ public class AllRoomsActivity extends AppCompatActivity {
     }
 
     @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        switch (item.getItemId()) {
-            case R.id.action_add:
-                roomNameEntry();
-                return true;
-            case R.id.action_remove:
-                removeAllRoomsConfirm();
-                return true;
-            case R.id.action_help:
-                //Work in progress
-                Toast.makeText(getApplicationContext(), "Not implemented.", Toast.LENGTH_SHORT).show();
-                return true;
-            case R.id.action_settings:
-                startActivity(new Intent(getBaseContext(), SettingsActivity.class));
-                return true;
+    public void onBackPressed() { this.finish(); }
 
-            default:
-                return super.onOptionsItemSelected(item);
-        }
+    public void onAddActionClick(MenuItem item){
+        roomNameEntry();
     }
 
-    @Override
-    public void onBackPressed() { this.finish(); }
+    public void onRemoveActionClick(MenuItem item){
+        removeAllRoomsConfirm();
+    }
+
+    public void onHelpActionClick(MenuItem item){
+        //Work in progress
+        Toast.makeText(getApplicationContext(), "Not implemented.", Toast.LENGTH_SHORT).show();
+    }
+
+    public void onSettingsActionClick(MenuItem item){
+        startActivity(new Intent(getBaseContext(), SettingsActivity.class));
+    }
 
     void setListListener(){
         allRoomsList.setOnItemClickListener(new AdapterView.OnItemClickListener() {

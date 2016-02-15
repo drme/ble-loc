@@ -34,7 +34,8 @@
         android:text="@string/roomactivity_button_calibrate"
         android:id="@+id/buttonSingleRoom_Calibrate"
         android:layout_alignParentBottom="true"
-        android:layout_centerHorizontal="true" />
+        android:layout_centerHorizontal="true"
+        android:onClick="onCalibrateButtonClick" />
 
     <TextView
         android:layout_width="wrap_content"

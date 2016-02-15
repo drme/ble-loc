@@ -59,7 +59,6 @@ public class NewRoomActivity extends AppCompatActivity {
         actionbar.setSubtitle(getText(R.string.subtitle_new_room_beacons));
         acceptBtn = (Button)findViewById(R.id.buttonNewRoom_End);
         roomName = getIntent().getExtras().getString("roomName");
-        setAcceptListener();
         createBT();
         settings = MainActivity.settings;
         globalVariable = (GlobalClass) getApplicationContext();
@@ -82,46 +81,34 @@ public class NewRoomActivity extends AppCompatActivity {
     }
 
     @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        switch (item.getItemId()) {
-            case R.id.action_cancel:
-                cancelCreationConfirm();
-                return true;
-            case R.id.action_help:
-                //Work in progress
-                Toast.makeText(getApplicationContext(), "Not implemented.", Toast.LENGTH_SHORT).show();
-                return true;
-            case R.id.action_settings:
-                startActivity(new Intent(getBaseContext(), SettingsActivity.class));
-                return true;
-
-            default:
-                return super.onOptionsItemSelected(item);
-        }
-    }
-
-    @Override
     public void onBackPressed(){
         cancelCreationConfirm();
     }
 
-    void setAcceptListener() {
-        acceptBtn.setOnClickListener(
-                new Button.OnClickListener() {
-                    public void onClick(View v) {
-                        if (selectedDevices.size() > 0) {
-                            globalVariable.setScanning(false);
-                            createRoom();
-                            saveSelected();
-                            NewRoomActivity.this.finish();
-                            startActivity(new Intent(getBaseContext(), AllRoomsActivity.class));
-                        } else {
-                            Toast.makeText(getApplicationContext(),
-                                    getText(R.string.toast_warning_no_beacons), Toast.LENGTH_SHORT).show();
-                        }
-                    }
-                }
-        );
+    public void onCancelActionClick(MenuItem item){
+        cancelCreationConfirm();
+    }
+
+    public void onHelpActionClick(MenuItem item){
+        //Work in progress
+        Toast.makeText(getApplicationContext(), "Not implemented.", Toast.LENGTH_SHORT).show();
+    }
+
+    public void onSettingsActionClick(MenuItem item){
+        startActivity(new Intent(getBaseContext(), SettingsActivity.class));
+    }
+
+    public void onAcceptButtonClick(View view){
+        if (selectedDevices.size() > 0) {
+            globalVariable.setScanning(false);
+            createRoom();
+            saveSelected();
+            NewRoomActivity.this.finish();
+            startActivity(new Intent(getBaseContext(), AllRoomsActivity.class));
+        } else {
+            Toast.makeText(getApplicationContext(),
+                    getText(R.string.toast_warning_no_beacons), Toast.LENGTH_SHORT).show();
+        }
     }
 
     void setListListener(){
@@ -194,7 +181,9 @@ public class NewRoomActivity extends AppCompatActivity {
         final Runnable uiRunnable2 = new Runnable(){
             @Override
             public void run() {
-                listAdapter.notifyDataSetChanged();
+                if (globalVariable.isScanning()) {
+                    listAdapter.notifyDataSetChanged();
+                }
             }
         };
         //Background Runnable:

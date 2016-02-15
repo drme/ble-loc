@@ -7,6 +7,7 @@
         android:icon="@android:drawable/ic_menu_add"
         android:title="@string/bartext_new_room_add"
         android:visible="true"
+        android:onClick="onAddActionClick"
         app:showAsAction="ifRoom"/>
 
     <item
@@ -14,6 +15,7 @@
         android:icon="@android:drawable/ic_menu_delete"
         android:title="@string/bartext_all_rooms_remove"
         android:visible="true"
+        android:onClick="onRemoveActionClick"
         app:showAsAction="ifRoom"/>
 
     <item
@@ -21,6 +23,7 @@
         android:icon="@android:drawable/ic_menu_help"
         android:title="@string/bartext_help"
         android:visible="true"
+        android:onClick="onHelpActionClick"
         app:showAsAction="ifRoom"/>
 
     <item
@@ -28,6 +31,7 @@
         android:icon="@android:drawable/ic_menu_preferences"
         android:title="@string/bartext_settings"
         android:visible="true"
+        android:onClick="onSettingsActionClick"
         app:showAsAction="ifRoom"/>
 
 </menu>

@@ -65,22 +65,6 @@ public class ScanActivity extends AppCompatActivity {
     }
 
     @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        switch (item.getItemId()) {
-            case R.id.action_help:
-                //Work in progress
-                Toast.makeText(getApplicationContext(), "Not implemented.", Toast.LENGTH_SHORT).show();
-                return true;
-            case R.id.action_settings:
-                startActivity(new Intent(getBaseContext(), SettingsActivity.class));
-                return true;
-
-            default:
-                return super.onOptionsItemSelected(item);
-        }
-    }
-
-    @Override
     public void onBackPressed(){
         globalVariable.setScanning(false);
         this.finish();
@@ -89,6 +73,15 @@ public class ScanActivity extends AppCompatActivity {
     @Override
     public void setSupportProgressBarIndeterminateVisibility(boolean visible) {
         getSupportActionBar().getCustomView().setVisibility(visible ? View.VISIBLE : View.GONE);
+    }
+
+    public void onHelpActionClick(MenuItem item){
+        //Work in progress
+        Toast.makeText(getApplicationContext(), "Not implemented.", Toast.LENGTH_SHORT).show();
+    }
+
+    public void onSettingsActionClick(MenuItem item){
+        startActivity(new Intent(getBaseContext(), SettingsActivity.class));
     }
 
     //Sukuriamas Bluetooth adapteris
@@ -125,7 +118,9 @@ public class ScanActivity extends AppCompatActivity {
         final Runnable uiRunnable = new Runnable(){
             @Override
             public void run() {
-                listAdapter.notifyDataSetChanged();
+                if (globalVariable.isScanning()) {
+                    listAdapter.notifyDataSetChanged();
+                }
             }
         };
         //Background Runnable:

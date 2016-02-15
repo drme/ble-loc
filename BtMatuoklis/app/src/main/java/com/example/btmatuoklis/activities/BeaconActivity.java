@@ -67,27 +67,20 @@ public class BeaconActivity extends AppCompatActivity {
     }
 
     @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        switch (item.getItemId()) {
-            case R.id.action_remove:
-                removeBeaconConfirm();
-                return true;
-            case R.id.action_help:
-                //Work in progress
-                Toast.makeText(getApplicationContext(), "Not implemented.", Toast.LENGTH_SHORT).show();
-                return true;
-            case R.id.action_settings:
-                startActivity(new Intent(getBaseContext(), SettingsActivity.class));
-                return true;
-
-            default:
-                return super.onOptionsItemSelected(item);
-        }
-    }
-
-    @Override
     public void onBackPressed(){
         this.finish();
+    }
+
+    public void onRemoveActionClick(MenuItem item){
+        removeBeaconConfirm();
+    }
+
+    public void onHelpActionClick(MenuItem item){
+        Toast.makeText(getApplicationContext(), "Not implemented.", Toast.LENGTH_SHORT).show();
+    }
+
+    public void onSettingsActionClick(MenuItem item){
+        startActivity(new Intent(getBaseContext(), SettingsActivity.class));
     }
 
     //RSSI reiksmiu vaizdo keitimas tarp vienos elutes daugelio eiluciu

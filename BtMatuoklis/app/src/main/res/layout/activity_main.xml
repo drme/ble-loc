@@ -17,7 +17,8 @@
         android:layout_alignParentTop="true"
         android:layout_centerHorizontal="true"
         android:layout_marginTop="20dp"
-        android:text="@string/mainactivity_button_scan" />
+        android:text="@string/mainactivity_button_scan"
+        android:onClick="onScanButtonClick" />
 
     <Button
         android:layout_width="wrap_content"
@@ -25,5 +26,6 @@
         android:text="@string/mainactivity_button_allrooms"
         android:id="@+id/buttonMain_AllRooms"
         android:layout_below="@+id/buttonMain_Scan"
-        android:layout_centerHorizontal="true" />
+        android:layout_centerHorizontal="true"
+        android:onClick="onAllRoomsButtonClick" />
 </RelativeLayout>
