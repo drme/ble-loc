@@ -109,11 +109,11 @@ public class RoomActivity extends AppCompatActivity {
         super.onResume();
         loadBoundDevices();
         checkCalibratedDevices();
-        if (currentRoom.isCalibrated()) {
-            setListListener();
+        if ((currentRoom.getBeacons().size() == 0) | !currentRoom.isCalibrationStarted()){
+            restoreCalibrateButton();
         }
         else {
-            boundBtList.setOnItemClickListener(null);
+            resumeCalibrateButton();
         }
     }
 
@@ -126,19 +126,54 @@ public class RoomActivity extends AppCompatActivity {
     void setCalibrateButtonListener(){
         calibrateButton.setOnClickListener(new Button.OnClickListener() {
             public void onClick(View v) {
-                if (!globalVariable.isScanning()) {
-                    contScanStop();
-                    actionProgress.setVisible(true);
-                    calibrateButton.setText("Baigti");
-                    calibrateButton.setEnabled(false);
-                } else {
-                    globalVariable.setScanning(false);
-                    actionProgress.setVisible(false);
-                    calibrateButton.setEnabled(false);
-                    setListListener();
-                }
+                calibrateButtonActions();
             }
         });
+    }
+
+    void calibrateButtonActions(){
+        if (!globalVariable.isScanning() && !currentRoom.isCalibrated()) {
+            StartCalibration();
+        } else if (globalVariable.isScanning() && currentRoom.isCalibrated()) {
+            finishCalibration();
+        }
+        else {
+            StartCalibration();
+        }
+    }
+
+    //Veiksmai kalibracijai pradeti
+    void StartCalibration(){
+        globalVariable.setScanning(true);
+        actionProgress.setVisible(true);
+        calibrateButton.setText(getText(R.string.roomactivity_button_finish_calib));
+        calibrateButton.setEnabled(false);
+        contScanStop();
+    }
+
+    //Veiksmai veiksmai kalibracijai baigti
+    void finishCalibration(){
+        globalVariable.setScanning(false);
+        actionProgress.setVisible(false);
+        calibrateButton.setText(getText(R.string.roomactivity_button_resume_calib));
+        calibrateButton.setEnabled(true);
+        setListListener();
+    }
+
+    //Veiksmai pradinei mygtuko isvaizdai atstayti, kai nera kalibraciniu reiksmiu
+    void restoreCalibrateButton(){
+        globalVariable.setScanning(false);
+        calibrateButton.setText(getText(R.string.roomactivity_button_calibrate));
+        calibrateButton.setEnabled(true);
+        boundBtList.setOnItemClickListener(null);
+    }
+
+    //Veiksmai mygtuko isvaizdai nustatyti, kai yra kalibraciniu reiksmiu
+    void resumeCalibrateButton(){
+        globalVariable.setScanning(false);
+        calibrateButton.setText(getText(R.string.roomactivity_button_resume_calib));
+        calibrateButton.setEnabled(true);
+        setListListener();
     }
 
     void setListListener(){
@@ -157,8 +192,7 @@ public class RoomActivity extends AppCompatActivity {
     void setChoiceListener(){
         boundBtList.setMultiChoiceModeListener(new AbsListView.MultiChoiceModeListener() {
             @Override
-            public void onItemCheckedStateChanged(ActionMode mode, int position, long id, boolean checked) {
-            }
+            public void onItemCheckedStateChanged(ActionMode mode, int position, long id, boolean checked) {}
 
             @Override
             public boolean onCreateActionMode(ActionMode mode, Menu menu) {

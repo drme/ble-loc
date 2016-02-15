@@ -61,4 +61,8 @@ public class Room {
     public boolean isCalibrated(){
         return !getCalibratedBeacons().contains(false);
     }
+
+    //Grazina true, jeigu bent vienas irenginys turi
+    //nors viena RSSI reiksme kalibravimo masyve
+    public boolean isCalibrationStarted(){ return getCalibratedBeacons().contains(true); }
 }
