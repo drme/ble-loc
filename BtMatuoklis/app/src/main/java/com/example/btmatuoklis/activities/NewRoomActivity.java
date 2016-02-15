@@ -67,7 +67,7 @@ public class NewRoomActivity extends AppCompatActivity {
         selectedDevices = new ArrayList<Integer>();
         btDevList = new ArrayList<Beacon>();
         savedDevList = new ArrayList<String>();
-        listAdapter = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_multiple_choice, savedDevList);
+        listAdapter = new ArrayAdapter<String>(this, R.layout.list_multiple_choice, savedDevList);
         btInfo.setAdapter(listAdapter);
         setListListener();
         contScanStop();

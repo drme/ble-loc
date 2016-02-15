@@ -66,7 +66,7 @@ public class RoomActivity extends AppCompatActivity {
         settings = MainActivity.settings;
         currentRoom = globalVariable.getRoomsArray().get(roomID);
         boundDevList = new ArrayList<String>();
-        listBoundAdapter = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_checked, boundDevList);
+        listBoundAdapter = new ArrayAdapter<String>(this, R.layout.list_checked, boundDevList);
         boundBtList.setAdapter(listBoundAdapter);
         existingPavadinimas.setText(currentRoom.getName());
         createBT();
