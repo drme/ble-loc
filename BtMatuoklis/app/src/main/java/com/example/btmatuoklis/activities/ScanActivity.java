@@ -20,6 +20,7 @@ import android.widget.Toast;
 
 import com.example.btmatuoklis.classes.Beacon;
 import com.example.btmatuoklis.R;
+import com.example.btmatuoklis.classes.GlobalClass;
 import com.example.btmatuoklis.classes.ScanTools;
 import com.example.btmatuoklis.classes.Settings;
 
@@ -31,14 +32,12 @@ public class ScanActivity extends AppCompatActivity {
     ScanTools scantools = new ScanTools();
     ActionBar actionbar;
 
-    boolean scanning = false;
-
     BluetoothAdapter mBluetoothAdapter;
     ArrayList<Beacon> btDevList;
     ArrayList<String> savedDevList;
     ArrayAdapter<String> listAdapter;
-
     ListView btInfo;
+    GlobalClass globalVariable;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -46,6 +45,7 @@ public class ScanActivity extends AppCompatActivity {
         setContentView(R.layout.activity_scan);
         actionbar = getSupportActionBar();
         actionbar.setSubtitle(getText(R.string.subtitle_scan));
+        globalVariable = (GlobalClass) getApplicationContext();
         settings = MainActivity.settings;
         btInfo = (ListView)findViewById(R.id.listScan_DevicesList);
 
@@ -82,7 +82,7 @@ public class ScanActivity extends AppCompatActivity {
 
     @Override
     public void onBackPressed(){
-        scanning = false;
+        globalVariable.setScanning(false);
         this.finish();
     }
 
@@ -107,14 +107,6 @@ public class ScanActivity extends AppCompatActivity {
         }
     }
 
-    //Jei atsisakoma ijungti Bluetooth - griztama i pradzia
-    @Override
-    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        if (resultCode == Activity.RESULT_CANCELED) {
-            this.finish();
-        }
-    }
-
     //Nustatomos "default" reiksmes
     //Jeigu programa leidziama ne pirma karta - nustatomos issaugotos reiksmes
     void setDefValues(){
@@ -127,7 +119,7 @@ public class ScanActivity extends AppCompatActivity {
     //Nuolatos pradedamas ir stabdomas scan
     void contScanStop(){
         final Handler handler = new Handler();
-        scanning = true;
+        globalVariable.setScanning(true);
         //Main Thread Runnable:
         //pranesa, kad reikia atnaujinti irenginiu sarasa
         final Runnable uiRunnable = new Runnable(){
@@ -141,7 +133,7 @@ public class ScanActivity extends AppCompatActivity {
         Runnable backgroundRunnable = new Runnable(){
             @Override
             public void run() {
-                if (scanning) {
+                if (globalVariable.isScanning()) {
                     startStopScan();
                     handler.postDelayed(uiRunnable, settings.getDelay());
                     handler.postDelayed(this, settings.getDelay());

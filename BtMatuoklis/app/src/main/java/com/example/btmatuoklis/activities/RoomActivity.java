@@ -43,7 +43,6 @@ public class RoomActivity extends AppCompatActivity {
     MenuItem actionProgress;
     Button calibrateButton;
     BluetoothAdapter mBluetoothAdapter;
-    boolean scanning = false;
     Settings settings;
     ScanTools scantools = new ScanTools();
     Room currentRoom;
@@ -120,20 +119,20 @@ public class RoomActivity extends AppCompatActivity {
 
     @Override
     public void onBackPressed(){
-        scanning = false;
+        globalVariable.setScanning(false);
         this.finish();
     }
 
     void setCalibrateButtonListener(){
         calibrateButton.setOnClickListener(new Button.OnClickListener() {
             public void onClick(View v) {
-                if (!scanning) {
+                if (!globalVariable.isScanning()) {
                     contScanStop();
                     actionProgress.setVisible(true);
                     calibrateButton.setText("Baigti");
                     calibrateButton.setEnabled(false);
                 } else {
-                    scanning = false;
+                    globalVariable.setScanning(false);
                     actionProgress.setVisible(false);
                     calibrateButton.setEnabled(false);
                     setListListener();
@@ -190,7 +189,7 @@ public class RoomActivity extends AppCompatActivity {
         builder2.setPositiveButton(getText(R.string.dialog_button_ok), new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
-                scanning = false;
+                globalVariable.setScanning(false);
                 globalVariable.getRoomsArray().remove(roomID);
                 globalVariable.getRoomsList().remove(roomID);
                 Toast.makeText(getApplicationContext(),
@@ -241,7 +240,7 @@ public class RoomActivity extends AppCompatActivity {
     //Nuolatos pradedamas ir stabdomas scan
     void contScanStop(){
         final Handler handler3 = new Handler();
-        scanning = true;
+        globalVariable.setScanning(true);
         //Main Thread Runnable:
         //pranesa, kad reikia atnaujinti irenginiu sarasa
         final Runnable uiRunnable3 = new Runnable(){
@@ -260,7 +259,7 @@ public class RoomActivity extends AppCompatActivity {
         Runnable backgroundRunnable3 = new Runnable(){
             @Override
             public void run() {
-                if (scanning) {
+                if (globalVariable.isScanning()) {
                     startStopScan();
                     handler3.postDelayed(uiRunnable3, settings.getDelay());
                     handler3.postDelayed(this, settings.getDelay());

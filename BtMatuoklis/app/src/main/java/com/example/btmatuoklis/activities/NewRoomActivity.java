@@ -38,7 +38,6 @@ public class NewRoomActivity extends AppCompatActivity {
 
     BluetoothAdapter mBluetoothAdapter;
     ListView btInfo;
-    boolean scanning = false;
     ArrayAdapter<String> listAdapter;
     ArrayList<Beacon> btDevList;
     ArrayList<String> savedDevList;
@@ -111,7 +110,7 @@ public class NewRoomActivity extends AppCompatActivity {
                 new Button.OnClickListener() {
                     public void onClick(View v) {
                         if (selectedDevices.size() > 0) {
-                            scanning = false;
+                            globalVariable.setScanning(false);
                             createRoom();
                             saveSelected();
                             NewRoomActivity.this.finish();
@@ -148,7 +147,7 @@ public class NewRoomActivity extends AppCompatActivity {
         builder3.setPositiveButton(getText(R.string.dialog_button_ok), new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
-                scanning = false;
+                globalVariable.setScanning(false);
                 Toast.makeText(getApplicationContext(),
                         getText(R.string.toast_info_cancelled), Toast.LENGTH_SHORT).show();
                 NewRoomActivity.this.finish();
@@ -189,7 +188,7 @@ public class NewRoomActivity extends AppCompatActivity {
     //Nuolatos pradedamas ir stabdomas scan
     void contScanStop(){
         final Handler handler2 = new Handler();
-        scanning = true;
+        globalVariable.setScanning(true);
         //Main Thread Runnable:
         //pranesa, kad reikia atnaujinti irenginiu sarasa
         final Runnable uiRunnable2 = new Runnable(){
@@ -203,7 +202,7 @@ public class NewRoomActivity extends AppCompatActivity {
         Runnable backgroundRunnable2 = new Runnable(){
             @Override
             public void run() {
-                if (scanning) {
+                if (globalVariable.isScanning()) {
                     startStopScan();
                     handler2.postDelayed(uiRunnable2, settings.getDelay());
                     handler2.postDelayed(this, settings.getDelay());

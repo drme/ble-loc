@@ -1,5 +1,7 @@
 package com.example.btmatuoklis.activities;
 
+import android.bluetooth.BluetoothAdapter;
+import android.bluetooth.BluetoothManager;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
@@ -20,6 +22,7 @@ public class MainActivity extends AppCompatActivity {
     public static Settings settings;
     ActionBar actionbar;
     Button scan, allRoomsBtn;
+    BluetoothAdapter mBluetoothAdapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -33,6 +36,8 @@ public class MainActivity extends AppCompatActivity {
         allRoomsBtn = (Button)findViewById(R.id.buttonMain_AllRooms);
         setScanListener();
         setAllRoomsListener();
+        createBT();
+        checkBT();
     }
 
     @Override
@@ -77,5 +82,21 @@ public class MainActivity extends AppCompatActivity {
                     }
                 }
         );
+    }
+
+    //Sukuriamas Bluetooth adapteris
+    public void createBT(){
+        BluetoothManager bluetoothManager =
+                (BluetoothManager)getSystemService(Context.BLUETOOTH_SERVICE);
+        mBluetoothAdapter = bluetoothManager.getAdapter();
+    }
+
+    //Patikriname ar Bluetooth telefone yra ijungtas
+    //Jei ne - paprasoma ijungti
+    void checkBT(){
+        if (mBluetoothAdapter == null || !mBluetoothAdapter.isEnabled()) {
+            Intent enableBtIntent = new Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE);
+            startActivityForResult(enableBtIntent, settings.REQUEST_ENABLE_BT);
+        }
     }
 }
