@@ -5,10 +5,10 @@
     <string name="subtitle_main">Pagrindinis</string>
     <string name="subtitle_scan">Rasti Įrenginiai:</string>
     <string name="subtitle_settings">Nustatymai</string>
-    <string name="subtitle_help">Pagalba</string>
+    <!--not used atm--> <string name="subtitle_help">Pagalba</string>
     <string name="subtitle_all_rooms">Visos patalpos</string>
     <string name="subtitle_existing_room">Patalpa</string>
-    <string name="subtitle_new_room">Nauja patalpa</string>
+    <!--not used atm--> <string name="subtitle_new_room">Nauja patalpa</string>
     <string name="subtitle_new_room_beacons">Pasirinkite įrenginius:</string>
     <string name="subtitle_existing_beacon">Įrenginys</string>
 
@@ -57,7 +57,6 @@
 
     <!--SettingsActivity elementu tekstai-->
     <string name="settingsactivity_text_txpower">TxPower:</string>
-    <string name="settingsactivity_value_txpower">value</string>
     <string name="settingsactivity_button_frequency">Nustatyti matavimų dažnį</string>
     <string name="settingsactivity_button_average">Nustatyti Vidurkio Reikšmių Kiekį</string>
     <string name="settingsactivity_text_debug">Debug:\u0020</string>
@@ -72,8 +71,8 @@
     <string name="roomactivity_text_name">Pavadinimas:\u0020</string>
     <string name="roomactivity_text_bound_devices">Susieti įrenginiai:</string>
     <string name="roomactivity_button_calibrate">Kalibruoti įrenginius</string>
-    <string name="roomactivity_button_finish_calib">Baigti kalibraciją</string>
-    <string name="roomactivity_button_resume_calib">Tęsti kalibraciją</string>
+    <!--not used atm--> <string name="roomactivity_button_finish_calib">Baigti kalibraciją</string>
+    <!--not used atm--> <string name="roomactivity_button_resume_calib">Tęsti kalibraciją</string>
 
     <!--BeaconActivity elementu tekstai-->
     <string name="beaconactivity_text_name">Patalpa:\u0020</string>

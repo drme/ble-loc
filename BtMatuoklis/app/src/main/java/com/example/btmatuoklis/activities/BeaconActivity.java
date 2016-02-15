@@ -150,7 +150,7 @@ public class BeaconActivity extends AppCompatActivity {
             @Override
             public void onClick(DialogInterface dialog, int which) {
                 currentRoom.getBeacons().remove(beaconID);
-                Toast.makeText(getApplicationContext(), getText(R.string.dialog_remove_calibration), Toast.LENGTH_SHORT).show();
+                Toast.makeText(getApplicationContext(), getText(R.string.toast_info_removed), Toast.LENGTH_SHORT).show();
                 BeaconActivity.this.finish();
             }
         });
