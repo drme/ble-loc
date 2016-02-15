@@ -107,6 +107,7 @@ public class ScanActivity extends AppCompatActivity {
         }
     }
 
+    //
     //Nustatomos "default" reiksmes
     //Jeigu programa leidziama ne pirma karta - nustatomos issaugotos reiksmes
     void setDefValues(){

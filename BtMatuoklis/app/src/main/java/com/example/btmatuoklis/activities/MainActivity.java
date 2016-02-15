@@ -36,8 +36,6 @@ public class MainActivity extends AppCompatActivity {
         allRoomsBtn = (Button)findViewById(R.id.buttonMain_AllRooms);
         setScanListener();
         setAllRoomsListener();
-        createBT();
-        checkBT();
     }
 
     @Override
@@ -82,21 +80,5 @@ public class MainActivity extends AppCompatActivity {
                     }
                 }
         );
-    }
-
-    //Sukuriamas Bluetooth adapteris
-    public void createBT(){
-        BluetoothManager bluetoothManager =
-                (BluetoothManager)getSystemService(Context.BLUETOOTH_SERVICE);
-        mBluetoothAdapter = bluetoothManager.getAdapter();
-    }
-
-    //Patikriname ar Bluetooth telefone yra ijungtas
-    //Jei ne - paprasoma ijungti
-    void checkBT(){
-        if (mBluetoothAdapter == null || !mBluetoothAdapter.isEnabled()) {
-            Intent enableBtIntent = new Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE);
-            startActivityForResult(enableBtIntent, settings.REQUEST_ENABLE_BT);
-        }
     }
 }
