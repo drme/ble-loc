@@ -49,44 +49,15 @@
         android:id="@+id/view2"
         android:layout_below="@+id/textBeacon_Info" />
 
-    <TextView
+    <include layout="@layout/item_array_display"
+        android:id="@+id/viewBeacon_array"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:textAppearance="?android:attr/textAppearanceMedium"
-        android:id="@+id/textBeacon_StaticArray"
-        android:layout_below="@+id/view2"
-        android:layout_alignParentStart="true"
-        android:layout_alignParentEnd="true"
-        android:text="@string/beaconactivity_text_saved_rssi" />
-
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:textAppearance="?android:attr/textAppearanceMedium"
-        android:text="@string/generic_value"
-
-        android:singleLine="true"
-        android:maxLines="1"
-        android:ellipsize="end"
-
-        android:id="@+id/textBeacon_ActiveArray"
-        android:layout_below="@+id/textBeacon_StaticArray"
-        android:layout_alignParentStart="true"
-        android:layout_alignParentEnd="true" />
-
-    <FrameLayout
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_above="@+id/view3"
-        android:layout_below="@+id/view2"
-        android:layout_alignParentStart="true"
-        android:layout_alignParentEnd="true"
-        android:id="@+id/frameBeacon_RSSIArray"
-        android:clickable="true"></FrameLayout>
+        android:layout_below="@+id/view2" />
 
     <View style="@style/Divider"
         android:id="@+id/view3"
-        android:layout_below="@+id/textBeacon_ActiveArray" />
+        android:layout_below="@+id/viewBeacon_array" />
 
     <TextView
         android:layout_width="wrap_content"

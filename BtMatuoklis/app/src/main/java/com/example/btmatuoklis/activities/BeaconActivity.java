@@ -3,6 +3,7 @@ package com.example.btmatuoklis.activities;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.graphics.drawable.Icon;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -12,6 +13,7 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.FrameLayout;
+import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -26,7 +28,8 @@ public class BeaconActivity extends AppCompatActivity {
 
     ActionBar actionbar;
     TextView roomPavadinimas, deviceInfo, rssiList, rssiNum, rssiAverage, rssiMax, rssiMin;
-    FrameLayout arrayFrame;
+    View arrayFrame;
+    ImageView listArrow;
     GlobalClass globalVariable;
     Room currentRoom;
     ArrayList<Byte> rssiArray;
@@ -44,8 +47,9 @@ public class BeaconActivity extends AppCompatActivity {
         beaconID = getIntent().getExtras().getInt("beaconID");
         roomPavadinimas = (TextView)findViewById(R.id.textBeacon_ActiveName);
         deviceInfo = (TextView)findViewById(R.id.textBeacon_Info);
-        rssiList = (TextView)findViewById(R.id.textBeacon_ActiveArray);
-        arrayFrame = (FrameLayout)findViewById(R.id.frameBeacon_RSSIArray);
+        arrayFrame = findViewById(R.id.viewBeacon_array);
+        rssiList = (TextView)arrayFrame.findViewById(android.R.id.text2);
+        listArrow = (ImageView)arrayFrame.findViewById(android.R.id.icon);
         rssiNum = (TextView)findViewById(R.id.textBeacon_ActiveRSSINum);
         rssiAverage = (TextView)findViewById(R.id.textBeacon_ActiveAverage);
         rssiMax = (TextView)findViewById(R.id.textBeacon_ActiveRSSIMax);
@@ -92,11 +96,13 @@ public class BeaconActivity extends AppCompatActivity {
                     rssiList.setSingleLine(false);
                     rssiList.setMaxLines(Integer.MAX_VALUE);
                     rssiList.setEllipsize(null);
+                    listArrow.setImageResource(android.R.drawable.arrow_up_float);
                     arrayFrame.setPressed(true);
                 } else {
                     rssiList.setSingleLine(true);
                     rssiList.setMaxLines(1);
                     rssiList.setEllipsize(TextUtils.TruncateAt.END);
+                    listArrow.setImageResource(android.R.drawable.arrow_down_float);
                     arrayFrame.setPressed(false);
                 }
             }

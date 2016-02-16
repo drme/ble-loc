@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:mode="twoLine" >
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceMedium"
+        android:id="@android:id/text1"
+        android:layout_alignParentStart="true"
+        android:layout_toStartOf="@android:id/icon"
+        android:text="@string/beaconactivity_text_saved_rssi" />
+
+    <ImageView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@android:id/icon"
+        android:layout_alignParentEnd="true"
+        android:layout_alignTop="@android:id/text1"
+        android:layout_alignBottom="@android:id/text1"
+        android:src="@android:drawable/arrow_down_float"/>
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceMedium"
+        android:text="@string/generic_value"
+        android:singleLine="true"
+        android:maxLines="1"
+        android:ellipsize="end"
+        android:id="@android:id/text2"
+        android:layout_below="@android:id/text1"
+        android:layout_alignStart="@android:id/text1"
+        android:layout_alignParentEnd="true" />
+
+</RelativeLayout>
