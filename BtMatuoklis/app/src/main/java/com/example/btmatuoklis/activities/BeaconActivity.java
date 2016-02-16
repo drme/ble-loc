@@ -95,13 +95,11 @@ public class BeaconActivity extends AppCompatActivity {
                 if (rssiList.getMaxLines() == 1) {
                     rssiList.setSingleLine(false);
                     rssiList.setMaxLines(Integer.MAX_VALUE);
-                    rssiList.setEllipsize(null);
                     listArrow.setImageResource(android.R.drawable.arrow_up_float);
                     arrayFrame.setPressed(true);
                 } else {
                     rssiList.setSingleLine(true);
                     rssiList.setMaxLines(1);
-                    rssiList.setEllipsize(TextUtils.TruncateAt.END);
                     listArrow.setImageResource(android.R.drawable.arrow_down_float);
                     arrayFrame.setPressed(false);
                 }
