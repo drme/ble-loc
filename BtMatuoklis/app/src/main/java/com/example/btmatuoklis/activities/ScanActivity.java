@@ -130,8 +130,8 @@ public class ScanActivity extends AppCompatActivity {
             public void run() {
                 if (globalVariable.isScanning()) {
                     startStopScan();
-                    handler.postDelayed(uiRunnable, settings.getDelay());
                     handler.postDelayed(this, settings.getDelay());
+                    handler.postDelayed(uiRunnable, settings.getDelay()+1);
                 }
             }
         };

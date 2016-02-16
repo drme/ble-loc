@@ -281,8 +281,8 @@ public class RoomActivity extends AppCompatActivity {
             public void run() {
                 if (globalVariable.isScanning()) {
                     startStopScan();
-                    handler3.postDelayed(uiRunnable3, settings.getDelay());
                     handler3.postDelayed(this, settings.getDelay());
+                    handler3.postDelayed(uiRunnable3, settings.getDelay()+1);
                 }
             }
         };

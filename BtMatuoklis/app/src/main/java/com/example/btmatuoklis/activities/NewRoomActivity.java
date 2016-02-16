@@ -193,8 +193,8 @@ public class NewRoomActivity extends AppCompatActivity {
             public void run() {
                 if (globalVariable.isScanning()) {
                     startStopScan();
-                    handler2.postDelayed(uiRunnable2, settings.getDelay());
                     handler2.postDelayed(this, settings.getDelay());
+                    handler2.postDelayed(uiRunnable2, settings.getDelay()+1);
                 }
             }
         };
