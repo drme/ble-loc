@@ -1,6 +1,5 @@
 package com.example.btmatuoklis.activities;
 
-import android.app.Activity;
 import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;
 import android.bluetooth.BluetoothManager;
@@ -8,7 +7,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Handler;
 import android.os.Bundle;
-import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -30,7 +28,6 @@ public class ScanActivity extends AppCompatActivity {
 
     Settings settings;
     ScanTools scantools = new ScanTools();
-    ActionBar actionbar;
 
     BluetoothAdapter mBluetoothAdapter;
     ArrayList<Beacon> btDevList;
@@ -43,8 +40,7 @@ public class ScanActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_scan);
-        actionbar = getSupportActionBar();
-        actionbar.setSubtitle(getText(R.string.subtitle_scan));
+        getSupportActionBar().setSubtitle(getText(R.string.subtitle_scan));
         globalVariable = (GlobalClass) getApplicationContext();
         settings = MainActivity.settings;
         btInfo = (ListView)findViewById(R.id.listScan_DevicesList);

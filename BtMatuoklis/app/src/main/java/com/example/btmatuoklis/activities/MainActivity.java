@@ -5,13 +5,11 @@ import android.bluetooth.BluetoothManager;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.Button;
 import android.widget.Toast;
 
 import com.example.btmatuoklis.R;
@@ -20,15 +18,13 @@ import com.example.btmatuoklis.classes.Settings;
 public class MainActivity extends AppCompatActivity {
 
     public static Settings settings;
-    ActionBar actionbar;
     BluetoothAdapter mBluetoothAdapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        actionbar = getSupportActionBar();
-        actionbar.setSubtitle(getText(R.string.subtitle_main));
+        getSupportActionBar().setSubtitle(getText(R.string.subtitle_main));
         Context context = getApplicationContext();
         settings = new Settings(context);
         createBT();

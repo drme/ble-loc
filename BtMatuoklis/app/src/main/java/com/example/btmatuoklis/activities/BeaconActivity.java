@@ -3,16 +3,12 @@ package com.example.btmatuoklis.activities;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.graphics.drawable.Icon;
-import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.text.TextUtils;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -26,7 +22,6 @@ import java.util.Collections;
 
 public class BeaconActivity extends AppCompatActivity {
 
-    ActionBar actionbar;
     TextView roomPavadinimas, deviceInfo, rssiList, rssiNum, rssiAverage, rssiMax, rssiMin;
     View arrayFrame;
     ImageView listArrow;
@@ -39,9 +34,7 @@ public class BeaconActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_beacon);
-        actionbar = getSupportActionBar();
-        actionbar.setTitle(getText(R.string.app_name));
-        actionbar.setSubtitle(getText(R.string.subtitle_existing_beacon));
+        getSupportActionBar().setSubtitle(getText(R.string.subtitle_existing_beacon));
         globalVariable = (GlobalClass) getApplicationContext();
         roomID = getIntent().getExtras().getInt("roomID");
         beaconID = getIntent().getExtras().getInt("beaconID");

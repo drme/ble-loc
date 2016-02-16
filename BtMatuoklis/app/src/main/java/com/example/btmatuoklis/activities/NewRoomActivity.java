@@ -8,7 +8,6 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Handler;
-import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.Menu;
@@ -33,7 +32,6 @@ import java.util.ArrayList;
 
 public class NewRoomActivity extends AppCompatActivity {
 
-    ActionBar actionbar;
     Button acceptBtn;
 
     BluetoothAdapter mBluetoothAdapter;
@@ -55,8 +53,7 @@ public class NewRoomActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_new_room);
-        actionbar = getSupportActionBar();
-        actionbar.setSubtitle(getText(R.string.subtitle_new_room_beacons));
+        getSupportActionBar().setSubtitle(getText(R.string.subtitle_new_room_beacons));
         acceptBtn = (Button)findViewById(R.id.buttonNewRoom_End);
         roomName = getIntent().getExtras().getString("roomName");
         createBT();

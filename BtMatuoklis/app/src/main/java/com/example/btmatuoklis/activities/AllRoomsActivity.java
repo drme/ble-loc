@@ -3,7 +3,6 @@ package com.example.btmatuoklis.activities;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.text.Editable;
@@ -28,7 +27,6 @@ import java.util.ArrayList;
 
 public class AllRoomsActivity extends AppCompatActivity {
 
-    ActionBar actionbar;
     ListView allRoomsList;
     ArrayAdapter roomsAdapter;
     ArrayList<Room> allRoomsArray;
@@ -41,8 +39,7 @@ public class AllRoomsActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_all_rooms);
-        actionbar = getSupportActionBar();
-        actionbar.setSubtitle(getText(R.string.subtitle_all_rooms));
+        getSupportActionBar().setSubtitle(getText(R.string.subtitle_all_rooms));
         allRoomsList = (ListView)findViewById(R.id.listAllRooms_DevicesList);
         allRoomsStringList = new ArrayList<String>();
         globalVariable = (GlobalClass) getApplicationContext();

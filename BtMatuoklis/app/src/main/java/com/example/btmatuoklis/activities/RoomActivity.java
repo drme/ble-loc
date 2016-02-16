@@ -8,7 +8,6 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Handler;
-import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.ActionMode;
@@ -34,7 +33,6 @@ import java.util.ArrayList;
 
 public class RoomActivity extends AppCompatActivity {
 
-    ActionBar actionbar;
     TextView existingPavadinimas;
 
     ListView boundBtList;
@@ -55,9 +53,7 @@ public class RoomActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_room);
-        actionbar = getSupportActionBar();
-        actionbar.setTitle(getText(R.string.app_name));
-        actionbar.setSubtitle(getText(R.string.subtitle_existing_room));
+        getSupportActionBar().setSubtitle(getText(R.string.subtitle_existing_room));
         globalVariable = (GlobalClass) getApplicationContext();
         roomID = getIntent().getExtras().getInt("roomID");
         existingPavadinimas = (TextView)findViewById(R.id.textSingleRoom_ActiveName);
