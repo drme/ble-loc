@@ -43,10 +43,11 @@ public class RoomActivity extends AppCompatActivity {
 
     GlobalClass globalVariable;
     int roomID;
+    long lastId;
     Settings settings;
     ScanTools scantools;
     Room currentRoom;
-    MySQLiteHelper db;
+    MySQLiteHelper database;
     BluetoothAdapter mBluetoothAdapter;
     MenuItem actionProgress;
     ArrayList<String> boundDevList;
@@ -127,7 +128,7 @@ public class RoomActivity extends AppCompatActivity {
         settings = MainActivity.settings;
         scantools = new ScanTools();
         currentRoom = globalVariable.getRoomsArray().get(roomID);
-        db = new MySQLiteHelper(this);
+        database = new MySQLiteHelper(this);
         boundDevList = new ArrayList<String>();
         listBoundAdapter = new ArrayAdapter<String>(this, R.layout.list_checked, boundDevList);
         boundBtList.setAdapter(listBoundAdapter);
@@ -149,35 +150,61 @@ public class RoomActivity extends AppCompatActivity {
         actionProgress.setVisible(false);
         calibrateButton.setText(getText(R.string.roomactivity_button_resume_calib));
         calibrateButton.setEnabled(true);
+        setListListener();
+        createRoomInDatabase();
+        saveBeaconsInDatabase();
         savingRSSI();
         exportDB();
-        setListListener();
+    }
+
+    void createRoomInDatabase(){
+        database.addRoom(currentRoom);
+        SQLiteDatabase dd = database.getReadableDatabase();
+        Cursor c = dd.rawQuery("SELECT ROWID FROM rooms ORDER BY ROWID DESC LIMIT 1", null);
+        if (c != null && c.moveToFirst()) {
+            lastId = c.getLong(0); //The 0 is the column index, we only have 1 column, so the index is 0
+        }
+        int id = (int) lastId;
+        currentRoom.setId(id);
+    }
+
+    void saveBeaconsInDatabase(){
+        for (int i = 0; i < currentRoom.getBeacons().size(); i++){
+            database.addBeacon(currentRoom.getBeacons().get(i));
+            SQLiteDatabase dd = database.getReadableDatabase();
+            Cursor c = dd.rawQuery("SELECT ROWID FROM beacons ORDER BY ROWID DESC LIMIT 1", null);
+            if (c != null && c.moveToFirst()) {
+                lastId = c.getLong(0); //The 0 is the column index, we only have 1 column, so the index is 0
+            }
+            int id = (int) lastId;
+            currentRoom.getBeacons().get(i).setId(id);
+        }
     }
 
     void savingRSSI(){
         int roomdID = currentRoom.getId();
-        int beaconID = 0;
+        int beaconID;
         ArrayList<Boolean> calibratedDevices = currentRoom.getCalibratedBeacons();
-        String rssi = null;
-        int i = 0;
-        for ( i =0; i < calibratedDevices.size(); i++){
+        String rssi;
+        for (int i = 0; i < calibratedDevices.size(); i++){
             boundBtList.setItemChecked(i, calibratedDevices.get(i));
             rssi = currentRoom.getBeacons().get(i).getCalibratedRSSI().toString();
             beaconID = currentRoom.getBeacons().get(i).getId();
-            db.addCalibration(new Calibration(roomdID, beaconID, rssi));
+            database.addCalibration(new Calibration(roomdID, beaconID, rssi));
         }
     }
 
     private void exportDB() {
-
-        File dbFile = getDatabasePath("CalibrationDB.db");
+        //File dbFile = getDatabasePath("CalibrationDB.db");
         MySQLiteHelper dbhelper = new MySQLiteHelper(getApplicationContext());
-        File exportDir = new File(Environment.getExternalStorageDirectory(), "");
+        File exportDir = new File(Environment.getExternalStorageDirectory().
+                getAbsolutePath()+"/"+getText(R.string.app_name), "");
         if (!exportDir.exists()) {
             exportDir.mkdirs();
         }
 
-        File file = new File(exportDir, getText(R.string.generic_calibrate)+currentRoom.getName()+".csv");
+        String fileName = getText(R.string.generic_calibrate)+currentRoom.getName()+".csv";
+        File file = new File(exportDir, fileName);
         try {
             file.createNewFile();
             CSVWriter csvWrite = new CSVWriter(new FileWriter(file));
@@ -186,8 +213,8 @@ public class RoomActivity extends AppCompatActivity {
                     "beacons.mac AS BeaconMac, calibrations.rssi AS RSSI " +
                     "FROM calibrations " +
                     "JOIN rooms ON (calibrations.roomid = rooms.id)"+
-                    "JOIN beacons ON (calibrations.beaconid = beacons.id)";
-                    //"WHERE room.id =" + Integer.toString(currentRoom.getId());
+                    "JOIN beacons ON (calibrations.beaconid = beacons.id)"+
+                    "WHERE roomid = " + Integer.toString(currentRoom.getId());
             Cursor curCSV = db.rawQuery(uzklausaSurinkimui, null);
             csvWrite.writeNext(curCSV.getColumnNames());
             while (curCSV.moveToNext()) {
@@ -197,6 +224,8 @@ public class RoomActivity extends AppCompatActivity {
             }
             csvWrite.close();
             curCSV.close();
+            Toast.makeText(getApplicationContext(),
+                    getText(R.string.toast_info_file1)+fileName+getText(R.string.toast_info_file2), Toast.LENGTH_LONG).show();
         } catch (Exception sqlEx) {
             //Log.e("MainActivity", sqlEx.getMessage(), sqlEx);
         }

@@ -37,10 +37,10 @@ public class NewRoomActivity extends AppCompatActivity {
 
     GlobalClass globalVariable;
     int roomID;
-    long lastId;
+    //long lastId;
     Settings settings;
     ScanTools scantools;
-    MySQLiteHelper db;
+    MySQLiteHelper database;
     BluetoothAdapter mBluetoothAdapter;
     String roomName;
     ListView btInfo;
@@ -94,7 +94,7 @@ public class NewRoomActivity extends AppCompatActivity {
         if (selectedDevices.size() > 0) {
             globalVariable.setScanning(false);
             createRoom();
-            saveSelected();
+            saveSelectedBeacons();
             NewRoomActivity.this.finish();
             startActivity(new Intent(getBaseContext(), AllRoomsActivity.class));
         } else {
@@ -108,7 +108,7 @@ public class NewRoomActivity extends AppCompatActivity {
         roomName = getIntent().getExtras().getString("roomName");
         settings = MainActivity.settings;
         scantools = new ScanTools();
-        db = new MySQLiteHelper(this);
+        database = new MySQLiteHelper(this);
         btDevList = new ArrayList<Beacon>();
         savedDevList = new ArrayList<String>();
         listAdapter = new ArrayAdapter<String>(this, R.layout.list_multiple_choice, savedDevList);
@@ -161,29 +161,11 @@ public class NewRoomActivity extends AppCompatActivity {
         globalVariable.getRoomsArray().add(new Room(roomName));
         globalVariable.getRoomsList().add(roomName);
         roomID = globalVariable.getRoomsArray().size() - 1;
-        db.addRoom(globalVariable.getRoomsArray().get(roomID));
-        SQLiteDatabase dd = db.getReadableDatabase();
-        Cursor c = dd.rawQuery(" SELECT ROWID FROM rooms ORDER BY ROWID DESC LIMIT 1", null);
-        if (c != null && c.moveToFirst()) {
-            lastId = c.getLong(0); //The 0 is the column index, we only have 1 column, so the index is 0
-        }
-        int id = (int) lastId;
-        globalVariable.getRoomsArray().get(roomID).setId(id);
-        int rid = globalVariable.getRoomsArray().get(roomID).getId();
     }
 
-    void saveSelected(){
+    void saveSelectedBeacons(){
         for (int i = 0; i < selectedDevices.size(); i++){
             globalVariable.getRoomsArray().get(roomID).getBeacons().add(btDevList.get(selectedDevices.get(i)));
-            db.addBeacon(globalVariable.getRoomsArray().get(roomID).getBeacons().get(i));
-            SQLiteDatabase dd = db.getReadableDatabase();
-            Cursor c = dd.rawQuery(" SELECT ROWID FROM beacons ORDER BY ROWID DESC LIMIT 1", null);
-            if (c != null && c.moveToFirst()) {
-                lastId = c.getLong(0); //The 0 is the column index, we only have 1 column, so the index is 0
-            }
-            int id = (int) lastId;
-            globalVariable.getRoomsArray().get(roomID).getBeacons().get(i).setId(id);
-            int rid = globalVariable.getRoomsArray().get(roomID).getBeacons().get(i).getId();
         }
         selectedDevices.clear();
     }

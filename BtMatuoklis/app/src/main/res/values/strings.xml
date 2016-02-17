@@ -39,6 +39,8 @@
     <string name="toast_info_saved">Išsaugota</string>
     <string name="toast_info_removed">Pašalinta</string>
     <string name="toast_info_cancelled">Atšaukta</string>
+    <string name="toast_info_file1">Failas\u0020</string>
+    <string name="toast_info_file2">"\u0020išsaugotas"</string>
 
     <!--Beacon informacijos tekstai-->
     <!--Siuo metu niekur nepanaudoti-->
@@ -50,7 +52,7 @@
     <!--Bendrai naudojami tekstai-->
     <string name="generic_hint">Hint</string>
     <string name="generic_value">value</string>
-    <string name="generic_calibrate">Kalibracija.</string>
+    <string name="generic_calibrate">kalibracija.</string>
 
     <!--MainActivity elementu tekstai-->
     <string name="mainactivity_button_scan">Scan</string>
