@@ -8,6 +8,7 @@ public class Beacon {
     private ArrayList<Byte> calibratedRSSI;
     private byte currentRSSI;
     private byte previousRSSI;
+    private int id;
 
     public Beacon(){
         this.calibratedRSSI = new ArrayList<Byte>();
@@ -56,5 +57,18 @@ public class Beacon {
         info += "\nMAC: " + this.beaconMAC;
         info += "\nKalibracijos RSSI reikšmių: " + this.calibratedRSSI.size();
         return info;
+    }
+
+    public int getId() {
+        return id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
+    }
+
+    @Override
+    public String toString() {
+        return "Beacon [id=" + id + ", name=" + beaconName + ", mac=" + beaconMAC + "]";
     }
 }

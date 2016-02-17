@@ -7,6 +7,9 @@ import android.bluetooth.BluetoothManager;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.database.Cursor;
+import android.database.sqlite.SQLiteDatabase;
+import android.os.Environment;
 import android.os.Handler;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -24,11 +27,16 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.btmatuoklis.R;
+import com.example.btmatuoklis.classes.Calibration;
 import com.example.btmatuoklis.classes.GlobalClass;
+import com.example.btmatuoklis.classes.MySQLiteHelper;
 import com.example.btmatuoklis.classes.Room;
 import com.example.btmatuoklis.classes.ScanTools;
 import com.example.btmatuoklis.classes.Settings;
+import com.opencsv.CSVWriter;
 
+import java.io.File;
+import java.io.FileWriter;
 import java.util.ArrayList;
 
 public class RoomActivity extends AppCompatActivity {
@@ -38,6 +46,7 @@ public class RoomActivity extends AppCompatActivity {
     Settings settings;
     ScanTools scantools;
     Room currentRoom;
+    MySQLiteHelper db;
     BluetoothAdapter mBluetoothAdapter;
     MenuItem actionProgress;
     ArrayList<String> boundDevList;
@@ -118,6 +127,7 @@ public class RoomActivity extends AppCompatActivity {
         settings = MainActivity.settings;
         scantools = new ScanTools();
         currentRoom = globalVariable.getRoomsArray().get(roomID);
+        db = new MySQLiteHelper(this);
         boundDevList = new ArrayList<String>();
         listBoundAdapter = new ArrayAdapter<String>(this, R.layout.list_checked, boundDevList);
         boundBtList.setAdapter(listBoundAdapter);
@@ -139,7 +149,57 @@ public class RoomActivity extends AppCompatActivity {
         actionProgress.setVisible(false);
         calibrateButton.setText(getText(R.string.roomactivity_button_resume_calib));
         calibrateButton.setEnabled(true);
+        savingRSSI();
+        exportDB();
         setListListener();
+    }
+
+    void savingRSSI(){
+        int roomdID = currentRoom.getId();
+        int beaconID = 0;
+        ArrayList<Boolean> calibratedDevices = currentRoom.getCalibratedBeacons();
+        String rssi = null;
+        int i = 0;
+        for ( i =0; i < calibratedDevices.size(); i++){
+            boundBtList.setItemChecked(i, calibratedDevices.get(i));
+            rssi = currentRoom.getBeacons().get(i).getCalibratedRSSI().toString();
+            beaconID = currentRoom.getBeacons().get(i).getId();
+            db.addCalibration(new Calibration(roomdID, beaconID, rssi));
+        }
+    }
+
+    private void exportDB() {
+
+        File dbFile = getDatabasePath("CalibrationDB.db");
+        MySQLiteHelper dbhelper = new MySQLiteHelper(getApplicationContext());
+        File exportDir = new File(Environment.getExternalStorageDirectory(), "");
+        if (!exportDir.exists()) {
+            exportDir.mkdirs();
+        }
+
+        File file = new File(exportDir, getText(R.string.generic_calibrate)+currentRoom.getName()+".csv");
+        try {
+            file.createNewFile();
+            CSVWriter csvWrite = new CSVWriter(new FileWriter(file));
+            SQLiteDatabase db = dbhelper.getReadableDatabase();
+            String uzklausaSurinkimui = "SELECT rooms.name AS RoomName, beacons.name AS BeaconName," +
+                    "beacons.mac AS BeaconMac, calibrations.rssi AS RSSI " +
+                    "FROM calibrations " +
+                    "JOIN rooms ON (calibrations.roomid = rooms.id)"+
+                    "JOIN beacons ON (calibrations.beaconid = beacons.id)";
+                    //"WHERE room.id =" + Integer.toString(currentRoom.getId());
+            Cursor curCSV = db.rawQuery(uzklausaSurinkimui, null);
+            csvWrite.writeNext(curCSV.getColumnNames());
+            while (curCSV.moveToNext()) {
+                //Which column you want to exprort
+                String arrStr[] = {curCSV.getString(0), curCSV.getString(1), curCSV.getString(2), curCSV.getString(3)};
+                csvWrite.writeNext(arrStr);
+            }
+            csvWrite.close();
+            curCSV.close();
+        } catch (Exception sqlEx) {
+            //Log.e("MainActivity", sqlEx.getMessage(), sqlEx);
+        }
     }
 
     //Veiksmai pradinei mygtuko isvaizdai atstayti, kai nera kalibraciniu reiksmiu

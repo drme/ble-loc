@@ -13,11 +13,18 @@ import android.view.View;
 import android.widget.Toast;
 
 import com.example.btmatuoklis.R;
+import com.example.btmatuoklis.classes.Beacon;
+import com.example.btmatuoklis.classes.Calibration;
+import com.example.btmatuoklis.classes.MySQLiteHelper;
+import com.example.btmatuoklis.classes.Room;
 import com.example.btmatuoklis.classes.Settings;
+
+import java.util.List;
 
 public class MainActivity extends AppCompatActivity {
 
     public static Settings settings;
+    MySQLiteHelper db;
     BluetoothAdapter mBluetoothAdapter;
 
     @Override
@@ -58,6 +65,14 @@ public class MainActivity extends AppCompatActivity {
 
     void setDefaultValues(){
         settings = new Settings(getApplicationContext());
+
+        db = new MySQLiteHelper(this);
+        /*List<Room> list = db.getAllRooms();
+        List<Beacon> list2 = db.getAllBeacons();
+        List<Calibration> list3 = db.getAllCalibrations();*/
+        db.deleteAll("rooms");
+        db.deleteAll("beacons");
+        db.deleteAll("calibrations");
     }
 
     //Sukuriamas Bluetooth adapteris

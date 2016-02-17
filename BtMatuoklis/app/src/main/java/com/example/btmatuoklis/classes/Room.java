@@ -5,6 +5,7 @@ import java.util.ArrayList;
 public class Room {
     private String name;
     private ArrayList<Beacon> beacons;
+    private int id;
 
     public Room(){
         this.beacons = new ArrayList<Beacon>();
@@ -65,4 +66,16 @@ public class Room {
     //Grazina true, jeigu bent vienas irenginys turi
     //nors viena RSSI reiksme kalibravimo masyve
     public boolean isCalibrationStarted(){ return getCalibratedBeacons().contains(true); }
+
+    public int getId() {
+        return id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
+    }
+    @Override
+    public String toString() {
+        return "Room [id=" + id + ", name=" + name + "]";
+    }
 }

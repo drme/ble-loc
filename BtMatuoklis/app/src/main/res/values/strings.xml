@@ -50,6 +50,7 @@
     <!--Bendrai naudojami tekstai-->
     <string name="generic_hint">Hint</string>
     <string name="generic_value">value</string>
+    <string name="generic_calibrate">Kalibracija.</string>
 
     <!--MainActivity elementu tekstai-->
     <string name="mainactivity_button_scan">Scan</string>
