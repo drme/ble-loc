@@ -11,7 +11,6 @@ import android.support.v7.app.AppCompatActivity;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
-import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
 import android.widget.Toast;
@@ -64,11 +63,6 @@ public class ScanActivity extends AppCompatActivity {
     public void onBackPressed(){
         globalVariable.setScanning(false);
         this.finish();
-    }
-
-    @Override
-    public void setSupportProgressBarIndeterminateVisibility(boolean visible) {
-        getSupportActionBar().getCustomView().setVisibility(visible ? View.VISIBLE : View.GONE);
     }
 
     public void onHelpActionClick(MenuItem item){
