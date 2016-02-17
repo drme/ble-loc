@@ -25,8 +25,8 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         getSupportActionBar().setSubtitle(getText(R.string.subtitle_main));
-        Context context = getApplicationContext();
-        settings = new Settings(context);
+
+        setDefaultValues();
         createBT();
         checkBT();
     }
@@ -54,6 +54,10 @@ public class MainActivity extends AppCompatActivity {
 
     public void onAllRoomsButtonClick(View view){
         startActivity(new Intent(getBaseContext(), AllRoomsActivity.class));
+    }
+
+    void setDefaultValues(){
+        settings = new Settings(getApplicationContext());
     }
 
     //Sukuriamas Bluetooth adapteris

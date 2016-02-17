@@ -32,40 +32,30 @@ import java.util.ArrayList;
 
 public class NewRoomActivity extends AppCompatActivity {
 
-    Button acceptBtn;
-
+    GlobalClass globalVariable;
+    int roomID;
+    Settings settings;
+    ScanTools scantools;
     BluetoothAdapter mBluetoothAdapter;
+    String roomName;
     ListView btInfo;
-    ArrayAdapter<String> listAdapter;
     ArrayList<Beacon> btDevList;
     ArrayList<String> savedDevList;
-    Settings settings;
-    ScanTools scantools = new ScanTools();
-
+    ArrayAdapter<String> listAdapter;
     ArrayList<Integer> selectedDevices;
-    int roomID = 0;
-
-    String roomName;
-
-    GlobalClass globalVariable;
+    Button acceptBtn;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_new_room);
         getSupportActionBar().setSubtitle(getText(R.string.subtitle_new_room_beacons));
-        acceptBtn = (Button)findViewById(R.id.buttonNewRoom_End);
-        roomName = getIntent().getExtras().getString("roomName");
-        createBT();
-        settings = MainActivity.settings;
-        globalVariable = (GlobalClass) getApplicationContext();
         btInfo = (ListView)findViewById(R.id.listNewRoom_DevicesList);
-        selectedDevices = new ArrayList<Integer>();
-        btDevList = new ArrayList<Beacon>();
-        savedDevList = new ArrayList<String>();
-        listAdapter = new ArrayAdapter<String>(this, R.layout.list_multiple_choice, savedDevList);
-        btInfo.setAdapter(listAdapter);
+        acceptBtn = (Button)findViewById(R.id.buttonNewRoom_End);
+
+        setDefaultValues();
         setListListener();
+        createBT();
         contScanStop();
     }
 
@@ -106,6 +96,18 @@ public class NewRoomActivity extends AppCompatActivity {
             Toast.makeText(getApplicationContext(),
                     getText(R.string.toast_warning_no_beacons), Toast.LENGTH_SHORT).show();
         }
+    }
+
+    void setDefaultValues(){
+        globalVariable = (GlobalClass) getApplicationContext();
+        roomName = getIntent().getExtras().getString("roomName");
+        settings = MainActivity.settings;
+        scantools = new ScanTools();
+        btDevList = new ArrayList<Beacon>();
+        savedDevList = new ArrayList<String>();
+        listAdapter = new ArrayAdapter<String>(this, R.layout.list_multiple_choice, savedDevList);
+        selectedDevices = new ArrayList<Integer>();
+        btInfo.setAdapter(listAdapter);
     }
 
     void setListListener(){

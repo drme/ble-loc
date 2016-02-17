@@ -33,42 +33,33 @@ import java.util.ArrayList;
 
 public class RoomActivity extends AppCompatActivity {
 
-    TextView existingPavadinimas;
-
-    ListView boundBtList;
-    ArrayAdapter<String> listBoundAdapter;
-    ArrayList<String> boundDevList;
-    MenuItem actionProgress;
-    Button calibrateButton;
-    BluetoothAdapter mBluetoothAdapter;
-    Settings settings;
-    ScanTools scantools = new ScanTools();
-    Room currentRoom;
-
-    int roomID;
-
     GlobalClass globalVariable;
+    int roomID;
+    Settings settings;
+    ScanTools scantools;
+    Room currentRoom;
+    BluetoothAdapter mBluetoothAdapter;
+    MenuItem actionProgress;
+    ArrayList<String> boundDevList;
+    ArrayAdapter<String> listBoundAdapter;
+    ListView boundBtList;
+    TextView existingPavadinimas;
+    Button calibrateButton;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_room);
         getSupportActionBar().setSubtitle(getText(R.string.subtitle_existing_room));
-        globalVariable = (GlobalClass) getApplicationContext();
-        roomID = getIntent().getExtras().getInt("roomID");
         existingPavadinimas = (TextView)findViewById(R.id.textSingleRoom_ActiveName);
         boundBtList = (ListView)findViewById(R.id.listSingleRoom_DevicesList);
         calibrateButton = (Button)findViewById(R.id.buttonSingleRoom_Calibrate);
-        settings = MainActivity.settings;
-        currentRoom = globalVariable.getRoomsArray().get(roomID);
-        boundDevList = new ArrayList<String>();
-        listBoundAdapter = new ArrayAdapter<String>(this, R.layout.list_checked, boundDevList);
-        boundBtList.setAdapter(listBoundAdapter);
-        existingPavadinimas.setText(currentRoom.getName());
-        createBT();
-        setChoiceListener();
+
+        setDefaultValues();
         loadBoundDevices();
         checkCompleted();
+        setChoiceListener();
+        createBT();
     }
 
     @Override
@@ -119,6 +110,18 @@ public class RoomActivity extends AppCompatActivity {
         else {
             StartCalibration();
         }
+    }
+
+    void setDefaultValues(){
+        globalVariable = (GlobalClass) getApplicationContext();
+        roomID = getIntent().getExtras().getInt("roomID");
+        settings = MainActivity.settings;
+        scantools = new ScanTools();
+        currentRoom = globalVariable.getRoomsArray().get(roomID);
+        boundDevList = new ArrayList<String>();
+        listBoundAdapter = new ArrayAdapter<String>(this, R.layout.list_checked, boundDevList);
+        boundBtList.setAdapter(listBoundAdapter);
+        existingPavadinimas.setText(currentRoom.getName());
     }
 
     //Veiksmai kalibracijai pradeti

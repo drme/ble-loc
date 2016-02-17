@@ -22,22 +22,19 @@ import java.util.Collections;
 
 public class BeaconActivity extends AppCompatActivity {
 
+    GlobalClass globalVariable;
+    int roomID, beaconID;
+    Room currentRoom;
+    ArrayList<Byte> rssiArray;
     TextView roomPavadinimas, deviceInfo, rssiList, rssiNum, rssiAverage, rssiMax, rssiMin;
     View arrayFrame;
     ImageView listArrow;
-    GlobalClass globalVariable;
-    Room currentRoom;
-    ArrayList<Byte> rssiArray;
-    int roomID, beaconID;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_beacon);
         getSupportActionBar().setSubtitle(getText(R.string.subtitle_existing_beacon));
-        globalVariable = (GlobalClass) getApplicationContext();
-        roomID = getIntent().getExtras().getInt("roomID");
-        beaconID = getIntent().getExtras().getInt("beaconID");
         roomPavadinimas = (TextView)findViewById(R.id.textBeacon_ActiveName);
         deviceInfo = (TextView)findViewById(R.id.textBeacon_Info);
         arrayFrame = findViewById(R.id.viewBeacon_array);
@@ -47,12 +44,9 @@ public class BeaconActivity extends AppCompatActivity {
         rssiAverage = (TextView)findViewById(R.id.textBeacon_ActiveAverage);
         rssiMax = (TextView)findViewById(R.id.textBeacon_ActiveRSSIMax);
         rssiMin = (TextView)findViewById(R.id.textBeacon_ActiveRSSIMin);
-        currentRoom = globalVariable.getRoomsArray().get(roomID);
-        rssiArray = currentRoom.getBeacons().get(beaconID).getCalibratedRSSI();
-        roomPavadinimas.setText(currentRoom.getName());
-        deviceInfo.setText(currentRoom.getBeacons().get(beaconID).getInfo());
+
+        setDefaultValues();
         setRSSIArrayListener();
-        setInfoValues();
     }
 
     @Override
@@ -78,6 +72,21 @@ public class BeaconActivity extends AppCompatActivity {
 
     public void onSettingsActionClick(MenuItem item){
         startActivity(new Intent(getBaseContext(), SettingsActivity.class));
+    }
+
+    void setDefaultValues(){
+        globalVariable = (GlobalClass) getApplicationContext();
+        roomID = getIntent().getExtras().getInt("roomID");
+        beaconID = getIntent().getExtras().getInt("beaconID");
+        currentRoom = globalVariable.getRoomsArray().get(roomID);
+        rssiArray = currentRoom.getBeacons().get(beaconID).getCalibratedRSSI();
+        roomPavadinimas.setText(currentRoom.getName());
+        deviceInfo.setText(currentRoom.getBeacons().get(beaconID).getInfo());
+        rssiList.setText(currentRoom.getBeacons().get(beaconID).getCalibratedRSSI().toString());
+        rssiNum.setText(Integer.toString(rssiArray.size()));
+        rssiAverage.setText(Byte.toString(calculateAverage(rssiArray)));
+        rssiMax.setText(Byte.toString(Collections.min(rssiArray)));
+        rssiMin.setText(Byte.toString(Collections.max(rssiArray)));
     }
 
     //RSSI reiksmiu vaizdo keitimas tarp vienos elutes daugelio eiluciu
@@ -153,14 +162,6 @@ public class BeaconActivity extends AppCompatActivity {
         });
 
         builder5.show();
-    }
-
-    void setInfoValues(){
-        rssiList.setText(currentRoom.getBeacons().get(beaconID).getCalibratedRSSI().toString());
-        rssiNum.setText(Integer.toString(rssiArray.size()));
-        rssiAverage.setText(Byte.toString(calculateAverage(rssiArray)));
-        rssiMax.setText(Byte.toString(Collections.min(rssiArray)));
-        rssiMin.setText(Byte.toString(Collections.max(rssiArray)));
     }
 
     private byte calculateAverage(ArrayList<Byte> array){

@@ -25,28 +25,24 @@ import java.util.ArrayList;
 
 public class ScanActivity extends AppCompatActivity {
 
+    GlobalClass globalVariable;
     Settings settings;
-    ScanTools scantools = new ScanTools();
-
+    ScanTools scantools;
     BluetoothAdapter mBluetoothAdapter;
     ArrayList<Beacon> btDevList;
     ArrayList<String> savedDevList;
     ArrayAdapter<String> listAdapter;
     ListView btInfo;
-    GlobalClass globalVariable;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_scan);
         getSupportActionBar().setSubtitle(getText(R.string.subtitle_scan));
-        globalVariable = (GlobalClass) getApplicationContext();
-        settings = MainActivity.settings;
         btInfo = (ListView)findViewById(R.id.listScan_DevicesList);
 
-        setDefValues();
+        setDefaultValues();
         createBT();
-        checkBT();
         contScanStop();
     }
 
@@ -81,18 +77,12 @@ public class ScanActivity extends AppCompatActivity {
         mBluetoothAdapter = bluetoothManager.getAdapter();
     }
 
-    //Patikriname ar Bluetooth telefone yra ijungtas
-    //Jei ne - paprasoma ijungti
-    void checkBT(){
-        if (mBluetoothAdapter == null || !mBluetoothAdapter.isEnabled()) {
-            Intent enableBtIntent = new Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE);
-            startActivityForResult(enableBtIntent, settings.REQUEST_ENABLE_BT);
-        }
-    }
-
     //Nustatomos "default" reiksmes
     //Jeigu programa leidziama ne pirma karta - nustatomos issaugotos reiksmes
-    void setDefValues(){
+    void setDefaultValues(){
+        globalVariable = (GlobalClass) getApplicationContext();
+        settings = MainActivity.settings;
+        scantools = new ScanTools();
         btDevList = new ArrayList<Beacon>();
         savedDevList = new ArrayList<String>();
         listAdapter = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, savedDevList);

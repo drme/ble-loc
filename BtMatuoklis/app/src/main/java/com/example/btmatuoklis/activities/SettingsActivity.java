@@ -18,9 +18,9 @@ import com.example.btmatuoklis.classes.Settings;
 public class SettingsActivity extends AppCompatActivity {
 
     Settings settings;
+    SeekBar txSlider;
     TextView txVal, hintFrequency, hintGenerator;
     EditText msVal, averageVal;
-    SeekBar txSlider;
     Switch valuesGenerator;
 
     @Override
@@ -28,17 +28,15 @@ public class SettingsActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_settings);
         getSupportActionBar().setSubtitle(getText(R.string.subtitle_settings));
-        settings = MainActivity.settings;
-
-        txVal = (TextView)findViewById(R.id.textSettings_ActiveTxPower);
-        hintFrequency = (TextView)findViewById(R.id.textSettings_FrequencyHint);
-        msVal = (EditText)findViewById(R.id.editSettings_Frequency);
-        averageVal = (EditText)findViewById(R.id.editSettings_Average);
         txSlider = (SeekBar)findViewById(R.id.seekbarSettings_TxPower);
+        txVal = (TextView)findViewById(R.id.textSettings_ActiveTxPower);
+        msVal = (EditText)findViewById(R.id.editSettings_Frequency);
+        hintFrequency = (TextView)findViewById(R.id.textSettings_FrequencyHint);
+        averageVal = (EditText)findViewById(R.id.editSettings_Average);
         valuesGenerator = (Switch)findViewById(R.id.switchSettings_FakeValues);
         hintGenerator = (TextView)findViewById(R.id.textSettings_FakeValuesHint);
 
-        setDefValues();
+        setDefaultValues();
         setSliderListener();
         setGeneratorSwitchListener();
     }
@@ -123,12 +121,13 @@ public class SettingsActivity extends AppCompatActivity {
 
     //Nustatomos "default" reiksmes
     //Jeigu programa leidziama ne pirma karta - nustatomos issaugotos reiksmes
-    void setDefValues(){
+    void setDefaultValues(){
+        settings = MainActivity.settings;
         txSlider.setProgress(settings.getTxPow());
         txVal.setText(Byte.toString(settings.getTxPow()));
-        averageVal.setText(Byte.toString(settings.getAverage()));
         msVal.setText(Integer.toString(settings.getDelay()));
         hintFrequency.setText(getText(R.string.settingsactivity_hint_frequency) + Short.toString(settings.getDefaultDelay()));
+        averageVal.setText(Byte.toString(settings.getAverage()));
         valuesGenerator.setChecked(settings.getGenerator());
         hintGenerator.setText(getText(R.string.settingsactivity_hint_generator));
     }

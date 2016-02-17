@@ -27,13 +27,12 @@ import java.util.ArrayList;
 
 public class AllRoomsActivity extends AppCompatActivity {
 
+    GlobalClass globalVariable;
     ListView allRoomsList;
     ArrayAdapter roomsAdapter;
     ArrayList<Room> allRoomsArray;
     ArrayList<String> allRoomsStringList;
     String roomName;
-
-    GlobalClass globalVariable;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -41,12 +40,9 @@ public class AllRoomsActivity extends AppCompatActivity {
         setContentView(R.layout.activity_all_rooms);
         getSupportActionBar().setSubtitle(getText(R.string.subtitle_all_rooms));
         allRoomsList = (ListView)findViewById(R.id.listAllRooms_DevicesList);
-        allRoomsStringList = new ArrayList<String>();
-        globalVariable = (GlobalClass) getApplicationContext();
-        allRoomsArray = globalVariable.getRoomsArray();
-        allRoomsStringList = globalVariable.getRoomsList();
-        roomsAdapter = new ArrayAdapter(this, android.R.layout.simple_list_item_1, allRoomsStringList);
-        allRoomsList.setAdapter(roomsAdapter);
+
+        setDefaultValues();
+        setDefaultValues();
         setListListener();
     }
 
@@ -87,6 +83,15 @@ public class AllRoomsActivity extends AppCompatActivity {
                 startActivity(intent);
             }
         });
+    }
+
+    void setDefaultValues(){
+        globalVariable = (GlobalClass) getApplicationContext();
+        allRoomsStringList = new ArrayList<String>();
+        allRoomsArray = globalVariable.getRoomsArray();
+        allRoomsStringList = globalVariable.getRoomsList();
+        roomsAdapter = new ArrayAdapter(this, android.R.layout.simple_list_item_1, allRoomsStringList);
+        allRoomsList.setAdapter(roomsAdapter);
     }
 
     void roomNameEntry(){
