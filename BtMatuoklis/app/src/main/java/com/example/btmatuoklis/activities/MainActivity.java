@@ -65,9 +65,6 @@ public class MainActivity extends AppCompatActivity {
 
     void manageDatabase(){
         database = new MySQLiteHelper(this);
-        /*List<Room> list = db.getAllRooms();
-        List<Beacon> list2 = db.getAllBeacons();
-        List<Calibration> list3 = db.getAllCalibrations();*/
         database.deleteAll("rooms");
         database.deleteAll("beacons");
         database.deleteAll("calibrations");

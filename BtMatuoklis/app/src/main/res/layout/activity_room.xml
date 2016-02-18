@@ -41,7 +41,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:textAppearance="?android:attr/textAppearanceSmall"
-        android:id="@+id/textSingleRoom_StaticDevices"
+        android:id="@+id/textSingleRoom_StaticBeacons"
         android:layout_below="@+id/textSingleRoom_StaticName"
         android:layout_alignParentStart="true"
         android:layout_alignEnd="@+id/textSingleRoom_ActiveName"
@@ -50,10 +50,10 @@
     <ListView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:id="@+id/listSingleRoom_DevicesList"
+        android:id="@+id/listSingleRoom_BeaconsList"
         android:layout_alignParentEnd="true"
         android:layout_alignParentStart="true"
-        android:layout_below="@+id/textSingleRoom_StaticDevices"
+        android:layout_below="@+id/textSingleRoom_StaticBeacons"
         android:layout_above="@+id/buttonSingleRoom_Calibrate"
         tools:listitem="@android:layout/simple_list_item_checked"
         android:choiceMode="multipleChoiceModal" />

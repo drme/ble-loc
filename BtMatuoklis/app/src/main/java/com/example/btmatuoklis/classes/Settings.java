@@ -18,7 +18,7 @@ public class Settings {
     private short delay = defaultDelay;
 
     //"Default" BTLE irenginio stiprumas
-    private byte txPow = 50;//Reiksme [1-100] intervale
+    private byte txPower = 50;//Reiksme [1-100] intervale
 
     //Matavimu kiekis, vieno beacon'o vidutinei RSSI reiksmei surasti
     private byte defaultAverage = 1;
@@ -32,7 +32,7 @@ public class Settings {
                 Settings.class.getSimpleName(), Activity.MODE_PRIVATE);
         edit = preferences.edit();
         //Nuskaitomi paskutiniai naudoti nustatymai
-        txPow = (byte)preferences.getInt("savedTxPow", txPow);
+        txPower = (byte)preferences.getInt("savedTXPower", txPower);
         delay = (short)preferences.getInt("savedDelay", delay);
         average = (byte)preferences.getInt("savedAverage", average);
         generator = preferences.getBoolean("savedGenerator", generator);
@@ -40,7 +40,7 @@ public class Settings {
 
     public byte getMaxRange(){ return this.maxRange; }
 
-    public byte getTxPow(){ return this.txPow; }
+    public byte getTXPower(){ return this.txPower; }
 
     public short getDelay(){ return this.delay; }
 
@@ -54,7 +54,7 @@ public class Settings {
 
     public void setMaxRange(byte mr) { this.maxRange = mr; }
 
-    public void setTxPow(byte tx){ this.txPow = tx; }
+    public void setTXPower(byte tx){ this.txPower = tx; }
 
     public void setDelay(short dl){ this.delay = dl; }
 
@@ -67,8 +67,8 @@ public class Settings {
         edit.apply();
     }
 
-    public void saveTxPow(){
-        edit.putInt("savedTxPow", txPow);
+    public void saveTXPower(){
+        edit.putInt("savedTXPower", txPower);
         edit.apply();
     }
 

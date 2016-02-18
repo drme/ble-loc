@@ -4,45 +4,45 @@ public class Calibration {
 
 
     private int id;
-    private int roomId;
-    private int beaconId;
+    private int roomID;
+    private int beaconID;
     private String RSSI;
 
     public Calibration(){}
 
-    public Calibration(int roomId, int beaconId, String RSSI)
+    public Calibration(int roomID, int beaconID, String RSSI)
     {
-        this.roomId = roomId;
-        this.beaconId = beaconId;
+        this.roomID = roomID;
+        this.beaconID = beaconID;
         this.RSSI = RSSI;
     }
 
-    public int getId() {
-        return id;
+    public int getID() {
+        return this.id;
     }
 
-    public void setId(int id) {
+    public void setID(int id) {
         this.id = id;
     }
 
-    public int getRoomId() {
-        return roomId;
+    public int getRoomID() {
+        return roomID;
     }
 
-    public void setRoomId(int roomId) {
-        this.roomId = roomId;
+    public void setRoomID(int roomId) {
+        this.roomID = roomId;
     }
 
-    public int getBeaconId() {
-        return beaconId;
+    public int getBeaconID() {
+        return this.beaconID;
     }
 
-    public void setBeaconId(int beaconId) {
-        this.beaconId = beaconId;
+    public void setBeaconID(int beaconID) {
+        this.beaconID = beaconID;
     }
 
     public String getRSSI() {
-        return RSSI;
+        return this.RSSI;
     }
 
     public void setRSSI(String RSSI) {
@@ -50,7 +50,7 @@ public class Calibration {
     }
 
     public String toString() {
-        return "RSSI [roomId=" + id + " roomId=" + roomId +
-                ", beaconId=" + beaconId +", RSSI " + RSSI +" \"]";
+        return "RSSI [roomID=" + id + " roomID=" + roomID +
+                ", beaconID=" + beaconID +", RSSI " + RSSI +" \"]";
     }
 }

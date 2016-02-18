@@ -67,11 +67,11 @@ public class Room {
     //nors viena RSSI reiksme kalibravimo masyve
     public boolean isCalibrationStarted(){ return getCalibratedBeacons().contains(true); }
 
-    public int getId() {
+    public int getID() {
         return id;
     }
 
-    public void setId(int id) {
+    public void setID(int id) {
         this.id = id;
     }
     @Override

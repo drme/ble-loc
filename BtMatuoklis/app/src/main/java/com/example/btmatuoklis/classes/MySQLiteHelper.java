@@ -125,8 +125,8 @@ public class MySQLiteHelper extends SQLiteOpenHelper {
 
         // 2. create ContentValues to add key "column"/value
         ContentValues values = new ContentValues();
-        values.put(KEY_ROOMID, calibration.getRoomId()); // get title
-        values.put(KEY_BEACONID, calibration.getBeaconId());
+        values.put(KEY_ROOMID, calibration.getRoomID()); // get title
+        values.put(KEY_BEACONID, calibration.getBeaconID());
         values.put(KEY_RSSI, calibration.getRSSI());
 
         // 3. insert
@@ -162,7 +162,7 @@ public class MySQLiteHelper extends SQLiteOpenHelper {
 
         // 4. build object
         Room room = new Room();
-        room.setId(Integer.parseInt(cursor.getString(0)));
+        room.setID(Integer.parseInt(cursor.getString(0)));
         room.setName(cursor.getString(1));
 
         Log.d("getRoom(" + id + ")", room.toString());
@@ -223,9 +223,9 @@ public class MySQLiteHelper extends SQLiteOpenHelper {
 
         // 4. build object
         Calibration calibration = new Calibration();
-        calibration.setId(Integer.parseInt(cursor.getString(0)));
-        calibration.setRoomId(Integer.parseInt(cursor.getString(1)));
-        calibration.setBeaconId(Integer.parseInt(cursor.getString(2)));
+        calibration.setID(Integer.parseInt(cursor.getString(0)));
+        calibration.setRoomID(Integer.parseInt(cursor.getString(1)));
+        calibration.setBeaconID(Integer.parseInt(cursor.getString(2)));
         calibration.setRSSI(cursor.getString(3));
 
         Log.d("getCalibration(" + id + ")", calibration.toString());
@@ -249,7 +249,7 @@ public class MySQLiteHelper extends SQLiteOpenHelper {
         if (cursor.moveToFirst()) {
             do {
                 room = new Room();
-                room.setId(Integer.parseInt(cursor.getString(0)));
+                room.setID(Integer.parseInt(cursor.getString(0)));
                 room.setName(cursor.getString(1));
 
                 // Add room to rooms
@@ -302,9 +302,9 @@ public class MySQLiteHelper extends SQLiteOpenHelper {
         if (cursor.moveToFirst()) {
             do {
                 calibration = new Calibration();
-                calibration.setId(Integer.parseInt(cursor.getString(0)));
-                calibration.setRoomId(Integer.parseInt(cursor.getString(1)));
-                calibration.setBeaconId(Integer.parseInt(cursor.getString(2)));
+                calibration.setID(Integer.parseInt(cursor.getString(0)));
+                calibration.setRoomID(Integer.parseInt(cursor.getString(1)));
+                calibration.setBeaconID(Integer.parseInt(cursor.getString(2)));
                 calibration.setRSSI(cursor.getString(3));
 
                 calibrations.add(calibration);
@@ -330,7 +330,7 @@ public class MySQLiteHelper extends SQLiteOpenHelper {
         int i = database.update(TABLE_ROOMS, //table
                 values, // column/value
                 KEY_ID+" = ?", // selections
-                new String[] { String.valueOf(room.getId()) }); //selection args
+                new String[] { String.valueOf(room.getID()) }); //selection args
 
         // 4. close
         database.close();
@@ -347,7 +347,7 @@ public class MySQLiteHelper extends SQLiteOpenHelper {
         // 2. delete
         database.delete(TABLE_ROOMS,
                 KEY_ID + " = ?",
-                new String[]{String.valueOf(room.getId())});
+                new String[]{String.valueOf(room.getID())});
 
         // 3. close
         database.close();

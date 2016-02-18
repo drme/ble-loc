@@ -28,10 +28,10 @@ import java.util.ArrayList;
 public class AllRoomsActivity extends AppCompatActivity {
 
     GlobalClass globalVariable;
-    ListView allRoomsList;
-    ArrayAdapter roomsAdapter;
-    ArrayList<Room> allRoomsArray;
-    ArrayList<String> allRoomsStringList;
+    ListView displayRoomsList;
+    ArrayAdapter listAdapter;
+    ArrayList<Room> roomsArray;
+    ArrayList<String> savedRoomsList;
     String roomName;
 
     @Override
@@ -39,7 +39,7 @@ public class AllRoomsActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_all_rooms);
         getSupportActionBar().setSubtitle(getString(R.string.subtitle_all_rooms));
-        allRoomsList = (ListView)findViewById(R.id.listAllRooms_DevicesList);
+        displayRoomsList = (ListView)findViewById(R.id.listAllRooms_BeaconsList);
 
         setDefaultValues();
         setDefaultValues();
@@ -75,7 +75,7 @@ public class AllRoomsActivity extends AppCompatActivity {
     }
 
     void setListListener(){
-        allRoomsList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+        displayRoomsList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 Intent intent = new Intent(getBaseContext(), RoomActivity.class);
@@ -87,11 +87,11 @@ public class AllRoomsActivity extends AppCompatActivity {
 
     void setDefaultValues(){
         globalVariable = (GlobalClass) getApplicationContext();
-        allRoomsStringList = new ArrayList<String>();
-        allRoomsArray = globalVariable.getRoomsArray();
-        allRoomsStringList = globalVariable.getRoomsList();
-        roomsAdapter = new ArrayAdapter(this, android.R.layout.simple_list_item_1, allRoomsStringList);
-        allRoomsList.setAdapter(roomsAdapter);
+        savedRoomsList = new ArrayList<String>();
+        roomsArray = globalVariable.getRoomsArray();
+        savedRoomsList = globalVariable.getRoomsList();
+        listAdapter = new ArrayAdapter(this, android.R.layout.simple_list_item_1, savedRoomsList);
+        displayRoomsList.setAdapter(listAdapter);
     }
 
     void roomNameEntry(){
@@ -157,9 +157,9 @@ public class AllRoomsActivity extends AppCompatActivity {
         builder1.setPositiveButton(getString(R.string.dialog_button_ok), new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
-                allRoomsArray.clear();
-                allRoomsStringList.clear();
-                roomsAdapter.notifyDataSetChanged();
+                roomsArray.clear();
+                savedRoomsList.clear();
+                listAdapter.notifyDataSetChanged();
                 Toast.makeText(getApplicationContext(),
                         getString(R.string.toast_info_removed), Toast.LENGTH_SHORT).show();
             }

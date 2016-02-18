@@ -49,20 +49,20 @@ public class RoomActivity extends AppCompatActivity {
     MySQLiteHelper database;
     BluetoothAdapter mBluetoothAdapter;
     MenuItem actionProgress;
-    ArrayList<String> boundDevList;
-    ArrayAdapter<String> listBoundAdapter;
-    ListView boundBtList;
-    TextView existingPavadinimas;
-    Button calibrateButton;
+    ArrayList<String> boundBeaconsList;
+    ArrayAdapter<String> listAdapter;
+    ListView displayBeaconsList;
+    TextView displayRoomName;
+    Button buttonCalibrate;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_room);
         getSupportActionBar().setSubtitle(getString(R.string.subtitle_existing_room));
-        existingPavadinimas = (TextView)findViewById(R.id.textSingleRoom_ActiveName);
-        boundBtList = (ListView)findViewById(R.id.listSingleRoom_DevicesList);
-        calibrateButton = (Button)findViewById(R.id.buttonSingleRoom_Calibrate);
+        displayRoomName = (TextView)findViewById(R.id.textSingleRoom_ActiveName);
+        displayBeaconsList = (ListView)findViewById(R.id.listSingleRoom_BeaconsList);
+        buttonCalibrate = (Button)findViewById(R.id.buttonSingleRoom_Calibrate);
 
         setDefaultValues();
         loadBoundDevices();
@@ -96,7 +96,7 @@ public class RoomActivity extends AppCompatActivity {
     @Override
     public void onBackPressed(){
         globalVariable.setScanning(false);
-        boundBtList.setMultiChoiceModeListener(null);
+        displayBeaconsList.setMultiChoiceModeListener(null);
         this.finish();
     }
 
@@ -113,12 +113,12 @@ public class RoomActivity extends AppCompatActivity {
 
     public void onCalibrateButtonClick(View view){
         if (!globalVariable.isScanning() && !currentRoom.isCalibrated()) {
-            StartCalibration();
+            startCalibration();
         } else if (globalVariable.isScanning() && currentRoom.isCalibrated()) {
             finishCalibration();
         }
         else {
-            StartCalibration();
+            startCalibration();
         }
     }
 
@@ -129,39 +129,39 @@ public class RoomActivity extends AppCompatActivity {
         scantools = new ScanTools();
         currentRoom = globalVariable.getRoomsArray().get(roomID);
         database = new MySQLiteHelper(this);
-        boundDevList = new ArrayList<String>();
-        listBoundAdapter = new ArrayAdapter<String>(this, R.layout.list_checked, boundDevList);
-        boundBtList.setAdapter(listBoundAdapter);
-        existingPavadinimas.setText(currentRoom.getName());
+        boundBeaconsList = new ArrayList<String>();
+        listAdapter = new ArrayAdapter<String>(this, R.layout.list_checked, boundBeaconsList);
+        displayBeaconsList.setAdapter(listAdapter);
+        displayRoomName.setText(currentRoom.getName());
     }
 
     //Veiksmai kalibracijai pradeti
-    void StartCalibration(){
+    void startCalibration(){
         globalVariable.setScanning(true);
         actionProgress.setVisible(true);
-        calibrateButton.setText(getString(R.string.roomactivity_button_finish_calib));
-        calibrateButton.setEnabled(false);
-        contScanStop();
+        buttonCalibrate.setText(getString(R.string.roomactivity_button_finish_calib));
+        buttonCalibrate.setEnabled(false);
+        continuousScan();
     }
 
     //Veiksmai veiksmai kalibracijai baigti
     void finishCalibration(){
         globalVariable.setScanning(false);
         actionProgress.setVisible(false);
-        calibrateButton.setText(getString(R.string.roomactivity_button_resume_calib));
-        calibrateButton.setEnabled(true);
+        buttonCalibrate.setText(getString(R.string.roomactivity_button_resume_calib));
+        buttonCalibrate.setEnabled(true);
         setListListener();
         saveRSSIInDatabase();
         exportDB();
     }
 
     void saveRSSIInDatabase(){
-        int roomdID = currentRoom.getId();
+        int roomdID = currentRoom.getID();
         int beaconID;
         ArrayList<Boolean> calibratedDevices = currentRoom.getCalibratedBeacons();
         String rssi;
         for (int i = 0; i < calibratedDevices.size(); i++){
-            boundBtList.setItemChecked(i, calibratedDevices.get(i));
+            displayBeaconsList.setItemChecked(i, calibratedDevices.get(i));
             rssi = currentRoom.getBeacons().get(i).getCalibratedRSSI().toString();
             beaconID = currentRoom.getBeacons().get(i).getId();
             database.addCalibration(new Calibration(roomdID, beaconID, rssi));
@@ -189,7 +189,7 @@ public class RoomActivity extends AppCompatActivity {
                     "FROM calibrations " +
                     "JOIN rooms ON (calibrations.roomid = rooms.id)"+
                     "JOIN beacons ON (calibrations.beaconid = beacons.id)"+
-                    "WHERE roomid = " + Integer.toString(currentRoom.getId());
+                    "WHERE roomid = " + Integer.toString(currentRoom.getID());
             Cursor curCSV = db.rawQuery(uzklausaSurinkimui, null);
             csvWrite.writeNext(curCSV.getColumnNames());
             while (curCSV.moveToNext()) {
@@ -227,21 +227,21 @@ public class RoomActivity extends AppCompatActivity {
     //Veiksmai pradinei mygtuko isvaizdai atstayti, kai nera kalibraciniu reiksmiu
     void restoreCalibrateButton(){
         globalVariable.setScanning(false);
-        calibrateButton.setText(getString(R.string.roomactivity_button_calibrate));
-        calibrateButton.setEnabled(true);
-        boundBtList.setOnItemClickListener(null);
+        buttonCalibrate.setText(getString(R.string.roomactivity_button_calibrate));
+        buttonCalibrate.setEnabled(true);
+        displayBeaconsList.setOnItemClickListener(null);
     }
 
     //Veiksmai mygtuko isvaizdai nustatyti, kai yra kalibraciniu reiksmiu
     void resumeCalibrateButton(){
         globalVariable.setScanning(false);
-        calibrateButton.setText(getString(R.string.roomactivity_button_resume_calib));
-        calibrateButton.setEnabled(true);
+        buttonCalibrate.setText(getString(R.string.roomactivity_button_resume_calib));
+        buttonCalibrate.setEnabled(true);
         setListListener();
     }
 
     void setListListener(){
-        boundBtList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+        displayBeaconsList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 Intent intent = new Intent(getBaseContext(), BeaconActivity.class);
@@ -254,7 +254,7 @@ public class RoomActivity extends AppCompatActivity {
 
     //Neleidzia rankiniu budu keisti "checkmark" busenu
     void setChoiceListener(){
-        boundBtList.setMultiChoiceModeListener(new AbsListView.MultiChoiceModeListener() {
+        displayBeaconsList.setMultiChoiceModeListener(new AbsListView.MultiChoiceModeListener() {
             @Override
             public void onItemCheckedStateChanged(ActionMode mode, int position, long id, boolean checked){}
             @Override
@@ -303,28 +303,28 @@ public class RoomActivity extends AppCompatActivity {
     }
 
     void loadBoundDevices(){
-        boundDevList.clear();
-        boundDevList.addAll(currentRoom.getBeaconsCalibrationCount());
+        boundBeaconsList.clear();
+        boundBeaconsList.addAll(currentRoom.getBeaconsCalibrationCount());
     }
 
     void checkCalibratedDevices(){
         ArrayList<Boolean> calibratedDevices = currentRoom.getCalibratedBeacons();
         for (int i = 0; i < calibratedDevices.size(); i++){
-            boundBtList.setItemChecked(i, calibratedDevices.get(i));
+            displayBeaconsList.setItemChecked(i, calibratedDevices.get(i));
         }
     }
 
     void checkCompleted(){
         if (currentRoom.isCalibrated()){
             checkCalibratedDevices();
-            calibrateButton.setText("Baigti");
-            calibrateButton.setEnabled(false);
+            buttonCalibrate.setText("Baigti");
+            buttonCalibrate.setEnabled(false);
             setListListener();
         }
     }
 
     //Nuolatos pradedamas ir stabdomas scan
-    void contScanStop(){
+    void continuousScan(){
         final Handler handler3 = new Handler();
         globalVariable.setScanning(true);
         //Main Thread Runnable:
@@ -336,7 +336,7 @@ public class RoomActivity extends AppCompatActivity {
                     loadBoundDevices();
                     checkCalibratedDevices();
                     if (currentRoom.isCalibrated()) {
-                        calibrateButton.setEnabled(true);
+                        buttonCalibrate.setEnabled(true);
                         setListListener();
                     }
                 }
@@ -348,7 +348,7 @@ public class RoomActivity extends AppCompatActivity {
             @Override
             public void run() {
                 if (globalVariable.isScanning()) {
-                    startStopScan();
+                    startBTLEScan();
                     handler3.postDelayed(this, settings.getDelay());
                     handler3.postDelayed(uiRunnable3, settings.getDelay()+1);
                 }
@@ -357,7 +357,7 @@ public class RoomActivity extends AppCompatActivity {
         new Thread(backgroundRunnable3).start();
     }
 
-    void startStopScan(){
+    void startBTLEScan(){
         mBluetoothAdapter.startLeScan(new BluetoothAdapter.LeScanCallback() {
             @Override
             public void onLeScan(BluetoothDevice device, int rssi, byte[] scanRecord) {

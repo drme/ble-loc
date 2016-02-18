@@ -26,24 +26,25 @@ public class BeaconActivity extends AppCompatActivity {
     int roomID, beaconID;
     Room currentRoom;
     ArrayList<Byte> rssiArray;
-    TextView roomPavadinimas, deviceInfo, rssiList, rssiNum, rssiAverage, rssiMax, rssiMin;
-    View arrayFrame;
-    ImageView listArrow;
+    TextView displayRoomName, displayBeacon, displayRSSIList;
+    TextView displayRSSINum, displayRSSIAverage, displayRSSIMax, displayRSSIMin;
+    View displayArrayFrame;
+    ImageView displayArrayArrow;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_beacon);
         getSupportActionBar().setSubtitle(getString(R.string.subtitle_existing_beacon));
-        roomPavadinimas = (TextView)findViewById(R.id.textBeacon_ActiveName);
-        deviceInfo = (TextView)findViewById(R.id.textBeacon_Info);
-        arrayFrame = findViewById(R.id.viewBeacon_array);
-        rssiList = (TextView)arrayFrame.findViewById(android.R.id.text2);
-        listArrow = (ImageView)arrayFrame.findViewById(android.R.id.icon);
-        rssiNum = (TextView)findViewById(R.id.textBeacon_ActiveRSSINum);
-        rssiAverage = (TextView)findViewById(R.id.textBeacon_ActiveAverage);
-        rssiMax = (TextView)findViewById(R.id.textBeacon_ActiveRSSIMax);
-        rssiMin = (TextView)findViewById(R.id.textBeacon_ActiveRSSIMin);
+        displayRoomName = (TextView)findViewById(R.id.textBeacon_ActiveName);
+        displayBeacon = (TextView)findViewById(R.id.textBeacon_Info);
+        displayArrayFrame = findViewById(R.id.viewBeacon_array);
+        displayRSSIList = (TextView)displayArrayFrame.findViewById(android.R.id.text2);
+        displayArrayArrow = (ImageView)displayArrayFrame.findViewById(android.R.id.icon);
+        displayRSSINum = (TextView)findViewById(R.id.textBeacon_ActiveRSSINum);
+        displayRSSIAverage = (TextView)findViewById(R.id.textBeacon_ActiveAverage);
+        displayRSSIMax = (TextView)findViewById(R.id.textBeacon_ActiveRSSIMax);
+        displayRSSIMin = (TextView)findViewById(R.id.textBeacon_ActiveRSSIMin);
 
         setDefaultValues();
         setRSSIArrayListener();
@@ -80,34 +81,34 @@ public class BeaconActivity extends AppCompatActivity {
         beaconID = getIntent().getExtras().getInt("beaconID");
         currentRoom = globalVariable.getRoomsArray().get(roomID);
         rssiArray = currentRoom.getBeacons().get(beaconID).getCalibratedRSSI();
-        roomPavadinimas.setText(currentRoom.getName());
-        deviceInfo.setText(currentRoom.getBeacons().get(beaconID).getInfo());
-        rssiList.setText(currentRoom.getBeacons().get(beaconID).getCalibratedRSSI().toString());
-        rssiNum.setText(Integer.toString(rssiArray.size()));
-        rssiAverage.setText(Byte.toString(calculateAverage(rssiArray)));
-        rssiMax.setText(Byte.toString(Collections.min(rssiArray)));
-        rssiMin.setText(Byte.toString(Collections.max(rssiArray)));
+        displayRoomName.setText(currentRoom.getName());
+        displayBeacon.setText(currentRoom.getBeacons().get(beaconID).getInfo());
+        displayRSSIList.setText(currentRoom.getBeacons().get(beaconID).getCalibratedRSSI().toString());
+        displayRSSINum.setText(Integer.toString(rssiArray.size()));
+        displayRSSIAverage.setText(Byte.toString(calculateAverage(rssiArray)));
+        displayRSSIMax.setText(Byte.toString(Collections.max(rssiArray)));
+        displayRSSIMin.setText(Byte.toString(Collections.min(rssiArray)));
     }
 
     //RSSI reiksmiu vaizdo keitimas tarp vienos elutes daugelio eiluciu
     void setRSSIArrayListener(){
-        arrayFrame.setOnClickListener(new View.OnClickListener() {
+        displayArrayFrame.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (rssiList.getMaxLines() == 1) {
-                    rssiList.setSingleLine(false);
-                    rssiList.setMaxLines(Integer.MAX_VALUE);
-                    listArrow.setImageResource(android.R.drawable.arrow_up_float);
-                    arrayFrame.setPressed(true);
+                if (displayRSSIList.getMaxLines() == 1) {
+                    displayRSSIList.setSingleLine(false);
+                    displayRSSIList.setMaxLines(Integer.MAX_VALUE);
+                    displayArrayArrow.setImageResource(android.R.drawable.arrow_up_float);
+                    displayArrayFrame.setPressed(true);
                 } else {
-                    rssiList.setSingleLine(true);
-                    rssiList.setMaxLines(1);
-                    listArrow.setImageResource(android.R.drawable.arrow_down_float);
-                    arrayFrame.setPressed(false);
+                    displayRSSIList.setSingleLine(true);
+                    displayRSSIList.setMaxLines(1);
+                    displayArrayArrow.setImageResource(android.R.drawable.arrow_down_float);
+                    displayArrayFrame.setPressed(false);
                 }
             }
         });
-        arrayFrame.setOnLongClickListener(new View.OnLongClickListener() {
+        displayArrayFrame.setOnLongClickListener(new View.OnLongClickListener() {
             @Override
             public boolean onLongClick(View v) {
                 removeCalibrationConfirm();

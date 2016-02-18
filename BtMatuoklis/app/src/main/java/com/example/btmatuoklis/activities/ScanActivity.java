@@ -29,21 +29,21 @@ public class ScanActivity extends AppCompatActivity {
     Settings settings;
     ScanTools scantools;
     BluetoothAdapter mBluetoothAdapter;
-    ArrayList<Beacon> btDevList;
-    ArrayList<String> savedDevList;
+    ArrayList<Beacon> beaconsArray;
+    ArrayList<String> savedBeaconsList;
     ArrayAdapter<String> listAdapter;
-    ListView btInfo;
+    ListView displayBeaconsList;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_scan);
         getSupportActionBar().setSubtitle(getString(R.string.subtitle_scan));
-        btInfo = (ListView)findViewById(R.id.listScan_DevicesList);
+        displayBeaconsList = (ListView)findViewById(R.id.listScan_BeaconsList);
 
         setDefaultValues();
         createBT();
-        contScanStop();
+        continuousScan();
     }
 
     @Override
@@ -83,14 +83,14 @@ public class ScanActivity extends AppCompatActivity {
         globalVariable = (GlobalClass) getApplicationContext();
         settings = MainActivity.settings;
         scantools = new ScanTools();
-        btDevList = new ArrayList<Beacon>();
-        savedDevList = new ArrayList<String>();
-        listAdapter = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, savedDevList);
-        btInfo.setAdapter(listAdapter);
+        beaconsArray = new ArrayList<Beacon>();
+        savedBeaconsList = new ArrayList<String>();
+        listAdapter = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, savedBeaconsList);
+        displayBeaconsList.setAdapter(listAdapter);
     }
 
     //Nuolatos pradedamas ir stabdomas scan
-    void contScanStop(){
+    void continuousScan(){
         final Handler handler = new Handler();
         globalVariable.setScanning(true);
         //Main Thread Runnable:
@@ -109,7 +109,7 @@ public class ScanActivity extends AppCompatActivity {
             @Override
             public void run() {
                 if (globalVariable.isScanning()) {
-                    startStopScan();
+                    startBTLEScan();
                     handler.postDelayed(this, settings.getDelay());
                     handler.postDelayed(uiRunnable, settings.getDelay()+1);
                 }
@@ -119,74 +119,13 @@ public class ScanActivity extends AppCompatActivity {
     }
 
     //Jeigu randamas BTLE irenginys, gaunama jo RSSI reiksme
-    void startStopScan(){
+    void startBTLEScan(){
         mBluetoothAdapter.startLeScan(new BluetoothAdapter.LeScanCallback() {
             @Override
             public void onLeScan(BluetoothDevice device, int rssi, byte[] scanRecord) {
-                scantools.scanLogic(device, rssi, settings.getTxPow(), btDevList, savedDevList);
+                scantools.scanLogic(device, rssi, settings.getTXPower(), beaconsArray, savedBeaconsList);
                 mBluetoothAdapter.stopLeScan(this); //Scan stabdomas
             }
         });
     }
-
-    //AsyncScan - turetu tikti kalibravimo (n kiekio reiksmiu gavimui)
-    /*void startStopScan(){
-        //Pradedamas scan
-        new asyncScan().execute();
-    }
-
-    //Nuolatos pradedamas ir stabdomas scan
-    void contScanStop(){
-        final Handler handler = new Handler();
-        handler.postDelayed(new Runnable() {
-            @Override
-            public void run() {
-                startStopScan();
-                listAdapter.notifyDataSetChanged();
-                handler.postDelayed(this, settings.getDelay());
-            }
-        }, settings.getDelay());
-    }
-
-    private class asyncScan extends AsyncTask<Void, Void, ArrayList<Beacon>>{
-        @Override
-        protected void onPreExecute() {
-            super.onPreExecute();
-        }
-
-        @Override
-        protected ArrayList<Beacon> doInBackground(Void... params) {
-            mBluetoothAdapter.startLeScan(new BluetoothAdapter.LeScanCallback() {
-                @Override
-                public void onLeScan(BluetoothDevice device, int rssi, byte[] scanRecord) {
-                    byte numDev = 0;
-                    byte listSize = (byte)btDevList.size();
-                    byte currentRssi = (byte)rssi;
-                    if (listSize == 0) {
-                        btDevList.add(new Beacon(device.getName(), device.getAddress()));
-                        btDevList.get(0).setRssi(currentRssi);
-                    } else {
-                        for (byte i = 0; i < listSize; i++) {
-                            if (btDevList.get(i).getMac().equals(device.getAddress())) {
-                                btDevList.get(i).setRssi(currentRssi);
-                            } else {
-                                numDev++;
-                            }
-                        }
-                        if (numDev > listSize - 1) {
-                            btDevList.add(new Beacon(device.getName(), device.getAddress()));
-                            btDevList.get(numDev).setRssi(currentRssi);
-                        }
-                    }
-                    mBluetoothAdapter.stopLeScan(this); //Scan stabdomas
-                }
-            });
-            return btDevList;
-        }
-
-        @Override
-        protected void onPostExecute(ArrayList<Beacon> devList) {
-            super.onPostExecute(devList);
-        }
-    }*/
 }

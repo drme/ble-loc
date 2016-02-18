@@ -37,32 +37,32 @@ public class NewRoomActivity extends AppCompatActivity {
 
     GlobalClass globalVariable;
     int roomID;
-    long lastId;
+    long lastID;
     Settings settings;
     ScanTools scantools;
     Room currentRoom;
     MySQLiteHelper database;
     BluetoothAdapter mBluetoothAdapter;
     String roomName;
-    ListView btInfo;
-    ArrayList<Beacon> btDevList;
-    ArrayList<String> savedDevList;
+    ListView displayBeaconsList;
+    ArrayList<Beacon> beaconsArray;
+    ArrayList<String> savedBeaconsList;
     ArrayAdapter<String> listAdapter;
-    ArrayList<Integer> selectedDevices;
-    Button acceptBtn;
+    ArrayList<Integer> selectedBeacons;
+    Button buttonAccept;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_new_room);
         getSupportActionBar().setSubtitle(getString(R.string.subtitle_new_room_beacons));
-        btInfo = (ListView)findViewById(R.id.listNewRoom_DevicesList);
-        acceptBtn = (Button)findViewById(R.id.buttonNewRoom_End);
+        displayBeaconsList = (ListView)findViewById(R.id.listNewRoom_BeaconsList);
+        buttonAccept = (Button)findViewById(R.id.buttonNewRoom_End);
 
         setDefaultValues();
         setListListener();
         createBT();
-        contScanStop();
+        continuousScan();
     }
 
     @Override
@@ -92,16 +92,11 @@ public class NewRoomActivity extends AppCompatActivity {
     }
 
     public void onAcceptButtonClick(View view){
-        if (selectedDevices.size() > 0) {
-            globalVariable.setScanning(false);
-            createRoom();
-            saveSelectedBeacons();
-            NewRoomActivity.this.finish();
-            startActivity(new Intent(getBaseContext(), AllRoomsActivity.class));
-        } else {
-            Toast.makeText(getApplicationContext(),
-                    getString(R.string.toast_warning_no_beacons), Toast.LENGTH_SHORT).show();
-        }
+        globalVariable.setScanning(false);
+        createRoom();
+        saveSelectedBeacons();
+        NewRoomActivity.this.finish();
+        startActivity(new Intent(getBaseContext(), AllRoomsActivity.class));
     }
 
     void setDefaultValues(){
@@ -110,26 +105,33 @@ public class NewRoomActivity extends AppCompatActivity {
         settings = MainActivity.settings;
         scantools = new ScanTools();
         database = new MySQLiteHelper(this);
-        btDevList = new ArrayList<Beacon>();
-        savedDevList = new ArrayList<String>();
-        listAdapter = new ArrayAdapter<String>(this, R.layout.list_multiple_choice, savedDevList);
-        selectedDevices = new ArrayList<Integer>();
-        btInfo.setAdapter(listAdapter);
+        beaconsArray = new ArrayList<Beacon>();
+        savedBeaconsList = new ArrayList<String>();
+        listAdapter = new ArrayAdapter<String>(this, R.layout.list_multiple_choice, savedBeaconsList);
+        selectedBeacons = new ArrayList<Integer>();
+        displayBeaconsList.setAdapter(listAdapter);
     }
 
     void setListListener(){
-        btInfo.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+        displayBeaconsList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 CheckedTextView checkedTextView = ((CheckedTextView) view);
                 checkedTextView.setChecked(!checkedTextView.isChecked());
                 if (checkedTextView.isChecked()) {
-                    selectedDevices.add(position);
+                    selectedBeacons.add(position);
+                    //Code here
                 } else {
-                    selectedDevices.remove(selectedDevices.indexOf(position));
+                    selectedBeacons.remove(selectedBeacons.indexOf(position));
                 }
+                enableFinishButton();
             }
         });
+    }
+
+    void enableFinishButton(){
+        if (selectedBeacons.size() > 0){ buttonAccept.setEnabled(true); }
+        else { buttonAccept.setEnabled(false); }
     }
 
     void cancelCreationConfirm(){
@@ -169,12 +171,12 @@ public class NewRoomActivity extends AppCompatActivity {
 
     void saveSelectedBeacons(){
         createRoomInDatabase();
-        for (int i = 0; i < selectedDevices.size(); i++){
-            currentRoom.getBeacons().add(btDevList.get(selectedDevices.get(i)));
+        for (int i = 0; i < selectedBeacons.size(); i++){
+            currentRoom.getBeacons().add(beaconsArray.get(selectedBeacons.get(i)));
             saveBeaconsInDatabase(i);
         }
         notifyCreatedRoomAndBeacons();
-        selectedDevices.clear();
+        selectedBeacons.clear();
     }
 
     void createRoomInDatabase(){
@@ -182,10 +184,10 @@ public class NewRoomActivity extends AppCompatActivity {
         SQLiteDatabase dd = database.getReadableDatabase();
         Cursor c = dd.rawQuery("SELECT ROWID FROM rooms ORDER BY ROWID DESC LIMIT 1", null);
         if (c != null && c.moveToFirst()) {
-            lastId = c.getLong(0); //The 0 is the column index, we only have 1 column, so the index is 0
+            lastID = c.getLong(0); //The 0 is the column index, we only have 1 column, so the index is 0
         }
-        int id = (int)lastId;
-        currentRoom.setId(id);
+        int id = (int)lastID;
+        currentRoom.setID(id);
     }
 
     void saveBeaconsInDatabase(int i){
@@ -193,9 +195,9 @@ public class NewRoomActivity extends AppCompatActivity {
         SQLiteDatabase dd = database.getReadableDatabase();
         Cursor c = dd.rawQuery("SELECT ROWID FROM beacons ORDER BY ROWID DESC LIMIT 1", null);
         if (c != null && c.moveToFirst()) {
-            lastId = c.getLong(0); //The 0 is the column index, we only have 1 column, so the index is 0
+            lastID = c.getLong(0); //The 0 is the column index, we only have 1 column, so the index is 0
         }
-        int id = (int)lastId;
+        int id = (int)lastID;
         currentRoom.getBeacons().get(i).setId(id);
     }
 
@@ -214,7 +216,7 @@ public class NewRoomActivity extends AppCompatActivity {
     }
 
     //Nuolatos pradedamas ir stabdomas scan
-    void contScanStop(){
+    void continuousScan(){
         final Handler handler2 = new Handler();
         globalVariable.setScanning(true);
         //Main Thread Runnable:
@@ -233,7 +235,7 @@ public class NewRoomActivity extends AppCompatActivity {
             @Override
             public void run() {
                 if (globalVariable.isScanning()) {
-                    startStopScan();
+                    startBTLEScan();
                     handler2.postDelayed(this, settings.getDelay());
                     handler2.postDelayed(uiRunnable2, settings.getDelay()+1);
                 }
@@ -243,11 +245,11 @@ public class NewRoomActivity extends AppCompatActivity {
     }
 
     //Jeigu randamas BTLE irenginys, gaunama jo RSSI reiksme
-    void startStopScan(){
+    void startBTLEScan(){
         mBluetoothAdapter.startLeScan(new BluetoothAdapter.LeScanCallback() {
             @Override
             public void onLeScan(BluetoothDevice device, int rssi, byte[] scanRecord) {
-                scantools.scanLogic(device, rssi, settings.getTxPow(), btDevList, savedDevList);
+                scantools.scanLogic(device, rssi, settings.getTXPower(), beaconsArray, savedBeaconsList);
                 mBluetoothAdapter.stopLeScan(this); //Scan stabdomas
             }
         });

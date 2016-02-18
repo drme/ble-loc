@@ -10,12 +10,13 @@
         android:id="@+id/buttonNewRoom_End"
         android:layout_alignParentBottom="true"
         android:layout_centerHorizontal="true"
-        android:onClick="onAcceptButtonClick" />
+        android:onClick="onAcceptButtonClick"
+        android:enabled="false" />
 
     <ListView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:id="@+id/listNewRoom_DevicesList"
+        android:id="@+id/listNewRoom_BeaconsList"
         android:layout_alignParentStart="true"
         android:layout_alignParentEnd="true"
         android:layout_alignParentTop="true"
