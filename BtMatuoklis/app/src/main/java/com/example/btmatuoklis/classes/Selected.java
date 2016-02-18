@@ -1,8 +1,5 @@
 package com.example.btmatuoklis.classes;
 
-/**
- * Created by sauli_000 on 2016-02-12.
- */
 public class Selected {
     private String RoomName;
     private String BeaconName;

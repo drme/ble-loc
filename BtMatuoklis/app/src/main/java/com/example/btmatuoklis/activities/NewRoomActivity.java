@@ -37,9 +37,10 @@ public class NewRoomActivity extends AppCompatActivity {
 
     GlobalClass globalVariable;
     int roomID;
-    //long lastId;
+    long lastId;
     Settings settings;
     ScanTools scantools;
+    Room currentRoom;
     MySQLiteHelper database;
     BluetoothAdapter mBluetoothAdapter;
     String roomName;
@@ -54,7 +55,7 @@ public class NewRoomActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_new_room);
-        getSupportActionBar().setSubtitle(getText(R.string.subtitle_new_room_beacons));
+        getSupportActionBar().setSubtitle(getString(R.string.subtitle_new_room_beacons));
         btInfo = (ListView)findViewById(R.id.listNewRoom_DevicesList);
         acceptBtn = (Button)findViewById(R.id.buttonNewRoom_End);
 
@@ -99,7 +100,7 @@ public class NewRoomActivity extends AppCompatActivity {
             startActivity(new Intent(getBaseContext(), AllRoomsActivity.class));
         } else {
             Toast.makeText(getApplicationContext(),
-                    getText(R.string.toast_warning_no_beacons), Toast.LENGTH_SHORT).show();
+                    getString(R.string.toast_warning_no_beacons), Toast.LENGTH_SHORT).show();
         }
     }
 
@@ -133,21 +134,21 @@ public class NewRoomActivity extends AppCompatActivity {
 
     void cancelCreationConfirm(){
         final AlertDialog.Builder builder3 = new AlertDialog.Builder(NewRoomActivity.this);
-        builder3.setTitle(getText(R.string.dialog_cancel_room_creation));
+        builder3.setTitle(getString(R.string.dialog_cancel_room_creation));
         builder3.setIcon(android.R.drawable.ic_dialog_alert);
 
-        builder3.setPositiveButton(getText(R.string.dialog_button_ok), new DialogInterface.OnClickListener() {
+        builder3.setPositiveButton(getString(R.string.dialog_button_ok), new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
                 globalVariable.setScanning(false);
                 Toast.makeText(getApplicationContext(),
-                        getText(R.string.toast_info_cancelled), Toast.LENGTH_SHORT).show();
+                        getString(R.string.toast_info_cancelled), Toast.LENGTH_SHORT).show();
                 NewRoomActivity.this.finish();
                 startActivity(new Intent(getBaseContext(), AllRoomsActivity.class));
             }
         });
 
-        builder3.setNegativeButton(getText(R.string.dialog_button_cancel), new DialogInterface.OnClickListener() {
+        builder3.setNegativeButton(getString(R.string.dialog_button_cancel), new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
                 dialog.cancel();
@@ -157,17 +158,52 @@ public class NewRoomActivity extends AppCompatActivity {
         builder3.show();
     }
 
+    //To-Do: patikrinti ar kambarys tokiu pavadinimu duombazeje jau neegzistuoja
     void createRoom(){
         globalVariable.getRoomsArray().add(new Room(roomName));
         globalVariable.getRoomsList().add(roomName);
         roomID = globalVariable.getRoomsArray().size() - 1;
+        currentRoom = globalVariable.getRoomsArray().get(roomID);
+        //createRoomInDatabase();
     }
 
     void saveSelectedBeacons(){
+        createRoomInDatabase();
         for (int i = 0; i < selectedDevices.size(); i++){
-            globalVariable.getRoomsArray().get(roomID).getBeacons().add(btDevList.get(selectedDevices.get(i)));
+            currentRoom.getBeacons().add(btDevList.get(selectedDevices.get(i)));
+            saveBeaconsInDatabase(i);
         }
+        notifyCreatedRoomAndBeacons();
         selectedDevices.clear();
+    }
+
+    void createRoomInDatabase(){
+        database.addRoom(currentRoom);
+        SQLiteDatabase dd = database.getReadableDatabase();
+        Cursor c = dd.rawQuery("SELECT ROWID FROM rooms ORDER BY ROWID DESC LIMIT 1", null);
+        if (c != null && c.moveToFirst()) {
+            lastId = c.getLong(0); //The 0 is the column index, we only have 1 column, so the index is 0
+        }
+        int id = (int)lastId;
+        currentRoom.setId(id);
+    }
+
+    void saveBeaconsInDatabase(int i){
+        database.addBeacon(currentRoom.getBeacons().get(i));
+        SQLiteDatabase dd = database.getReadableDatabase();
+        Cursor c = dd.rawQuery("SELECT ROWID FROM beacons ORDER BY ROWID DESC LIMIT 1", null);
+        if (c != null && c.moveToFirst()) {
+            lastId = c.getLong(0); //The 0 is the column index, we only have 1 column, so the index is 0
+        }
+        int id = (int)lastId;
+        currentRoom.getBeacons().get(i).setId(id);
+    }
+
+    void notifyCreatedRoomAndBeacons(){
+        Toast.makeText(getApplicationContext(), getString(R.string.toast_info_created_room1)+
+                roomName+getString(R.string.toast_info_created_room2)+
+                getString(R.string.toast_info_created_room3)+
+                currentRoom.getBeacons().size(), Toast.LENGTH_SHORT).show();
     }
 
     //Sukuriamas Bluetooth adapteris

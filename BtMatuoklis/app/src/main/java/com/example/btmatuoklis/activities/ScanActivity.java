@@ -38,7 +38,7 @@ public class ScanActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_scan);
-        getSupportActionBar().setSubtitle(getText(R.string.subtitle_scan));
+        getSupportActionBar().setSubtitle(getString(R.string.subtitle_scan));
         btInfo = (ListView)findViewById(R.id.listScan_DevicesList);
 
         setDefaultValues();

@@ -43,7 +43,6 @@ public class RoomActivity extends AppCompatActivity {
 
     GlobalClass globalVariable;
     int roomID;
-    long lastId;
     Settings settings;
     ScanTools scantools;
     Room currentRoom;
@@ -60,7 +59,7 @@ public class RoomActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_room);
-        getSupportActionBar().setSubtitle(getText(R.string.subtitle_existing_room));
+        getSupportActionBar().setSubtitle(getString(R.string.subtitle_existing_room));
         existingPavadinimas = (TextView)findViewById(R.id.textSingleRoom_ActiveName);
         boundBtList = (ListView)findViewById(R.id.listSingleRoom_DevicesList);
         calibrateButton = (Button)findViewById(R.id.buttonSingleRoom_Calibrate);
@@ -100,14 +99,14 @@ public class RoomActivity extends AppCompatActivity {
         this.finish();
     }
 
-    public void onRemoveActionClick(MenuItem irem){ removeRoomConfirm(); }
+    public void onRemoveActionClick(MenuItem item){ removeRoomConfirm(); }
 
-    public void onHelpActionClick(MenuItem irem){
+    public void onHelpActionClick(MenuItem item){
         //Work in progress
         Toast.makeText(getApplicationContext(), "Not implemented.", Toast.LENGTH_SHORT).show();
     }
 
-    public void onSettingsActionClick(MenuItem irem){
+    public void onSettingsActionClick(MenuItem item){
         startActivity(new Intent(getBaseContext(), SettingsActivity.class));
     }
 
@@ -139,7 +138,7 @@ public class RoomActivity extends AppCompatActivity {
     void StartCalibration(){
         globalVariable.setScanning(true);
         actionProgress.setVisible(true);
-        calibrateButton.setText(getText(R.string.roomactivity_button_finish_calib));
+        calibrateButton.setText(getString(R.string.roomactivity_button_finish_calib));
         calibrateButton.setEnabled(false);
         contScanStop();
     }
@@ -148,40 +147,14 @@ public class RoomActivity extends AppCompatActivity {
     void finishCalibration(){
         globalVariable.setScanning(false);
         actionProgress.setVisible(false);
-        calibrateButton.setText(getText(R.string.roomactivity_button_resume_calib));
+        calibrateButton.setText(getString(R.string.roomactivity_button_resume_calib));
         calibrateButton.setEnabled(true);
         setListListener();
-        createRoomInDatabase();
-        saveBeaconsInDatabase();
-        savingRSSI();
+        saveRSSIInDatabase();
         exportDB();
     }
 
-    void createRoomInDatabase(){
-        database.addRoom(currentRoom);
-        SQLiteDatabase dd = database.getReadableDatabase();
-        Cursor c = dd.rawQuery("SELECT ROWID FROM rooms ORDER BY ROWID DESC LIMIT 1", null);
-        if (c != null && c.moveToFirst()) {
-            lastId = c.getLong(0); //The 0 is the column index, we only have 1 column, so the index is 0
-        }
-        int id = (int) lastId;
-        currentRoom.setId(id);
-    }
-
-    void saveBeaconsInDatabase(){
-        for (int i = 0; i < currentRoom.getBeacons().size(); i++){
-            database.addBeacon(currentRoom.getBeacons().get(i));
-            SQLiteDatabase dd = database.getReadableDatabase();
-            Cursor c = dd.rawQuery("SELECT ROWID FROM beacons ORDER BY ROWID DESC LIMIT 1", null);
-            if (c != null && c.moveToFirst()) {
-                lastId = c.getLong(0); //The 0 is the column index, we only have 1 column, so the index is 0
-            }
-            int id = (int) lastId;
-            currentRoom.getBeacons().get(i).setId(id);
-        }
-    }
-
-    void savingRSSI(){
+    void saveRSSIInDatabase(){
         int roomdID = currentRoom.getId();
         int beaconID;
         ArrayList<Boolean> calibratedDevices = currentRoom.getCalibratedBeacons();
@@ -197,13 +170,14 @@ public class RoomActivity extends AppCompatActivity {
     private void exportDB() {
         //File dbFile = getDatabasePath("CalibrationDB.db");
         MySQLiteHelper dbhelper = new MySQLiteHelper(getApplicationContext());
-        File exportDir = new File(Environment.getExternalStorageDirectory().
-                getAbsolutePath()+"/"+getText(R.string.app_name), "");
+        //String directory = Environment.getExternalStorageDirectory()+"/"+getString(R.string.app_name);
+        String directory = getExternalStorageDirectory(getString(R.string.app_name));
+        File exportDir = new File(directory, "");
         if (!exportDir.exists()) {
             exportDir.mkdirs();
         }
 
-        String fileName = getText(R.string.generic_calibrate)+currentRoom.getName()+".csv";
+        String fileName = getString(R.string.generic_calibrate)+currentRoom.getName()+".csv";
         File file = new File(exportDir, fileName);
         try {
             file.createNewFile();
@@ -224,17 +198,35 @@ public class RoomActivity extends AppCompatActivity {
             }
             csvWrite.close();
             curCSV.close();
-            Toast.makeText(getApplicationContext(),
-                    getText(R.string.toast_info_file1)+fileName+getText(R.string.toast_info_file2), Toast.LENGTH_LONG).show();
+            notifyExportedCSV(fileName, directory);
         } catch (Exception sqlEx) {
             //Log.e("MainActivity", sqlEx.getMessage(), sqlEx);
         }
     }
 
+    void notifyExportedCSV(String fileName, String directory){
+        Toast.makeText(getApplicationContext(), getString(R.string.toast_info_created_file1)+
+                        fileName+ getString(R.string.toast_info_created_file2)+
+                        getString(R.string.toast_info_created_file3)+directory,
+                Toast.LENGTH_LONG).show();
+    }
+
+    String getExternalStorageDirectory(String folder){
+        String sdpath="/storage/extSdCard/";
+        String sd1path="/storage/sdcard1/";
+        String usbdiskpath="/storage/usbcard1/";
+        String sd0path="/storage/sdcard0/";
+        if(new File(sdpath).exists()) { return sdpath+folder; }
+        else if(new File(sd1path).exists()) { return sd1path+folder; }
+        else if(new File(usbdiskpath).exists()) { return usbdiskpath+folder; }
+        else if(new File(sd0path).exists()) { return sd0path+folder; }
+        else return Environment.getExternalStorageDirectory().toString()+folder;
+    }
+
     //Veiksmai pradinei mygtuko isvaizdai atstayti, kai nera kalibraciniu reiksmiu
     void restoreCalibrateButton(){
         globalVariable.setScanning(false);
-        calibrateButton.setText(getText(R.string.roomactivity_button_calibrate));
+        calibrateButton.setText(getString(R.string.roomactivity_button_calibrate));
         calibrateButton.setEnabled(true);
         boundBtList.setOnItemClickListener(null);
     }
@@ -242,7 +234,7 @@ public class RoomActivity extends AppCompatActivity {
     //Veiksmai mygtuko isvaizdai nustatyti, kai yra kalibraciniu reiksmiu
     void resumeCalibrateButton(){
         globalVariable.setScanning(false);
-        calibrateButton.setText(getText(R.string.roomactivity_button_resume_calib));
+        calibrateButton.setText(getString(R.string.roomactivity_button_resume_calib));
         calibrateButton.setEnabled(true);
         setListListener();
     }
@@ -289,23 +281,23 @@ public class RoomActivity extends AppCompatActivity {
 
     void removeRoomConfirm() {
         final AlertDialog.Builder builder2 = new AlertDialog.Builder(RoomActivity.this);
-        builder2.setTitle(getText(R.string.dialog_remove_room));
+        builder2.setTitle(getString(R.string.dialog_remove_room));
         builder2.setIcon(android.R.drawable.ic_dialog_alert);
 
-        builder2.setPositiveButton(getText(R.string.dialog_button_ok), new DialogInterface.OnClickListener() {
+        builder2.setPositiveButton(getString(R.string.dialog_button_ok), new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
                 globalVariable.setScanning(false);
                 globalVariable.getRoomsArray().remove(roomID);
                 globalVariable.getRoomsList().remove(roomID);
                 Toast.makeText(getApplicationContext(),
-                        getText(R.string.toast_info_removed), Toast.LENGTH_SHORT).show();
+                        getString(R.string.toast_info_removed), Toast.LENGTH_SHORT).show();
                 RoomActivity.this.finish();
                 startActivity(new Intent(getBaseContext(), AllRoomsActivity.class));
             }
         });
 
-        builder2.setNegativeButton(getText(R.string.dialog_button_cancel), new DialogInterface.OnClickListener() {
+        builder2.setNegativeButton(getString(R.string.dialog_button_cancel), new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
                 dialog.cancel();

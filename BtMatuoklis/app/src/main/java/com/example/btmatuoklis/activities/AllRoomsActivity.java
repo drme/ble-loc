@@ -38,7 +38,7 @@ public class AllRoomsActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_all_rooms);
-        getSupportActionBar().setSubtitle(getText(R.string.subtitle_all_rooms));
+        getSupportActionBar().setSubtitle(getString(R.string.subtitle_all_rooms));
         allRoomsList = (ListView)findViewById(R.id.listAllRooms_DevicesList);
 
         setDefaultValues();
@@ -96,20 +96,20 @@ public class AllRoomsActivity extends AppCompatActivity {
 
     void roomNameEntry(){
         final AlertDialog.Builder builder = new AlertDialog.Builder(AllRoomsActivity.this);
-        builder.setTitle(getText(R.string.dialog_new_room_name));
+        builder.setTitle(getString(R.string.dialog_new_room_name));
         builder.setIcon(android.R.drawable.ic_dialog_info);
 
         final EditText input = new EditText(AllRoomsActivity.this);
         input.setInputType(InputType.TYPE_CLASS_TEXT);
         builder.setView(input);
 
-        builder.setPositiveButton(getText(R.string.dialog_button_ok), new DialogInterface.OnClickListener() {
+        builder.setPositiveButton(getString(R.string.dialog_button_ok), new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
                 roomName = input.getText().toString();
                 if (roomName.equals("")) {
                     Toast.makeText(getApplicationContext(),
-                            getText(R.string.toast_warning_empty_entry), Toast.LENGTH_SHORT).show();
+                            getString(R.string.toast_warning_empty_entry), Toast.LENGTH_SHORT).show();
                     dialog.cancel();
                 } else {
                     Intent intent = new Intent(getBaseContext(), NewRoomActivity.class);
@@ -120,7 +120,7 @@ public class AllRoomsActivity extends AppCompatActivity {
             }
         });
 
-        builder.setNegativeButton(getText(R.string.dialog_button_cancel), new DialogInterface.OnClickListener() {
+        builder.setNegativeButton(getString(R.string.dialog_button_cancel), new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
                 dialog.cancel();
@@ -151,21 +151,21 @@ public class AllRoomsActivity extends AppCompatActivity {
 
     void removeAllRoomsConfirm() {
         final AlertDialog.Builder builder1 = new AlertDialog.Builder(AllRoomsActivity.this);
-        builder1.setTitle(getText(R.string.dialog_remove_all_rooms));
+        builder1.setTitle(getString(R.string.dialog_remove_all_rooms));
         builder1.setIcon(android.R.drawable.ic_dialog_alert);
 
-        builder1.setPositiveButton(getText(R.string.dialog_button_ok), new DialogInterface.OnClickListener() {
+        builder1.setPositiveButton(getString(R.string.dialog_button_ok), new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
                 allRoomsArray.clear();
                 allRoomsStringList.clear();
                 roomsAdapter.notifyDataSetChanged();
                 Toast.makeText(getApplicationContext(),
-                        getText(R.string.toast_info_removed), Toast.LENGTH_SHORT).show();
+                        getString(R.string.toast_info_removed), Toast.LENGTH_SHORT).show();
             }
         });
 
-        builder1.setNegativeButton(getText(R.string.dialog_button_cancel), new DialogInterface.OnClickListener() {
+        builder1.setNegativeButton(getString(R.string.dialog_button_cancel), new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
                 dialog.cancel();

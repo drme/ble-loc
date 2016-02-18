@@ -27,7 +27,7 @@ public class SettingsActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_settings);
-        getSupportActionBar().setSubtitle(getText(R.string.subtitle_settings));
+        getSupportActionBar().setSubtitle(getString(R.string.subtitle_settings));
         txSlider = (SeekBar)findViewById(R.id.seekbarSettings_TxPower);
         txVal = (TextView)findViewById(R.id.textSettings_ActiveTxPower);
         msVal = (EditText)findViewById(R.id.editSettings_Frequency);
@@ -47,12 +47,12 @@ public class SettingsActivity extends AppCompatActivity {
     public void onMsButtonClick(View view){
         if (msVal.getText().toString().equals("")) {
             Toast.makeText(getApplicationContext(),
-                    getText(R.string.toast_warning_empty_entry), Toast.LENGTH_SHORT).show();
+                    getString(R.string.toast_warning_empty_entry), Toast.LENGTH_SHORT).show();
         } else {
             short ivest = Short.parseShort(msVal.getText().toString());
             if (ivest < 250 || ivest > 5000 || msVal.getText() == null) {
                 Toast.makeText(getApplicationContext(),
-                        getText(R.string.toast_warning_wrong_range), Toast.LENGTH_SHORT).show();
+                        getString(R.string.toast_warning_wrong_range), Toast.LENGTH_SHORT).show();
             } else {
                 settings.setDelay(ivest);
                 //pakeista reiksme is kart issaugoma ateiciai
@@ -63,7 +63,7 @@ public class SettingsActivity extends AppCompatActivity {
                 msVal.clearFocus();
                 averageVal.clearFocus();
                 Toast.makeText(getApplicationContext(),
-                        getText(R.string.toast_info_saved), Toast.LENGTH_SHORT).show();
+                        getString(R.string.toast_info_saved), Toast.LENGTH_SHORT).show();
             }
         }
     }
@@ -71,12 +71,12 @@ public class SettingsActivity extends AppCompatActivity {
     public void onAverageButtonClick(View view){
         if (averageVal.getText().toString().equals("")) {
             Toast.makeText(getApplicationContext(),
-                    getText(R.string.toast_warning_empty_entry), Toast.LENGTH_SHORT).show();
+                    getString(R.string.toast_warning_empty_entry), Toast.LENGTH_SHORT).show();
         } else {
             byte ivest = Byte.parseByte(averageVal.getText().toString());
             if (ivest < 1 || ivest > 10 || averageVal.getText() == null) {
                 Toast.makeText(getApplicationContext(),
-                        getText(R.string.toast_warning_wrong_range), Toast.LENGTH_SHORT).show();
+                        getString(R.string.toast_warning_wrong_range), Toast.LENGTH_SHORT).show();
             } else {
                 settings.setAverage(ivest);
                 //pakeista reiksme is kart issaugoma ateiciai
@@ -87,7 +87,7 @@ public class SettingsActivity extends AppCompatActivity {
                 averageVal.clearFocus();
                 msVal.clearFocus();
                 Toast.makeText(getApplicationContext(),
-                        getText(R.string.toast_info_saved), Toast.LENGTH_SHORT).show();
+                        getString(R.string.toast_info_saved), Toast.LENGTH_SHORT).show();
             }
         }
     }
@@ -126,9 +126,9 @@ public class SettingsActivity extends AppCompatActivity {
         txSlider.setProgress(settings.getTxPow());
         txVal.setText(Byte.toString(settings.getTxPow()));
         msVal.setText(Integer.toString(settings.getDelay()));
-        hintFrequency.setText(getText(R.string.settingsactivity_hint_frequency) + Short.toString(settings.getDefaultDelay()));
+        hintFrequency.setText(getString(R.string.settingsactivity_hint_frequency) + Short.toString(settings.getDefaultDelay()));
         averageVal.setText(Byte.toString(settings.getAverage()));
         valuesGenerator.setChecked(settings.getGenerator());
-        hintGenerator.setText(getText(R.string.settingsactivity_hint_generator));
+        hintGenerator.setText(getString(R.string.settingsactivity_hint_generator));
     }
 }

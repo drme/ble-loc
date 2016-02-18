@@ -39,8 +39,12 @@
     <string name="toast_info_saved">Išsaugota</string>
     <string name="toast_info_removed">Pašalinta</string>
     <string name="toast_info_cancelled">Atšaukta</string>
-    <string name="toast_info_file1">Failas\u0020</string>
-    <string name="toast_info_file2">"\u0020išsaugotas"</string>
+    <string name="toast_info_created_file1">Failas\u0020</string>
+    <string name="toast_info_created_file2">\u0020išsaugotas</string>
+    <string name="toast_info_created_file3">\u0020aplanke:\n</string>
+    <string name="toast_info_created_room1">Patalpa \"</string>
+    <string name="toast_info_created_room2">\" sukurta</string>
+    <string name="toast_info_created_room3">\nPriskirta įrenginių:\u0020</string>
 
     <!--Beacon informacijos tekstai-->
     <!--Siuo metu niekur nepanaudoti-->

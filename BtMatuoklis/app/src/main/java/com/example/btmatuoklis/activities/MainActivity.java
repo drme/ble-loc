@@ -26,7 +26,7 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        getSupportActionBar().setSubtitle(getText(R.string.subtitle_main));
+        getSupportActionBar().setSubtitle(getString(R.string.subtitle_main));
 
         setDefaultValues();
         createBT();

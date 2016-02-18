@@ -1,2 +1,2 @@
-include ':app', ':opencsv-3.7'
+include ':opencsv-3.7', ':app'
 startParameter.offline=true

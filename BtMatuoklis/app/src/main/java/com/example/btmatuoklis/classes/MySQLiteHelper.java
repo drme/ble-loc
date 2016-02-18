@@ -31,13 +31,13 @@ public class MySQLiteHelper extends SQLiteOpenHelper {
 
         // SQL statement to create table
         String CREATE_BEACONS_TABLE =
-                "CREATE TABLE beacons (id INTEGER PRIMARY KEY AUTOINCREMENT, name TEXT, mac TEXT )";
+                "CREATE TABLE beacons (id INTEGER PRIMARY KEY AUTOINCREMENT, name TEXT, mac TEXT)";
 
         // create table
         database.execSQL(CREATE_BEACONS_TABLE);
 
         String CREATE_CALIBRATIONS_TABLE =
-                "CREATE TABLE calibrations (id INTEGER PRIMARY KEY AUTOINCREMENT, roomid INTEGER, beaconid INTEGER, rssi STRING )";
+                "CREATE TABLE calibrations (id INTEGER PRIMARY KEY AUTOINCREMENT, roomid INTEGER, beaconid INTEGER, rssi STRING)";
 
         database.execSQL(CREATE_CALIBRATIONS_TABLE);
     }
