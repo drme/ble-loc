@@ -66,8 +66,8 @@ public class RoomActivity extends AppCompatActivity {
 
         setDefaultValues();
         loadBoundDevices();
-        checkCompleted();
         setChoiceListener();
+        checkCompleted();
         createBT();
     }
 
@@ -96,6 +96,7 @@ public class RoomActivity extends AppCompatActivity {
     @Override
     public void onBackPressed(){
         globalVariable.setScanning(false);
+        boundBtList.setMultiChoiceModeListener(null);
         this.finish();
     }
 
@@ -255,28 +256,15 @@ public class RoomActivity extends AppCompatActivity {
     void setChoiceListener(){
         boundBtList.setMultiChoiceModeListener(new AbsListView.MultiChoiceModeListener() {
             @Override
-            public void onItemCheckedStateChanged(ActionMode mode, int position, long id, boolean checked) {
-            }
-
+            public void onItemCheckedStateChanged(ActionMode mode, int position, long id, boolean checked){}
             @Override
-            public boolean onCreateActionMode(ActionMode mode, Menu menu) {
-                return false;
-            }
-
+            public boolean onCreateActionMode(ActionMode mode, Menu menu){return false;}
             @Override
-            public boolean onPrepareActionMode(ActionMode mode, Menu menu) {
-                return false;
-            }
-
+            public boolean onPrepareActionMode(ActionMode mode, Menu menu){return false;}
             @Override
-            public boolean onActionItemClicked(ActionMode mode, MenuItem item) {
-                return false;
-            }
-
+            public boolean onActionItemClicked(ActionMode mode, MenuItem item){return false;}
             @Override
-            public void onDestroyActionMode(ActionMode mode) {
-            }
-        });
+            public void onDestroyActionMode(ActionMode mode){}});
     }
 
     void removeRoomConfirm() {
@@ -316,7 +304,7 @@ public class RoomActivity extends AppCompatActivity {
 
     void loadBoundDevices(){
         boundDevList.clear();
-        boundDevList.addAll(globalVariable.getRoomsArray().get(roomID).getBeaconsCalibrationCount());
+        boundDevList.addAll(currentRoom.getBeaconsCalibrationCount());
     }
 
     void checkCalibratedDevices(){
