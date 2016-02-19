@@ -31,6 +31,7 @@ public class ScanActivity extends AppCompatActivity {
     BluetoothAdapter mBluetoothAdapter;
     ArrayList<Beacon> beaconsArray;
     ArrayList<String> savedBeaconsList;
+    ArrayList<String> beaconsList;
     ArrayAdapter<String> listAdapter;
     ListView displayBeaconsList;
 
@@ -85,7 +86,8 @@ public class ScanActivity extends AppCompatActivity {
         scantools = new ScanTools();
         beaconsArray = new ArrayList<Beacon>();
         savedBeaconsList = new ArrayList<String>();
-        listAdapter = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, savedBeaconsList);
+        beaconsList = new ArrayList<String>();
+        listAdapter = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, beaconsList);
         displayBeaconsList.setAdapter(listAdapter);
     }
 
@@ -99,6 +101,8 @@ public class ScanActivity extends AppCompatActivity {
             @Override
             public void run() {
                 if (globalVariable.isScanning()) {
+                    beaconsList.clear();
+                    beaconsList.addAll(savedBeaconsList);
                     listAdapter.notifyDataSetChanged();
                 }
             }

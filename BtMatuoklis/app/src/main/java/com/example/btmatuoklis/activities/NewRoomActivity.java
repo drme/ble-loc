@@ -47,6 +47,7 @@ public class NewRoomActivity extends AppCompatActivity {
     ListView displayBeaconsList;
     ArrayList<Beacon> beaconsArray;
     ArrayList<String> savedBeaconsList;
+    ArrayList<String> beaconsList;
     ArrayAdapter<String> listAdapter;
     ArrayList<Integer> selectedBeacons;
     Button buttonAccept;
@@ -107,7 +108,8 @@ public class NewRoomActivity extends AppCompatActivity {
         database = new MySQLiteHelper(this);
         beaconsArray = new ArrayList<Beacon>();
         savedBeaconsList = new ArrayList<String>();
-        listAdapter = new ArrayAdapter<String>(this, R.layout.list_multiple_choice, savedBeaconsList);
+        beaconsList = new ArrayList<String>();
+        listAdapter = new ArrayAdapter<String>(this, R.layout.list_multiple_choice, beaconsList);
         selectedBeacons = new ArrayList<Integer>();
         displayBeaconsList.setAdapter(listAdapter);
     }
@@ -120,7 +122,6 @@ public class NewRoomActivity extends AppCompatActivity {
                 checkedTextView.setChecked(!checkedTextView.isChecked());
                 if (checkedTextView.isChecked()) {
                     selectedBeacons.add(position);
-                    //Code here
                 } else {
                     selectedBeacons.remove(selectedBeacons.indexOf(position));
                 }
@@ -166,7 +167,6 @@ public class NewRoomActivity extends AppCompatActivity {
         globalVariable.getRoomsList().add(roomName);
         roomID = globalVariable.getRoomsArray().size() - 1;
         currentRoom = globalVariable.getRoomsArray().get(roomID);
-        //createRoomInDatabase();
     }
 
     void saveSelectedBeacons(){
@@ -225,6 +225,8 @@ public class NewRoomActivity extends AppCompatActivity {
             @Override
             public void run() {
                 if (globalVariable.isScanning()) {
+                    beaconsList.clear();
+                    beaconsList.addAll(savedBeaconsList);
                     listAdapter.notifyDataSetChanged();
                 }
             }
