@@ -18,6 +18,15 @@
         app:showAsAction="ifRoom"/>
 
     <item
+        android:id="@+id/action_export"
+        android:icon="@android:drawable/ic_menu_save"
+        android:title="@string/bartext_export_room_csv"
+        android:visible="true"
+        android:enabled="false"
+        android:onClick="onExportActionClick"
+        app:showAsAction="ifRoom"/>
+
+    <item
         android:id="@+id/action_help"
         android:icon="@android:drawable/ic_menu_help"
         android:title="@string/bartext_help"

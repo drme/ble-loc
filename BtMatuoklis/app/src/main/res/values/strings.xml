@@ -19,6 +19,7 @@
     <string name="bartext_all_rooms_remove">Pašalinti visas patalpas</string>
     <string name="bartext_existing_room_remove">Pašalinti patalpą</string>
     <string name="bartext_existing_beacon_remove">Pašalinti įrenginį</string>
+    <string name="bartext_export_room_csv">Eksportuoti CSV</string>
     <string name="bartext_settings">Nustatymai</string>
     <string name="bartext_help">Pagalba</string>
 
@@ -31,6 +32,7 @@
     <string name="dialog_remove_room">Pašalinti patalpą?</string>
     <string name="dialog_remove_calibration">Pašalinti įrenginio kalibracines reikšmes?</string>
     <string name="dialog_remove_beacon">Pašalinti įrenginį?</string>
+    <string name="dialog_export_room_csv">Ar tikrai norite eksportuoti šio kambario kalibracines reikšmes?</string>
 
     <!--Toast informaciniai tekstai-->
     <string name="toast_warning_empty_entry">Neįvesta reikšmė!</string>

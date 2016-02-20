@@ -1,5 +1,6 @@
 package com.example.btmatuoklis.activities;
 
+import android.app.Activity;
 import android.app.AlertDialog;
 import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;
@@ -48,7 +49,7 @@ public class RoomActivity extends AppCompatActivity {
     Room currentRoom;
     MySQLiteHelper database;
     BluetoothAdapter mBluetoothAdapter;
-    MenuItem actionProgress;
+    MenuItem actionProgress, exportItem;
     ArrayList<String> boundBeaconsList;
     ArrayAdapter<String> listAdapter;
     ListView displayBeaconsList;
@@ -77,6 +78,8 @@ public class RoomActivity extends AppCompatActivity {
         MenuInflater inflater = getMenuInflater();
         inflater.inflate(R.menu.actionbar_room, menu);
         actionProgress = menu.findItem(R.id.action_progress);
+        exportItem = menu.findItem(R.id.action_export);
+        enableMenuItem(exportItem, false);
         return true;
     }
 
@@ -102,6 +105,8 @@ public class RoomActivity extends AppCompatActivity {
 
     public void onRemoveActionClick(MenuItem item){ removeRoomConfirm(); }
 
+    public void onExportActionClick(MenuItem item) { ExportRoomCSVConfirm(); }
+
     public void onHelpActionClick(MenuItem item){
         //Work in progress
         Toast.makeText(getApplicationContext(), "Not implemented.", Toast.LENGTH_SHORT).show();
@@ -122,6 +127,8 @@ public class RoomActivity extends AppCompatActivity {
         }
     }
 
+    void refreshMenu(Activity activity) { activity.invalidateOptionsMenu(); }
+
     void setDefaultValues(){
         globalVariable = (GlobalClass) getApplicationContext();
         roomID = getIntent().getExtras().getInt("roomID");
@@ -140,7 +147,7 @@ public class RoomActivity extends AppCompatActivity {
         globalVariable.setScanning(true);
         actionProgress.setVisible(true);
         buttonCalibrate.setText(getString(R.string.roomactivity_button_finish_calib));
-        buttonCalibrate.setEnabled(false);
+        enableMenuItem(exportItem, false);
         continuousScan();
     }
 
@@ -152,7 +159,7 @@ public class RoomActivity extends AppCompatActivity {
         buttonCalibrate.setEnabled(true);
         setListListener();
         saveRSSIInDatabase();
-        exportDB();
+        enableMenuItem(exportItem, true);
     }
 
     void saveRSSIInDatabase(){
@@ -168,10 +175,8 @@ public class RoomActivity extends AppCompatActivity {
         }
     }
 
-    private void exportDB() {
-        //File dbFile = getDatabasePath("CalibrationDB.db");
+    private void exportRoomCSV() {
         MySQLiteHelper dbhelper = new MySQLiteHelper(getApplicationContext());
-        //String directory = Environment.getExternalStorageDirectory()+"/"+getString(R.string.app_name);
         String directory = getExternalStorageDirectory(getString(R.string.app_name));
         File exportDir = new File(directory, "");
         if (!exportDir.exists()) {
@@ -230,6 +235,7 @@ public class RoomActivity extends AppCompatActivity {
         buttonCalibrate.setText(getString(R.string.roomactivity_button_calibrate));
         buttonCalibrate.setEnabled(true);
         displayBeaconsList.setOnItemClickListener(null);
+        //enableMenuItem(exportItem, false);
     }
 
     //Veiksmai mygtuko isvaizdai nustatyti, kai yra kalibraciniu reiksmiu
@@ -238,6 +244,13 @@ public class RoomActivity extends AppCompatActivity {
         buttonCalibrate.setText(getString(R.string.roomactivity_button_resume_calib));
         buttonCalibrate.setEnabled(true);
         setListListener();
+        //enableMenuItem(exportItem, true);
+    }
+
+    void enableMenuItem(MenuItem item, boolean enabled){
+        if (enabled){ item.getIcon().setAlpha(255); }
+        else { item.getIcon().setAlpha(128); }
+        item.setEnabled(enabled);
     }
 
     void setListListener(){
@@ -256,15 +269,28 @@ public class RoomActivity extends AppCompatActivity {
     void setChoiceListener(){
         displayBeaconsList.setMultiChoiceModeListener(new AbsListView.MultiChoiceModeListener() {
             @Override
-            public void onItemCheckedStateChanged(ActionMode mode, int position, long id, boolean checked){}
+            public void onItemCheckedStateChanged(ActionMode mode, int position, long id, boolean checked) {
+            }
+
             @Override
-            public boolean onCreateActionMode(ActionMode mode, Menu menu){return false;}
+            public boolean onCreateActionMode(ActionMode mode, Menu menu) {
+                return false;
+            }
+
             @Override
-            public boolean onPrepareActionMode(ActionMode mode, Menu menu){return false;}
+            public boolean onPrepareActionMode(ActionMode mode, Menu menu) {
+                return false;
+            }
+
             @Override
-            public boolean onActionItemClicked(ActionMode mode, MenuItem item){return false;}
+            public boolean onActionItemClicked(ActionMode mode, MenuItem item) {
+                return false;
+            }
+
             @Override
-            public void onDestroyActionMode(ActionMode mode){}});
+            public void onDestroyActionMode(ActionMode mode) {
+            }
+        });
     }
 
     void removeRoomConfirm() {
@@ -293,6 +319,28 @@ public class RoomActivity extends AppCompatActivity {
         });
 
         builder2.show();
+    }
+
+    void ExportRoomCSVConfirm() {
+        final AlertDialog.Builder builder6 = new AlertDialog.Builder(RoomActivity.this);
+        builder6.setTitle(getString(R.string.dialog_export_room_csv));
+        builder6.setIcon(android.R.drawable.ic_dialog_info);
+
+        builder6.setPositiveButton(getString(R.string.dialog_button_ok), new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                exportRoomCSV();
+            }
+        });
+
+        builder6.setNegativeButton(getString(R.string.dialog_button_cancel), new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                dialog.cancel();
+            }
+        });
+
+        builder6.show();
     }
 
     //Sukuriamas Bluetooth adapteris
