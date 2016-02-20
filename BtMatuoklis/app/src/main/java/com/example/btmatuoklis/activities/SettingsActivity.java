@@ -1,7 +1,6 @@
 package com.example.btmatuoklis.activities;
 
 import android.app.Activity;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
@@ -15,7 +14,7 @@ import android.widget.Toast;
 import com.example.btmatuoklis.R;
 import com.example.btmatuoklis.classes.Settings;
 
-public class SettingsActivity extends AppCompatActivity {
+public class SettingsActivity extends Activity {
 
     Settings settings;
     SeekBar sliderTXPower;
@@ -27,7 +26,7 @@ public class SettingsActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_settings);
-        getSupportActionBar().setSubtitle(getString(R.string.subtitle_settings));
+        getActionBar().setSubtitle(getString(R.string.subtitle_settings));
         sliderTXPower = (SeekBar)findViewById(R.id.seekbarSettings_TxPower);
         displayTXPower = (TextView)findViewById(R.id.textSettings_ActiveTxPower);
         editFrequency = (EditText)findViewById(R.id.editSettings_Frequency);

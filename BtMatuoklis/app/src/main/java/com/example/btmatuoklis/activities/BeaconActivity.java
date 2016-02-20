@@ -1,9 +1,9 @@
 package com.example.btmatuoklis.activities;
 
+import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -20,7 +20,7 @@ import com.example.btmatuoklis.classes.Room;
 import java.util.ArrayList;
 import java.util.Collections;
 
-public class BeaconActivity extends AppCompatActivity {
+public class BeaconActivity extends Activity {
 
     GlobalClass globalVariable;
     int roomID, beaconID;
@@ -35,7 +35,7 @@ public class BeaconActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_beacon);
-        getSupportActionBar().setSubtitle(getString(R.string.subtitle_existing_beacon));
+        getActionBar().setSubtitle(getString(R.string.subtitle_existing_beacon));
         displayRoomName = (TextView)findViewById(R.id.textBeacon_ActiveName);
         displayBeacon = (TextView)findViewById(R.id.textBeacon_Info);
         displayArrayFrame = findViewById(R.id.viewBeacon_array);
@@ -118,7 +118,7 @@ public class BeaconActivity extends AppCompatActivity {
     }
 
     void removeCalibrationConfirm() {
-        final AlertDialog.Builder builder4 = new AlertDialog.Builder(BeaconActivity.this);
+        final AlertDialog.Builder builder4 = new AlertDialog.Builder(BeaconActivity.this, AlertDialog.THEME_HOLO_DARK);
         builder4.setTitle(getString(R.string.dialog_remove_calibration));
         builder4.setIcon(android.R.drawable.ic_dialog_alert);
 
@@ -142,7 +142,7 @@ public class BeaconActivity extends AppCompatActivity {
     }
 
     void removeBeaconConfirm() {
-        final AlertDialog.Builder builder5 = new AlertDialog.Builder(BeaconActivity.this);
+        final AlertDialog.Builder builder5 = new AlertDialog.Builder(BeaconActivity.this, AlertDialog.THEME_HOLO_DARK);
         builder5.setTitle(getString(R.string.dialog_remove_beacon));
         builder5.setIcon(android.R.drawable.ic_dialog_alert);
 

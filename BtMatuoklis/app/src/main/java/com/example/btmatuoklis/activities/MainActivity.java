@@ -1,11 +1,11 @@
 package com.example.btmatuoklis.activities;
 
+import android.app.Activity;
 import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothManager;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.v7.app.AppCompatActivity;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -16,7 +16,7 @@ import com.example.btmatuoklis.R;
 import com.example.btmatuoklis.classes.MySQLiteHelper;
 import com.example.btmatuoklis.classes.Settings;
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends Activity {
 
     public static Settings settings;
     MySQLiteHelper database;
@@ -26,7 +26,7 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        getSupportActionBar().setSubtitle(getString(R.string.subtitle_main));
+        getActionBar().setSubtitle(getString(R.string.subtitle_main));
 
         setDefaultValues();
         createBT();

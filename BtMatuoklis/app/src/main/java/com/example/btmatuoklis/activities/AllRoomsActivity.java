@@ -1,10 +1,13 @@
 package com.example.btmatuoklis.activities;
 
+import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.support.v7.app.AppCompatActivity;
+import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
+import android.provider.CalendarContract;
 import android.text.Editable;
 import android.text.InputType;
 import android.text.TextUtils;
@@ -25,7 +28,7 @@ import com.example.btmatuoklis.classes.Room;
 
 import java.util.ArrayList;
 
-public class AllRoomsActivity extends AppCompatActivity {
+public class AllRoomsActivity extends Activity {
 
     GlobalClass globalVariable;
     ListView displayRoomsList;
@@ -38,7 +41,7 @@ public class AllRoomsActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_all_rooms);
-        getSupportActionBar().setSubtitle(getString(R.string.subtitle_all_rooms));
+        getActionBar().setSubtitle(getString(R.string.subtitle_all_rooms));
         displayRoomsList = (ListView)findViewById(R.id.listAllRooms_BeaconsList);
 
         setDefaultValues();
@@ -95,12 +98,13 @@ public class AllRoomsActivity extends AppCompatActivity {
     }
 
     void roomNameEntry(){
-        final AlertDialog.Builder builder = new AlertDialog.Builder(AllRoomsActivity.this);
+        final AlertDialog.Builder builder = new AlertDialog.Builder(AllRoomsActivity.this, AlertDialog.THEME_HOLO_DARK);
         builder.setTitle(getString(R.string.dialog_new_room_name));
         builder.setIcon(android.R.drawable.ic_dialog_info);
 
         final EditText input = new EditText(AllRoomsActivity.this);
         input.setInputType(InputType.TYPE_CLASS_TEXT);
+        input.setTextColor(Color.WHITE);
         builder.setView(input);
 
         builder.setPositiveButton(getString(R.string.dialog_button_ok), new DialogInterface.OnClickListener() {
@@ -150,7 +154,7 @@ public class AllRoomsActivity extends AppCompatActivity {
     }
 
     void removeAllRoomsConfirm() {
-        final AlertDialog.Builder builder1 = new AlertDialog.Builder(AllRoomsActivity.this);
+        final AlertDialog.Builder builder1 = new AlertDialog.Builder(AllRoomsActivity.this, AlertDialog.THEME_HOLO_DARK);
         builder1.setTitle(getString(R.string.dialog_remove_all_rooms));
         builder1.setIcon(android.R.drawable.ic_dialog_alert);
 

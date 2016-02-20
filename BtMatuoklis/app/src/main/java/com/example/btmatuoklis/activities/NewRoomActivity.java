@@ -1,5 +1,6 @@
 package com.example.btmatuoklis.activities;
 
+import android.app.Activity;
 import android.app.AlertDialog;
 import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;
@@ -10,7 +11,6 @@ import android.content.Intent;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.Handler;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -33,7 +33,7 @@ import com.example.btmatuoklis.classes.Settings;
 
 import java.util.ArrayList;
 
-public class NewRoomActivity extends AppCompatActivity {
+public class NewRoomActivity extends Activity {
 
     GlobalClass globalVariable;
     int roomID;
@@ -56,7 +56,7 @@ public class NewRoomActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_new_room);
-        getSupportActionBar().setSubtitle(getString(R.string.subtitle_new_room_beacons));
+        getActionBar().setSubtitle(getString(R.string.subtitle_new_room_beacons));
         displayBeaconsList = (ListView)findViewById(R.id.listNewRoom_BeaconsList);
         buttonAccept = (Button)findViewById(R.id.buttonNewRoom_End);
 
@@ -69,6 +69,8 @@ public class NewRoomActivity extends AppCompatActivity {
     @Override
     public boolean onCreateOptionsMenu(Menu menu)
     {
+        getActionBar().setDisplayShowCustomEnabled(true);
+        getActionBar().setCustomView(R.layout.action_view_progress);
         MenuInflater inflater = getMenuInflater();
         inflater.inflate(R.menu.actionbar_newroom, menu);
         return true;
@@ -136,7 +138,7 @@ public class NewRoomActivity extends AppCompatActivity {
     }
 
     void cancelCreationConfirm(){
-        final AlertDialog.Builder builder3 = new AlertDialog.Builder(NewRoomActivity.this);
+        final AlertDialog.Builder builder3 = new AlertDialog.Builder(NewRoomActivity.this, AlertDialog.THEME_HOLO_DARK);
         builder3.setTitle(getString(R.string.dialog_cancel_room_creation));
         builder3.setIcon(android.R.drawable.ic_dialog_alert);
 

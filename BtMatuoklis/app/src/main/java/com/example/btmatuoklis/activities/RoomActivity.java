@@ -12,7 +12,6 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.Environment;
 import android.os.Handler;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.ActionMode;
 import android.view.Menu;
@@ -40,7 +39,7 @@ import java.io.File;
 import java.io.FileWriter;
 import java.util.ArrayList;
 
-public class RoomActivity extends AppCompatActivity {
+public class RoomActivity extends Activity {
 
     GlobalClass globalVariable;
     int roomID;
@@ -49,7 +48,7 @@ public class RoomActivity extends AppCompatActivity {
     Room currentRoom;
     MySQLiteHelper database;
     BluetoothAdapter mBluetoothAdapter;
-    MenuItem actionProgress, exportItem;
+    MenuItem exportItem;
     ArrayList<String> boundBeaconsList;
     ArrayAdapter<String> listAdapter;
     ListView displayBeaconsList;
@@ -60,13 +59,13 @@ public class RoomActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_room);
-        getSupportActionBar().setSubtitle(getString(R.string.subtitle_existing_room));
+        getActionBar().setSubtitle(getString(R.string.subtitle_existing_room));
         displayRoomName = (TextView)findViewById(R.id.textSingleRoom_ActiveName);
         displayBeaconsList = (ListView)findViewById(R.id.listSingleRoom_BeaconsList);
         buttonCalibrate = (Button)findViewById(R.id.buttonSingleRoom_Calibrate);
 
         setDefaultValues();
-        loadBoundDevices();
+        reloadBoundDevices();
         setChoiceListener();
         checkCompleted();
         createBT();
@@ -75,9 +74,11 @@ public class RoomActivity extends AppCompatActivity {
     @Override
     public boolean onCreateOptionsMenu(Menu menu)
     {
+        getActionBar().setDisplayShowCustomEnabled(true);
+        getActionBar().setCustomView(R.layout.action_view_progress);
+        getActionBar().getCustomView().setVisibility(View.INVISIBLE);
         MenuInflater inflater = getMenuInflater();
         inflater.inflate(R.menu.actionbar_room, menu);
-        actionProgress = menu.findItem(R.id.action_progress);
         exportItem = menu.findItem(R.id.action_export);
         enableMenuItem(exportItem, false);
         return true;
@@ -86,7 +87,7 @@ public class RoomActivity extends AppCompatActivity {
     @Override
     protected void onResume() {
         super.onResume();
-        loadBoundDevices();
+        reloadBoundDevices();
         checkCalibratedDevices();
         if ((currentRoom.getBeacons().size() == 0) | !currentRoom.isCalibrationStarted()){
             restoreCalibrateButton();
@@ -124,10 +125,9 @@ public class RoomActivity extends AppCompatActivity {
         }
         else {
             startCalibration();
+            buttonCalibrate.setEnabled(true);
         }
     }
-
-    void refreshMenu(Activity activity) { activity.invalidateOptionsMenu(); }
 
     void setDefaultValues(){
         globalVariable = (GlobalClass) getApplicationContext();
@@ -145,8 +145,10 @@ public class RoomActivity extends AppCompatActivity {
     //Veiksmai kalibracijai pradeti
     void startCalibration(){
         globalVariable.setScanning(true);
-        actionProgress.setVisible(true);
+        getActionBar().getCustomView().setVisibility(View.VISIBLE);
+        displayBeaconsList.setOnItemClickListener(null);
         buttonCalibrate.setText(getString(R.string.roomactivity_button_finish_calib));
+        buttonCalibrate.setEnabled(false);
         enableMenuItem(exportItem, false);
         continuousScan();
     }
@@ -154,7 +156,7 @@ public class RoomActivity extends AppCompatActivity {
     //Veiksmai veiksmai kalibracijai baigti
     void finishCalibration(){
         globalVariable.setScanning(false);
-        actionProgress.setVisible(false);
+        getActionBar().getCustomView().setVisibility(View.INVISIBLE);
         buttonCalibrate.setText(getString(R.string.roomactivity_button_resume_calib));
         buttonCalibrate.setEnabled(true);
         setListListener();
@@ -220,10 +222,12 @@ public class RoomActivity extends AppCompatActivity {
     String getExternalStorageDirectory(String folder){
         String sdpath="/storage/extSdCard/";
         String sd1path="/storage/sdcard1/";
+        String sd2path="/storage/external_SD/";
         String usbdiskpath="/storage/usbcard1/";
         String sd0path="/storage/sdcard0/";
         if(new File(sdpath).exists()) { return sdpath+folder; }
         else if(new File(sd1path).exists()) { return sd1path+folder; }
+        else if(new File(sd2path).exists()) { return sd2path+folder; }
         else if(new File(usbdiskpath).exists()) { return usbdiskpath+folder; }
         else if(new File(sd0path).exists()) { return sd0path+folder; }
         else return Environment.getExternalStorageDirectory().toString()+folder;
@@ -236,6 +240,7 @@ public class RoomActivity extends AppCompatActivity {
         buttonCalibrate.setEnabled(true);
         displayBeaconsList.setOnItemClickListener(null);
         //enableMenuItem(exportItem, false);
+        //Grizus i Activity arba rotate screen - reiktu vel atstatyti CSV export menu item
     }
 
     //Veiksmai mygtuko isvaizdai nustatyti, kai yra kalibraciniu reiksmiu
@@ -245,6 +250,7 @@ public class RoomActivity extends AppCompatActivity {
         buttonCalibrate.setEnabled(true);
         setListListener();
         //enableMenuItem(exportItem, true);
+        //Grizus i Activity arba rotate screen - reiktu vel atstatyti CSV export menu item
     }
 
     void enableMenuItem(MenuItem item, boolean enabled){
@@ -269,32 +275,20 @@ public class RoomActivity extends AppCompatActivity {
     void setChoiceListener(){
         displayBeaconsList.setMultiChoiceModeListener(new AbsListView.MultiChoiceModeListener() {
             @Override
-            public void onItemCheckedStateChanged(ActionMode mode, int position, long id, boolean checked) {
-            }
-
+            public void onItemCheckedStateChanged(ActionMode mode, int position, long id, boolean checked){}
             @Override
-            public boolean onCreateActionMode(ActionMode mode, Menu menu) {
-                return false;
-            }
-
+            public boolean onCreateActionMode(ActionMode mode, Menu menu) { return false; }
             @Override
-            public boolean onPrepareActionMode(ActionMode mode, Menu menu) {
-                return false;
-            }
-
+            public boolean onPrepareActionMode(ActionMode mode, Menu menu) { return false; }
             @Override
-            public boolean onActionItemClicked(ActionMode mode, MenuItem item) {
-                return false;
-            }
-
+            public boolean onActionItemClicked(ActionMode mode, MenuItem item) { return false; }
             @Override
-            public void onDestroyActionMode(ActionMode mode) {
-            }
+            public void onDestroyActionMode(ActionMode mode) {}
         });
     }
 
     void removeRoomConfirm() {
-        final AlertDialog.Builder builder2 = new AlertDialog.Builder(RoomActivity.this);
+        final AlertDialog.Builder builder2 = new AlertDialog.Builder(RoomActivity.this, AlertDialog.THEME_HOLO_DARK);
         builder2.setTitle(getString(R.string.dialog_remove_room));
         builder2.setIcon(android.R.drawable.ic_dialog_alert);
 
@@ -313,31 +307,25 @@ public class RoomActivity extends AppCompatActivity {
 
         builder2.setNegativeButton(getString(R.string.dialog_button_cancel), new DialogInterface.OnClickListener() {
             @Override
-            public void onClick(DialogInterface dialog, int which) {
-                dialog.cancel();
-            }
+            public void onClick(DialogInterface dialog, int which) { dialog.cancel(); }
         });
 
         builder2.show();
     }
 
     void ExportRoomCSVConfirm() {
-        final AlertDialog.Builder builder6 = new AlertDialog.Builder(RoomActivity.this);
+        final AlertDialog.Builder builder6 = new AlertDialog.Builder(RoomActivity.this, AlertDialog.THEME_HOLO_DARK);
         builder6.setTitle(getString(R.string.dialog_export_room_csv));
         builder6.setIcon(android.R.drawable.ic_dialog_info);
 
         builder6.setPositiveButton(getString(R.string.dialog_button_ok), new DialogInterface.OnClickListener() {
             @Override
-            public void onClick(DialogInterface dialog, int which) {
-                exportRoomCSV();
-            }
+            public void onClick(DialogInterface dialog, int which) { exportRoomCSV(); }
         });
 
         builder6.setNegativeButton(getString(R.string.dialog_button_cancel), new DialogInterface.OnClickListener() {
             @Override
-            public void onClick(DialogInterface dialog, int which) {
-                dialog.cancel();
-            }
+            public void onClick(DialogInterface dialog, int which) { dialog.cancel(); }
         });
 
         builder6.show();
@@ -350,7 +338,7 @@ public class RoomActivity extends AppCompatActivity {
         mBluetoothAdapter = bluetoothManager.getAdapter();
     }
 
-    void loadBoundDevices(){
+    void reloadBoundDevices(){
         boundBeaconsList.clear();
         boundBeaconsList.addAll(currentRoom.getBeaconsCalibrationCount());
     }
@@ -365,8 +353,6 @@ public class RoomActivity extends AppCompatActivity {
     void checkCompleted(){
         if (currentRoom.isCalibrated()){
             checkCalibratedDevices();
-            buttonCalibrate.setText("Baigti");
-            buttonCalibrate.setEnabled(false);
             setListListener();
         }
     }
@@ -381,12 +367,9 @@ public class RoomActivity extends AppCompatActivity {
             @Override
             public void run() {
                 if (globalVariable.isScanning()) {
-                    loadBoundDevices();
+                    reloadBoundDevices();
                     checkCalibratedDevices();
-                    if (currentRoom.isCalibrated()) {
-                        buttonCalibrate.setEnabled(true);
-                        setListListener();
-                    }
+                    if (currentRoom.isCalibrated()) { buttonCalibrate.setEnabled(true); }
                 }
             }
         };

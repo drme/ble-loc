@@ -1,5 +1,6 @@
 package com.example.btmatuoklis.activities;
 
+import android.app.Activity;
 import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;
 import android.bluetooth.BluetoothManager;
@@ -7,10 +8,10 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Handler;
 import android.os.Bundle;
-import android.support.v7.app.AppCompatActivity;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
+import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
 import android.widget.Toast;
@@ -23,7 +24,7 @@ import com.example.btmatuoklis.classes.Settings;
 
 import java.util.ArrayList;
 
-public class ScanActivity extends AppCompatActivity {
+public class ScanActivity extends Activity {
 
     GlobalClass globalVariable;
     Settings settings;
@@ -39,7 +40,7 @@ public class ScanActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_scan);
-        getSupportActionBar().setSubtitle(getString(R.string.subtitle_scan));
+        getActionBar().setSubtitle(getString(R.string.subtitle_scan));
         displayBeaconsList = (ListView)findViewById(R.id.listScan_BeaconsList);
 
         setDefaultValues();
@@ -50,9 +51,10 @@ public class ScanActivity extends AppCompatActivity {
     @Override
     public boolean onCreateOptionsMenu(Menu menu)
     {
+        getActionBar().setDisplayShowCustomEnabled(true);
+        getActionBar().setCustomView(R.layout.action_view_progress);
         MenuInflater inflater = getMenuInflater();
         inflater.inflate(R.menu.actionbar_scan, menu);
-        menu.findItem(R.id.action_progress).setVisible(true);
         return true;
     }
 
@@ -65,6 +67,7 @@ public class ScanActivity extends AppCompatActivity {
     public void onHelpActionClick(MenuItem item){
         //Work in progress
         Toast.makeText(getApplicationContext(), "Not implemented.", Toast.LENGTH_SHORT).show();
+        getActionBar().getCustomView().setVisibility(View.INVISIBLE);
     }
 
     public void onSettingsActionClick(MenuItem item){

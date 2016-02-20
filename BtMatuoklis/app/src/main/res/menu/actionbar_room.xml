@@ -1,13 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<menu xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto">
-
-    <item
-        android:id="@+id/action_progress"
-        android:title="@string/bartext_loading"
-        android:visible="false"
-        app:showAsAction="always"
-        app:actionLayout="@layout/action_view_progress" />
+<menu xmlns:android="http://schemas.android.com/apk/res/android" >
 
     <item
         android:id="@+id/action_remove"
@@ -15,7 +7,7 @@
         android:title="@string/bartext_existing_room_remove"
         android:visible="true"
         android:onClick="onRemoveActionClick"
-        app:showAsAction="ifRoom"/>
+        android:showAsAction="ifRoom"/>
 
     <item
         android:id="@+id/action_export"
@@ -24,7 +16,7 @@
         android:visible="true"
         android:enabled="false"
         android:onClick="onExportActionClick"
-        app:showAsAction="ifRoom"/>
+        android:showAsAction="ifRoom"/>
 
     <item
         android:id="@+id/action_help"
@@ -32,7 +24,7 @@
         android:title="@string/bartext_help"
         android:visible="true"
         android:onClick="onHelpActionClick"
-        app:showAsAction="ifRoom"/>
+        android:showAsAction="ifRoom"/>
 
     <item
         android:id="@+id/action_settings"
@@ -40,6 +32,6 @@
         android:title="@string/bartext_settings"
         android:visible="true"
         android:onClick="onSettingsActionClick"
-        app:showAsAction="ifRoom"/>
+        android:showAsAction="ifRoom"/>
 
 </menu>
