@@ -222,12 +222,12 @@ public class RoomActivity extends Activity {
     String getExternalStorageDirectory(String folder){
         String sdpath="/storage/extSdCard/";
         String sd1path="/storage/sdcard1/";
-        String sd2path="/storage/external_SD/";
+        //String sd2path="/storage/external_SD/";
         String usbdiskpath="/storage/usbcard1/";
         String sd0path="/storage/sdcard0/";
         if(new File(sdpath).exists()) { return sdpath+folder; }
         else if(new File(sd1path).exists()) { return sd1path+folder; }
-        else if(new File(sd2path).exists()) { return sd2path+folder; }
+        //else if(new File(sd2path).exists()) { return sd2path+folder; }
         else if(new File(usbdiskpath).exists()) { return usbdiskpath+folder; }
         else if(new File(sd0path).exists()) { return sd0path+folder; }
         else return Environment.getExternalStorageDirectory().toString()+folder;
