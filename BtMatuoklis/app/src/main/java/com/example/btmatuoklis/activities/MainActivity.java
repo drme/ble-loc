@@ -46,9 +46,7 @@ public class MainActivity extends Activity {
 
     public void onHelpActionClick(MenuItem item){
         //Work in progress
-        String res = "empty";
-        res = Short.toString(settings.getDelay());
-        Toast.makeText(getApplicationContext(), res, Toast.LENGTH_SHORT).show();
+        Toast.makeText(getApplicationContext(), "Not implemented.", Toast.LENGTH_SHORT).show();
     }
 
     public void onSettingsActionClick(MenuItem item){
