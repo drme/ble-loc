@@ -3,6 +3,7 @@ package com.example.btmatuoklis.classes;
 import android.app.Activity;
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.preference.PreferenceManager;
 
 public class Settings {
     public static byte REQUEST_ENABLE_BT = 1;
@@ -28,13 +29,12 @@ public class Settings {
     private boolean generator = false;
 
     public Settings(Context context){
-        preferences = context.getSharedPreferences(
-                Settings.class.getSimpleName(), Activity.MODE_PRIVATE);
+        preferences = PreferenceManager.getDefaultSharedPreferences(context);
         edit = preferences.edit();
         //Nuskaitomi paskutiniai naudoti nustatymai
         txPower = (byte)preferences.getInt("savedTXPower", txPower);
-        delay = (short)preferences.getInt("savedDelay", delay);
-        average = (byte)preferences.getInt("savedAverage", average);
+        delay = Short.parseShort(preferences.getString("savedDelay", Short.toString(delay)));
+        average = Byte.parseByte(preferences.getString("savedAverage", Short.toString(average)));
         generator = preferences.getBoolean("savedGenerator", generator);
     }
 
@@ -42,7 +42,10 @@ public class Settings {
 
     public byte getTXPower(){ return this.txPower; }
 
-    public short getDelay(){ return this.delay; }
+    public short getDelay(){
+        delay = Short.parseShort(preferences.getString("savedDelay", Short.toString(delay)));
+        return this.delay;
+    }
 
     public byte getAverage(){ return this.average; }
 

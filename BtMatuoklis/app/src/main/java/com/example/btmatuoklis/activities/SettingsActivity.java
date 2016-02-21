@@ -1,49 +1,51 @@
 package com.example.btmatuoklis.activities;
 
-import android.app.Activity;
+import android.app.Fragment;
+import android.content.Intent;
 import android.os.Bundle;
-import android.view.View;
-import android.view.inputmethod.InputMethodManager;
-import android.widget.CompoundButton;
-import android.widget.EditText;
+import android.preference.EditTextPreference;
+import android.preference.PreferenceActivity;
 import android.widget.SeekBar;
 import android.widget.Switch;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.example.btmatuoklis.R;
 import com.example.btmatuoklis.classes.Settings;
 
-public class SettingsActivity extends Activity {
+public class SettingsActivity extends PreferenceActivity {
 
     Settings settings;
     SeekBar sliderTXPower;
     TextView displayTXPower, hintFrequency, hintGenerator;
-    EditText editFrequency, editAverage;
+    EditTextPreference editFrequency, editAverage;
     Switch switchGenerator;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_settings);
+        //setContentView(R.layout.activity_settings);
         getActionBar().setSubtitle(getString(R.string.subtitle_settings));
-        sliderTXPower = (SeekBar)findViewById(R.id.seekbarSettings_TxPower);
-        displayTXPower = (TextView)findViewById(R.id.textSettings_ActiveTxPower);
-        editFrequency = (EditText)findViewById(R.id.editSettings_Frequency);
-        hintFrequency = (TextView)findViewById(R.id.textSettings_FrequencyHint);
-        editAverage = (EditText)findViewById(R.id.editSettings_Average);
-        switchGenerator = (Switch)findViewById(R.id.switchSettings_FakeValues);
-        hintGenerator = (TextView)findViewById(R.id.textSettings_FakeValuesHint);
+        addPreferencesFromResource(R.xml.settings_preferences);
+        //sliderTXPower = (SeekBar)findViewById(R.id.seekbarSettings_TxPower);
+        //displayTXPower = (TextView)findViewById(R.id.textSettings_ActiveTxPower);
+        editFrequency = (EditTextPreference)findPreference("savedDelay");
+        //hintFrequency = (TextView)findViewById(R.id.textSettings_FrequencyHint);
+        editAverage = (EditTextPreference)findPreference("savedAverage");
+        //switchGenerator = (Switch)findViewById(R.id.switchSettings_FakeValues);
+        //hintGenerator = (TextView)findViewById(R.id.textSettings_FakeValuesHint);
 
         setDefaultValues();
-        setSliderListener();
-        setGeneratorSwitchListener();
+        //setSliderListener();
+        //setGeneratorSwitchListener();
     }
 
     @Override
-    public void onBackPressed() { this.finish(); }
+    public void onBackPressed() {
+        //this.finish();
+        this.recreate();
+    }
 
-    public void onMsButtonClick(View view){
+    /*public void onMsButtonClick(View view){
         if (editFrequency.getText().toString().equals("")) {
             Toast.makeText(getApplicationContext(),
                     getString(R.string.toast_warning_empty_entry), Toast.LENGTH_SHORT).show();
@@ -116,18 +118,20 @@ public class SettingsActivity extends Activity {
                 settings.saveGenerator();
             }
         });
-    }
+    }*/
 
     //Nustatomos "default" reiksmes
     //Jeigu programa leidziama ne pirma karta - nustatomos issaugotos reiksmes
     void setDefaultValues(){
         settings = MainActivity.settings;
-        sliderTXPower.setProgress(settings.getTXPower());
+        editFrequency.setSummary("Dabartinis dažnis: " + Integer.toString(settings.getDelay()));
+        editAverage.setSummary("Dabartinis kiekis: " + Integer.toString(settings.getAverage()));
+        /*sliderTXPower.setProgress(settings.getTXPower());
         displayTXPower.setText(Byte.toString(settings.getTXPower()));
         editFrequency.setText(Integer.toString(settings.getDelay()));
         hintFrequency.setText(getString(R.string.settingsactivity_hint_frequency) + Short.toString(settings.getDefaultDelay()));
         editAverage.setText(Byte.toString(settings.getAverage()));
         switchGenerator.setChecked(settings.getGenerator());
-        hintGenerator.setText(getString(R.string.settingsactivity_hint_generator));
+        hintGenerator.setText(getString(R.string.settingsactivity_hint_generator));*/
     }
 }

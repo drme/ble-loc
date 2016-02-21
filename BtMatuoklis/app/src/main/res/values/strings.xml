@@ -69,12 +69,14 @@
     <string name="mainactivity_button_allrooms">Patalpos</string>
 
     <!--SettingsActivity elementu tekstai-->
+    <string name="settingsactivity_category_main_settings">Pagrindiniai nustatymai</string>
+    <string name="settingsactivity_category_debug_settings">Debug nustatymai</string>
     <string name="settingsactivity_text_txpower">TxPower:</string>
     <string name="settingsactivity_button_frequency">Nustatyti matavimų dažnį</string>
     <string name="settingsactivity_button_average">Nustatyti Vidurkio Reikšmių Kiekį</string>
     <string name="settingsactivity_text_debug">Debug:\u0020</string>
     <string name="settingsactivity_slider_generator">Įrenginių generavimas</string>
-    <string name="settingsactivity_hint_generator">Netikrų įrenginių ir jų RSSI reikšmių generatorius</string>
+    <string name="settingsactivity_hint_generator">Netikrų įrenginių generatorius</string>
     <string name="settingsactivity_hint_frequency">Rekomenduotinos reikšmės intervale: [250; 5000], default -\u0020</string>
 
     <!--NewRoomActivity elementu tekstai-->

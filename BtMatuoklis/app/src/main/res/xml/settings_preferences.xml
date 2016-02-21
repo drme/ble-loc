@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android" >
+    <PreferenceCategory
+        android:title="@string/settingsactivity_category_main_settings"
+        android:summary="@string/settingsactivity_category_main_settings" >
+
+        <EditTextPreference
+            android:id="@+id/preferences_TxPower"
+            android:key="empty"
+            android:title="TxSlider"
+            android:summary="Cia bus TxSlider" />
+        <EditTextPreference
+            android:id="@+id/preferences_Frequency"
+            android:key="savedDelay"
+            android:title="@string/settingsactivity_button_frequency"
+            android:summary="@string/generic_value"
+            android:dialogMessage="@string/settingsactivity_hint_frequency"
+            android:inputType="number"
+            android:maxLength="4" />
+        <EditTextPreference
+            android:id="@+id/preferences_Average"
+            android:key="savedAverage"
+            android:title="@string/settingsactivity_button_average"
+            android:summary="@string/generic_value"
+            android:dialogMessage="@string/generic_hint"
+            android:inputType="number"
+            android:maxLength="2" />
+
+    </PreferenceCategory>
+
+    <PreferenceCategory
+        android:title="@string/settingsactivity_category_debug_settings"
+        android:summary="@string/settingsactivity_category_main_settings" >
+
+        <SwitchPreference
+            android:id="@+id/preferences_Debug"
+            android:key="savedGenerator"
+            android:title="@string/settingsactivity_slider_generator"
+            android:summary="@string/settingsactivity_hint_generator" />
+
+    </PreferenceCategory>
+</PreferenceScreen>
