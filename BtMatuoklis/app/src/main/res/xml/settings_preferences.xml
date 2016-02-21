@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android" >
+    <PreferenceCategory
+        android:title="@string/settingsactivity_category_main_settings"
+        android:summary="@string/settingsactivity_category_main_settings" >
+
+        <com.example.btmatuoklis.classes.SeekBarPreference
+            android:id="@+id/preferences_TxPower"
+            android:key="savedTXPower"
+            android:defaultValue="@integer/default_txpower"
+            android:max="@integer/default_txpower_max"
+            android:title="@string/settingsactivity_text_txpower"
+            android:summary="@string/generic_value"
+            android:dialogMessage="@string/settingsactivity_hint_txpower" />
+        <EditTextPreference
+            android:id="@+id/preferences_Frequency"
+            android:key="savedDelay"
+            android:defaultValue="@integer/default_frequency"
+            android:title="@string/settingsactivity_button_frequency"
+            android:summary="@string/generic_value"
+            android:dialogMessage="@string/generic_hint"
+            android:inputType="number"
+            android:maxLength="4" />
+        <EditTextPreference
+            android:id="@+id/preferences_Average"
+            android:key="savedAverage"
+            android:defaultValue="@integer/default_average"
+            android:title="@string/settingsactivity_button_average"
+            android:summary="@string/generic_value"
+            android:dialogMessage="@string/generic_hint"
+            android:inputType="number"
+            android:maxLength="2" />
+    </PreferenceCategory>
+
+    <PreferenceCategory
+        android:title="@string/settingsactivity_category_debug_settings"
+        android:summary="@string/settingsactivity_category_main_settings" >
+
+        <SwitchPreference
+            android:id="@+id/preferences_Debug_Generator"
+            android:key="savedGenerator"
+            android:defaultValue="@bool/debug_default_generator"
+            android:title="@string/settingsactivity_slider_generator"
+            android:summary="@string/settingsactivity_hint_generator" />
+
+    </PreferenceCategory>
+</PreferenceScreen>
