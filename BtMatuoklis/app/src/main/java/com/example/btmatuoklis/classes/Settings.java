@@ -4,7 +4,7 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import android.preference.PreferenceManager;
 
-public class Settings {
+public class Settings implements SharedPreferences.OnSharedPreferenceChangeListener {
     public static byte REQUEST_ENABLE_BT = 1;
     private SharedPreferences preferences;
 
@@ -28,6 +28,12 @@ public class Settings {
 
     public Settings(Context context){
         preferences = PreferenceManager.getDefaultSharedPreferences(context);
+        preferences.registerOnSharedPreferenceChangeListener(this);
+        refreshValues();
+    }
+
+    @Override
+    public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String key) {
         refreshValues();
     }
 

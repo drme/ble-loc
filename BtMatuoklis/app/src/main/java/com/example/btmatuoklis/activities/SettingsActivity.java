@@ -46,7 +46,6 @@ public class SettingsActivity extends PreferenceActivity implements SharedPrefer
 
     @Override
     public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String key) {
-        settings.refreshValues();
         setDefaultValues();
     }
 
