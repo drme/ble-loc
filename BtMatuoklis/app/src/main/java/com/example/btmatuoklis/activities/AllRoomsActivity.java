@@ -5,9 +5,7 @@ import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Color;
-import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
-import android.provider.CalendarContract;
 import android.text.Editable;
 import android.text.InputType;
 import android.text.TextUtils;
@@ -99,7 +97,8 @@ public class AllRoomsActivity extends Activity {
 
     void roomNameEntry(){
         final AlertDialog.Builder builder = new AlertDialog.Builder(AllRoomsActivity.this, AlertDialog.THEME_HOLO_DARK);
-        builder.setTitle(getString(R.string.dialog_new_room_name));
+        builder.setTitle(getString(R.string.dialog_title_new_room));
+        builder.setMessage(getString(R.string.dialog_new_room_name));
         builder.setIcon(android.R.drawable.ic_dialog_info);
 
         final EditText input = new EditText(AllRoomsActivity.this);
@@ -155,7 +154,8 @@ public class AllRoomsActivity extends Activity {
 
     void removeAllRoomsConfirm() {
         final AlertDialog.Builder builder1 = new AlertDialog.Builder(AllRoomsActivity.this, AlertDialog.THEME_HOLO_DARK);
-        builder1.setTitle(getString(R.string.dialog_remove_all_rooms));
+        builder1.setTitle(getString(R.string.dialog_title_remove));
+        builder1.setMessage(getString(R.string.dialog_remove_all_rooms));
         builder1.setIcon(android.R.drawable.ic_dialog_alert);
 
         builder1.setPositiveButton(getString(R.string.dialog_button_ok), new DialogInterface.OnClickListener() {

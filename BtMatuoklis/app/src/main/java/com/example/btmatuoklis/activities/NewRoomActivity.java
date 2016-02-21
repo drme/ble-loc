@@ -139,7 +139,8 @@ public class NewRoomActivity extends Activity {
 
     void cancelCreationConfirm(){
         final AlertDialog.Builder builder3 = new AlertDialog.Builder(NewRoomActivity.this, AlertDialog.THEME_HOLO_DARK);
-        builder3.setTitle(getString(R.string.dialog_cancel_room_creation));
+        builder3.setTitle(getString(R.string.dialog_title_cancel));
+        builder3.setMessage(getString(R.string.dialog_cancel_room_creation));
         builder3.setIcon(android.R.drawable.ic_dialog_alert);
 
         builder3.setPositiveButton(getString(R.string.dialog_button_ok), new DialogInterface.OnClickListener() {

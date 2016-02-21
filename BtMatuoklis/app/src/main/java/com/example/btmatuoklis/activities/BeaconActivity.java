@@ -119,7 +119,8 @@ public class BeaconActivity extends Activity {
 
     void removeCalibrationConfirm() {
         final AlertDialog.Builder builder4 = new AlertDialog.Builder(BeaconActivity.this, AlertDialog.THEME_HOLO_DARK);
-        builder4.setTitle(getString(R.string.dialog_remove_calibration));
+        builder4.setTitle(getString(R.string.dialog_title_remove));
+        builder4.setMessage(getString(R.string.dialog_remove_calibration));
         builder4.setIcon(android.R.drawable.ic_dialog_alert);
 
         builder4.setPositiveButton(getString(R.string.dialog_button_ok), new DialogInterface.OnClickListener() {
@@ -143,7 +144,8 @@ public class BeaconActivity extends Activity {
 
     void removeBeaconConfirm() {
         final AlertDialog.Builder builder5 = new AlertDialog.Builder(BeaconActivity.this, AlertDialog.THEME_HOLO_DARK);
-        builder5.setTitle(getString(R.string.dialog_remove_beacon));
+        builder5.setTitle(getString(R.string.dialog_title_remove));
+        builder5.setMessage(getString(R.string.dialog_remove_beacon));
         builder5.setIcon(android.R.drawable.ic_dialog_alert);
 
         builder5.setPositiveButton(getString(R.string.dialog_button_ok), new DialogInterface.OnClickListener() {

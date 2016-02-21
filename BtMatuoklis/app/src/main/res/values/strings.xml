@@ -26,12 +26,16 @@
     <!--AlertDialog antrastes-->
     <string name="dialog_button_ok">OK</string>
     <string name="dialog_button_cancel">Cancel</string>
+    <string name="dialog_title_remove">Pašalinti?</string>
+    <string name="dialog_title_cancel">Atšaukti?</string>
+    <string name="dialog_title_export">Eksportavimas</string>
+    <string name="dialog_title_new_room">Nauja patalpa</string>
     <string name="dialog_new_room_name">Naujos patalpos pavadinimas:</string>
-    <string name="dialog_cancel_room_creation">Atšaukti naujos patalpos kūrimą?</string>
-    <string name="dialog_remove_all_rooms">Pašalinti visas patalpas?</string>
-    <string name="dialog_remove_room">Pašalinti patalpą?</string>
-    <string name="dialog_remove_calibration">Pašalinti įrenginio kalibracines reikšmes?</string>
-    <string name="dialog_remove_beacon">Pašalinti įrenginį?</string>
+    <string name="dialog_cancel_room_creation">Ar tikrai norite atšaukti naujos patalpos kūrimą?</string>
+    <string name="dialog_remove_all_rooms">Ar tikrai norite pašalinti visas patalpas?</string>
+    <string name="dialog_remove_room">Ar tikrai norite pašalinti patalpą?</string>
+    <string name="dialog_remove_calibration">Ar tikrai norite pašalinti įrenginio kalibracines reikšmes?</string>
+    <string name="dialog_remove_beacon">Ar tikrai norite pašalinti įrenginį?</string>
     <string name="dialog_export_room_csv">Ar tikrai norite eksportuoti šio kambario kalibracines reikšmes?</string>
 
     <!--Toast informaciniai tekstai-->

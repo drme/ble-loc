@@ -289,7 +289,8 @@ public class RoomActivity extends Activity {
 
     void removeRoomConfirm() {
         final AlertDialog.Builder builder2 = new AlertDialog.Builder(RoomActivity.this, AlertDialog.THEME_HOLO_DARK);
-        builder2.setTitle(getString(R.string.dialog_remove_room));
+        builder2.setTitle(getString(R.string.dialog_title_remove));
+        builder2.setMessage(getString(R.string.dialog_remove_room));
         builder2.setIcon(android.R.drawable.ic_dialog_alert);
 
         builder2.setPositiveButton(getString(R.string.dialog_button_ok), new DialogInterface.OnClickListener() {
@@ -315,7 +316,8 @@ public class RoomActivity extends Activity {
 
     void ExportRoomCSVConfirm() {
         final AlertDialog.Builder builder6 = new AlertDialog.Builder(RoomActivity.this, AlertDialog.THEME_HOLO_DARK);
-        builder6.setTitle(getString(R.string.dialog_export_room_csv));
+        builder6.setTitle(getString(R.string.dialog_title_export));
+        builder6.setMessage(getString(R.string.dialog_export_room_csv));
         builder6.setIcon(android.R.drawable.ic_dialog_info);
 
         builder6.setPositiveButton(getString(R.string.dialog_button_ok), new DialogInterface.OnClickListener() {
