@@ -391,13 +391,19 @@ public class RoomActivity extends Activity {
     }
 
     void startBTLEScan(){
-        mBluetoothAdapter.startLeScan(new BluetoothAdapter.LeScanCallback() {
-            @Override
-            public void onLeScan(BluetoothDevice device, int rssi, byte[] scanRecord) {
-                scantools.calibrateLogic(device, rssi, currentRoom);
-                mBluetoothAdapter.stopLeScan(this); //Scan stabdomas
-            }
-        });
+        if (!settings.getGenerator()) {
+            mBluetoothAdapter.startLeScan(new BluetoothAdapter.LeScanCallback() {
+                @Override
+                public void onLeScan(BluetoothDevice device, int rssi, byte[] scanRecord) {
+                    scantools.calibrateLogic(device, rssi, currentRoom);
+                    mBluetoothAdapter.stopLeScan(this); //Scan stabdomas
+                }
+            });
+        }
+        else {
+            scantools.fakeCalibrateLogic(settings.getDebugBeacons(),
+                    settings.getDebugRSSIMin(), settings.getDebugRSSIMax(), currentRoom);
+        }
     }
 
 }

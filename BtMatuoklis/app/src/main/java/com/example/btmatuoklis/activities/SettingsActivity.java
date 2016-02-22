@@ -13,7 +13,8 @@ public class SettingsActivity extends PreferenceActivity implements SharedPrefer
 
     Settings settings;
     EditTextPreference editFrequency, editAverage;
-    SeekBarPreference switchGenerator;
+    SeekBarPreference sliderTXPower;
+    EditTextPreference debugBeacons, debugRSSIMin, debugRSSIMax;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -22,7 +23,10 @@ public class SettingsActivity extends PreferenceActivity implements SharedPrefer
         addPreferencesFromResource(R.xml.settings_preferences);
         editFrequency = (EditTextPreference)findPreference("savedDelay");
         editAverage = (EditTextPreference)findPreference("savedAverage");
-        switchGenerator = (SeekBarPreference)findPreference("savedTXPower");
+        sliderTXPower = (SeekBarPreference)findPreference("savedTXPower");
+        debugBeacons = (EditTextPreference)findPreference("debugBeacons");
+        debugRSSIMin = (EditTextPreference)findPreference("debugRSSIMin");
+        debugRSSIMax = (EditTextPreference)findPreference("debugRSSIMax");
 
         setDefaultValues();
     }
@@ -53,9 +57,12 @@ public class SettingsActivity extends PreferenceActivity implements SharedPrefer
     //Jeigu programa leidziama ne pirma karta - nustatomos issaugotos reiksmes
     void setDefaultValues(){
         settings = MainActivity.settings;
+        sliderTXPower.setSummary(getString(R.string.settingsactivity_subtext_value) + settings.getTXPower());
         editFrequency.setSummary(getString(R.string.settingsactivity_subtext_value) + settings.getDelay());
         editFrequency.setDialogMessage(getString(R.string.settingsactivity_hint_frequency) + settings.getDefaultDelay());
         editAverage.setSummary(getString(R.string.settingsactivity_subtext_value) + settings.getAverage());
-        switchGenerator.setSummary(getString(R.string.settingsactivity_subtext_value) + settings.getTXPower());
+        debugBeacons.setSummary(getString(R.string.settingsactivity_subtext_value) + settings.getDebugBeacons());
+        debugRSSIMin.setSummary(getString(R.string.settingsactivity_subtext_value) + settings.getDebugRSSIMin());
+        debugRSSIMax.setSummary(getString(R.string.settingsactivity_subtext_value) + settings.getDebugRSSIMax());
     }
 }

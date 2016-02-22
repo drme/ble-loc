@@ -251,12 +251,19 @@ public class NewRoomActivity extends Activity {
 
     //Jeigu randamas BTLE irenginys, gaunama jo RSSI reiksme
     void startBTLEScan(){
-        mBluetoothAdapter.startLeScan(new BluetoothAdapter.LeScanCallback() {
-            @Override
-            public void onLeScan(BluetoothDevice device, int rssi, byte[] scanRecord) {
-                scantools.scanLogic(device, rssi, settings.getTXPower(), beaconsArray, savedBeaconsList);
-                mBluetoothAdapter.stopLeScan(this); //Scan stabdomas
-            }
-        });
+        if (!settings.getGenerator()) {
+            mBluetoothAdapter.startLeScan(new BluetoothAdapter.LeScanCallback() {
+                @Override
+                public void onLeScan(BluetoothDevice device, int rssi, byte[] scanRecord) {
+                    scantools.scanLogic(device, rssi, settings.getTXPower(), beaconsArray, savedBeaconsList);
+                    mBluetoothAdapter.stopLeScan(this); //Scan stabdomas
+                }
+            });
+        }
+        else{
+            scantools.fakeScanLogic(settings.getDebugBeacons(),
+                    settings.getDebugRSSIMin(), settings.getDebugRSSIMax(),
+                    settings.getTXPower(), beaconsArray, savedBeaconsList);
+        }
     }
 }

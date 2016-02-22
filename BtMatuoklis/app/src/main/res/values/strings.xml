@@ -74,11 +74,14 @@
     <string name="settingsactivity_text_txpower">Įrenginių Signalo Galingumas</string>
     <string name="settingsactivity_button_frequency">Matavimų Dažnis</string>
     <string name="settingsactivity_button_average">Vidurkio Reikšmių Kiekis</string>
-    <string name="settingsactivity_slider_generator">Generatorius</string>
     <string name="settingsactivity_hint_txpower">Dabartinis aptinkamų įrenginių signalo galingumas:</string>
-    <string name="settingsactivity_hint_generator">Netikrų įrenginių/reikšmių generatorius</string>
     <string name="settingsactivity_hint_frequency">Rekomenduotinos reikšmės intervale: [250; 5000], default -\u0020</string>
     <string name="settingsactivity_subtext_value">Dabartinis:\u0020</string>
+    <string name="settingsactivity_debug_slider_generator">Generatorius</string>
+    <string name="settingsactivity_debug_hint_generator">Netikrų įrenginių/reikšmių generatorius</string>
+    <string name="settingsactivity_debug_beacons">Generuojamų įrenginių kiekis</string>
+    <string name="settingsactivity_debug_rssi_min">Minimali generuojama RSSI reikšmė</string>
+    <string name="settingsactivity_debug_rssi_max">Maksimali generuojama RSSI reikšmė</string>
 
     <!--NewRoomActivity elementu tekstai-->
     <string name="newroomactivity_button_finish">Baigti</string>

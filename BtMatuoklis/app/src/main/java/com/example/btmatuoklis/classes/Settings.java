@@ -23,8 +23,11 @@ public class Settings implements SharedPreferences.OnSharedPreferenceChangeListe
     private byte defaultAverage = 1;
     private byte average;
 
-    //Debug - netikru irenginiu generatoriaus ijungimo reiksme
+    //Debug - netikru irenginiu generatoriaus reiksmes
     private boolean generator = false;
+    private byte generatedBeacons = 2;
+    private byte generatedRSSIMin = -90;
+    private byte generatedRSSIMax = 4;
 
     public Settings(Context context){
         preferences = PreferenceManager.getDefaultSharedPreferences(context);
@@ -41,8 +44,11 @@ public class Settings implements SharedPreferences.OnSharedPreferenceChangeListe
         //Nuskaitomi paskutiniai naudoti nustatymai
         txPower = (byte)preferences.getInt("savedTXPower", txPower);
         delay = Short.parseShort(preferences.getString("savedDelay", Short.toString(defaultDelay)));
-        average = Byte.parseByte(preferences.getString("savedAverage", Short.toString(defaultAverage)));
-        generator = preferences.getBoolean("savedGenerator", generator);
+        average = Byte.parseByte(preferences.getString("savedAverage", Byte.toString(defaultAverage)));
+        generator = preferences.getBoolean("debugGenerator", generator);
+        generatedBeacons = Byte.parseByte(preferences.getString("debugBeacons", Byte.toString(generatedBeacons)));
+        generatedRSSIMin = Byte.parseByte(preferences.getString("debugRSSIMin", Byte.toString(generatedRSSIMin)));
+        generatedRSSIMax = Byte.parseByte(preferences.getString("debugRSSIMax", Byte.toString(generatedRSSIMax)));
     }
 
     public byte getMaxRange(){ return this.maxRange; }
@@ -58,4 +64,10 @@ public class Settings implements SharedPreferences.OnSharedPreferenceChangeListe
     public byte getDefaultAverage() { return this.defaultAverage; }
 
     public boolean getGenerator() { return this.generator; }
+
+    public byte getDebugBeacons() { return this.generatedBeacons; }
+
+    public byte getDebugRSSIMin() { return this.generatedRSSIMin; }
+
+    public byte getDebugRSSIMax() { return this.generatedRSSIMax; }
 }

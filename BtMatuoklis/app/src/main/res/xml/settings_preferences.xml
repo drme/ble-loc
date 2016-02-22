@@ -38,10 +38,37 @@
 
         <SwitchPreference
             android:id="@+id/preferences_Debug_Generator"
-            android:key="savedGenerator"
+            android:key="debugGenerator"
             android:defaultValue="@bool/debug_default_generator"
-            android:title="@string/settingsactivity_slider_generator"
-            android:summary="@string/settingsactivity_hint_generator" />
+            android:title="@string/settingsactivity_debug_slider_generator"
+            android:summary="@string/settingsactivity_debug_hint_generator" />
+        <EditTextPreference
+            android:id="@+id/preferences_Debug_Beacons_Number"
+            android:key="debugBeacons"
+            android:defaultValue="@integer/debug_default_beacons"
+            android:title="@string/settingsactivity_debug_beacons"
+            android:summary="@string/generic_value"
+            android:dialogMessage="@string/generic_hint"
+            android:inputType="number"
+            android:maxLength="2" />
+        <EditTextPreference
+            android:id="@+id/preferences_Debug_RSSI_Min"
+            android:key="debugRSSIMin"
+            android:defaultValue="@integer/debug_default_rssi_min"
+            android:title="@string/settingsactivity_debug_rssi_min"
+            android:summary="@string/generic_value"
+            android:dialogMessage="@string/generic_hint"
+            android:inputType="numberSigned"
+            android:maxLength="3" />
+        <EditTextPreference
+            android:id="@+id/preferences_Debug_RSSI_Max"
+            android:key="debugRSSIMax"
+            android:defaultValue="@integer/debug_default_rssi_max"
+            android:title="@string/settingsactivity_debug_rssi_max"
+            android:summary="@string/generic_value"
+            android:dialogMessage="@string/generic_hint"
+            android:inputType="numberSigned"
+            android:maxLength="3" />
 
     </PreferenceCategory>
 </PreferenceScreen>
