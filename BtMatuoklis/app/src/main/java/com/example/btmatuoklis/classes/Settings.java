@@ -24,7 +24,7 @@ public class Settings implements SharedPreferences.OnSharedPreferenceChangeListe
     private byte average;
 
     //Debug - netikru irenginiu generatoriaus reiksmes
-    private boolean generator = false;
+    private boolean generator;
     private byte generatedBeacons = 2;
     private byte generatedRSSIMin = -90;
     private byte generatedRSSIMax = 4;
@@ -45,7 +45,7 @@ public class Settings implements SharedPreferences.OnSharedPreferenceChangeListe
         txPower = (byte)preferences.getInt("savedTXPower", txPower);
         delay = Short.parseShort(preferences.getString("savedDelay", Short.toString(defaultDelay)));
         average = Byte.parseByte(preferences.getString("savedAverage", Byte.toString(defaultAverage)));
-        generator = preferences.getBoolean("debugGenerator", generator);
+        generator = preferences.getBoolean("debugGenerator", false);
         generatedBeacons = Byte.parseByte(preferences.getString("debugBeacons", Byte.toString(generatedBeacons)));
         generatedRSSIMin = Byte.parseByte(preferences.getString("debugRSSIMin", Byte.toString(generatedRSSIMin)));
         generatedRSSIMax = Byte.parseByte(preferences.getString("debugRSSIMax", Byte.toString(generatedRSSIMax)));
@@ -63,7 +63,7 @@ public class Settings implements SharedPreferences.OnSharedPreferenceChangeListe
 
     public byte getDefaultAverage() { return this.defaultAverage; }
 
-    public boolean getGenerator() { return this.generator; }
+    public boolean isGeneratorEnabled() { return this.generator; }
 
     public byte getDebugBeacons() { return this.generatedBeacons; }
 

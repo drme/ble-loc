@@ -391,7 +391,7 @@ public class RoomActivity extends Activity {
     }
 
     void startBTLEScan(){
-        if (!settings.getGenerator()) {
+        if (!settings.isGeneratorEnabled()) {
             mBluetoothAdapter.startLeScan(new BluetoothAdapter.LeScanCallback() {
                 @Override
                 public void onLeScan(BluetoothDevice device, int rssi, byte[] scanRecord) {

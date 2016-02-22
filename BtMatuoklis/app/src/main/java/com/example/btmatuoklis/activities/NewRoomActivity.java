@@ -251,7 +251,7 @@ public class NewRoomActivity extends Activity {
 
     //Jeigu randamas BTLE irenginys, gaunama jo RSSI reiksme
     void startBTLEScan(){
-        if (!settings.getGenerator()) {
+        if (!settings.isGeneratorEnabled()) {
             mBluetoothAdapter.startLeScan(new BluetoothAdapter.LeScanCallback() {
                 @Override
                 public void onLeScan(BluetoothDevice device, int rssi, byte[] scanRecord) {

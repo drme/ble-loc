@@ -50,6 +50,7 @@
             android:summary="@string/generic_value"
             android:dialogMessage="@string/generic_hint"
             android:inputType="number"
+            android:enabled="false"
             android:maxLength="2" />
         <EditTextPreference
             android:id="@+id/preferences_Debug_RSSI_Min"
@@ -59,6 +60,7 @@
             android:summary="@string/generic_value"
             android:dialogMessage="@string/generic_hint"
             android:inputType="numberSigned"
+            android:enabled="false"
             android:maxLength="3" />
         <EditTextPreference
             android:id="@+id/preferences_Debug_RSSI_Max"
@@ -68,6 +70,7 @@
             android:summary="@string/generic_value"
             android:dialogMessage="@string/generic_hint"
             android:inputType="numberSigned"
+            android:enabled="false"
             android:maxLength="3" />
 
     </PreferenceCategory>

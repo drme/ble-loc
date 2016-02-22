@@ -4,6 +4,7 @@ import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.preference.EditTextPreference;
 import android.preference.PreferenceActivity;
+import android.preference.SwitchPreference;
 
 import com.example.btmatuoklis.R;
 import com.example.btmatuoklis.classes.SeekBarPreference;
@@ -14,6 +15,7 @@ public class SettingsActivity extends PreferenceActivity implements SharedPrefer
     Settings settings;
     EditTextPreference editFrequency, editAverage;
     SeekBarPreference sliderTXPower;
+    SwitchPreference switchGenerator;
     EditTextPreference debugBeacons, debugRSSIMin, debugRSSIMax;
 
     @Override
@@ -24,6 +26,7 @@ public class SettingsActivity extends PreferenceActivity implements SharedPrefer
         editFrequency = (EditTextPreference)findPreference("savedDelay");
         editAverage = (EditTextPreference)findPreference("savedAverage");
         sliderTXPower = (SeekBarPreference)findPreference("savedTXPower");
+        switchGenerator = (SwitchPreference)findPreference("debugGenerator");
         debugBeacons = (EditTextPreference)findPreference("debugBeacons");
         debugRSSIMin = (EditTextPreference)findPreference("debugRSSIMin");
         debugRSSIMax = (EditTextPreference)findPreference("debugRSSIMax");
@@ -64,5 +67,12 @@ public class SettingsActivity extends PreferenceActivity implements SharedPrefer
         debugBeacons.setSummary(getString(R.string.settingsactivity_subtext_value) + settings.getDebugBeacons());
         debugRSSIMin.setSummary(getString(R.string.settingsactivity_subtext_value) + settings.getDebugRSSIMin());
         debugRSSIMax.setSummary(getString(R.string.settingsactivity_subtext_value) + settings.getDebugRSSIMax());
+        toogleDebugSettings(settings.isGeneratorEnabled());
+    }
+
+    void toogleDebugSettings(boolean toggle){
+        debugBeacons.setEnabled(toggle);
+        debugRSSIMin.setEnabled(toggle);
+        debugRSSIMax.setEnabled(toggle);
     }
 }

@@ -5,9 +5,7 @@ import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothManager;
 import android.content.Context;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.os.Bundle;
-import android.preference.PreferenceManager;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -33,7 +31,6 @@ public class MainActivity extends Activity {
         setDefaultValues();
         createBT();
         checkBT();
-        manageDatabase();
     }
 
     @Override
@@ -46,7 +43,9 @@ public class MainActivity extends Activity {
 
     public void onHelpActionClick(MenuItem item){
         //Work in progress
-        Toast.makeText(getApplicationContext(), "Not implemented.", Toast.LENGTH_SHORT).show();
+        //Toast.makeText(getApplicationContext(), "Not implemented.", Toast.LENGTH_SHORT).show();
+        manageDatabase();
+        Toast.makeText(getApplicationContext(), "Duombazė išvalyta", Toast.LENGTH_SHORT).show();
     }
 
     public void onSettingsActionClick(MenuItem item){
