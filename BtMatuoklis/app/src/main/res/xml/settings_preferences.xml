@@ -34,7 +34,7 @@
 
     <PreferenceCategory
         android:title="@string/settingsactivity_category_debug_settings"
-        android:summary="@string/settingsactivity_category_main_settings" >
+        android:summary="@string/settingsactivity_category_debug_settings" >
 
         <SwitchPreference
             android:id="@+id/preferences_Debug_Generator"

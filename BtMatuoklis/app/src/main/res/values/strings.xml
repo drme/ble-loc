@@ -83,6 +83,9 @@
     <string name="settingsactivity_debug_rssi_min">Minimali generuojama RSSI reikšmė</string>
     <string name="settingsactivity_debug_rssi_max">Maksimali generuojama RSSI reikšmė</string>
 
+    <!--ScanActivity elementu tekstai-->
+    <string name="scanactivity_text_name">Esate patalpoje:\u0020</string>
+
     <!--NewRoomActivity elementu tekstai-->
     <string name="newroomactivity_button_finish">Baigti</string>
 

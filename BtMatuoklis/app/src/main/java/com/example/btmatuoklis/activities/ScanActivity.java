@@ -14,6 +14,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.btmatuoklis.classes.Beacon;
@@ -34,6 +35,7 @@ public class ScanActivity extends Activity {
     ArrayList<String> savedBeaconsList;
     ArrayList<String> beaconsList;
     ArrayAdapter<String> listAdapter;
+    TextView detectedRoom;
     ListView displayBeaconsList;
 
     @Override
@@ -41,6 +43,7 @@ public class ScanActivity extends Activity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_scan);
         getActionBar().setSubtitle(getString(R.string.subtitle_scan));
+        detectedRoom = (TextView)findViewById(R.id.textScan_DetectedRoom);
         displayBeaconsList = (ListView)findViewById(R.id.listScan_BeaconsList);
 
         setDefaultValues();
@@ -94,6 +97,11 @@ public class ScanActivity extends Activity {
         displayBeaconsList.setAdapter(listAdapter);
     }
 
+    String detectRoom(){
+        //To-Do - Room Detection
+        return "Not implemented";
+    }
+
     //Nuolatos pradedamas ir stabdomas scan
     void continuousScan(){
         final Handler handler = new Handler();
@@ -107,6 +115,7 @@ public class ScanActivity extends Activity {
                     beaconsList.clear();
                     beaconsList.addAll(savedBeaconsList);
                     listAdapter.notifyDataSetChanged();
+                    detectedRoom.setText(getString(R.string.scanactivity_text_name)+detectRoom());
                 }
             }
         };
