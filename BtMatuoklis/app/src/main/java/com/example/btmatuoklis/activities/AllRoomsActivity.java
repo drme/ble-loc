@@ -21,6 +21,7 @@ import android.widget.ListView;
 import android.widget.Toast;
 
 import com.example.btmatuoklis.R;
+import com.example.btmatuoklis.classes.AlertDialogBuilder;
 import com.example.btmatuoklis.classes.GlobalClass;
 import com.example.btmatuoklis.classes.Room;
 
@@ -136,10 +137,12 @@ public class AllRoomsActivity extends Activity {
 
         input.addTextChangedListener(new TextWatcher() {
             @Override
-            public void beforeTextChanged(CharSequence s, int start, int count, int after){}
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+            }
 
             @Override
-            public void onTextChanged(CharSequence s, int start, int before, int count){}
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+            }
 
             @Override
             public void afterTextChanged(Editable s) {
@@ -153,7 +156,7 @@ public class AllRoomsActivity extends Activity {
     }
 
     void removeAllRoomsConfirm() {
-        final AlertDialog.Builder builder1 = new AlertDialog.Builder(AllRoomsActivity.this, AlertDialog.THEME_HOLO_DARK);
+        /*final AlertDialog.Builder builder1 = new AlertDialog.Builder(AllRoomsActivity.this, AlertDialog.THEME_HOLO_DARK);
         builder1.setTitle(getString(R.string.dialog_title_remove));
         builder1.setMessage(getString(R.string.dialog_remove_all_rooms));
         builder1.setIcon(android.R.drawable.ic_dialog_alert);
@@ -175,6 +178,21 @@ public class AllRoomsActivity extends Activity {
                 dialog.cancel();
             }
         });
-        builder1.show();
+        builder1.show();*/
+        AlertDialogBuilder dialog = new AlertDialogBuilder(AllRoomsActivity.this, getString(R.string.dialog_title_remove),
+                getString(R.string.dialog_remove_all_rooms), android.R.drawable.ic_dialog_alert);
+        dialog.getBuilder().setPositiveButton(getString(R.string.dialog_button_ok), new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) { removeAllRooms(); }});
+        dialog.setNegatvie(getString(R.string.dialog_button_cancel));
+        dialog.showDialog();
+    }
+
+    void removeAllRooms(){
+        roomsArray.clear();
+        savedRoomsList.clear();
+        listAdapter.notifyDataSetChanged();
+        Toast.makeText(getApplicationContext(),
+                getString(R.string.toast_info_removed), Toast.LENGTH_SHORT).show();
     }
 }
