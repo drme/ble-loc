@@ -18,7 +18,7 @@ public class AlertDialogBuilder {
     }
 
     public AlertDialog.Builder getBuilder(){
-        return builder;
+        return this.builder;
     }
 
     public void setNegatvie(String cancel){

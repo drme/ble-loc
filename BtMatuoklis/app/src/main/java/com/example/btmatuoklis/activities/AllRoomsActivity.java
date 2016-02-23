@@ -156,29 +156,6 @@ public class AllRoomsActivity extends Activity {
     }
 
     void removeAllRoomsConfirm() {
-        /*final AlertDialog.Builder builder1 = new AlertDialog.Builder(AllRoomsActivity.this, AlertDialog.THEME_HOLO_DARK);
-        builder1.setTitle(getString(R.string.dialog_title_remove));
-        builder1.setMessage(getString(R.string.dialog_remove_all_rooms));
-        builder1.setIcon(android.R.drawable.ic_dialog_alert);
-
-        builder1.setPositiveButton(getString(R.string.dialog_button_ok), new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-                roomsArray.clear();
-                savedRoomsList.clear();
-                listAdapter.notifyDataSetChanged();
-                Toast.makeText(getApplicationContext(),
-                        getString(R.string.toast_info_removed), Toast.LENGTH_SHORT).show();
-            }
-        });
-
-        builder1.setNegativeButton(getString(R.string.dialog_button_cancel), new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-                dialog.cancel();
-            }
-        });
-        builder1.show();*/
         AlertDialogBuilder dialog = new AlertDialogBuilder(AllRoomsActivity.this, getString(R.string.dialog_title_remove),
                 getString(R.string.dialog_remove_all_rooms), android.R.drawable.ic_dialog_alert);
         dialog.getBuilder().setPositiveButton(getString(R.string.dialog_button_ok), new DialogInterface.OnClickListener() {
