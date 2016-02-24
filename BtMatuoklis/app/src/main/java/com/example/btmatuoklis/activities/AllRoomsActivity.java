@@ -1,22 +1,15 @@
 package com.example.btmatuoklis.activities;
 
 import android.app.Activity;
-import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.graphics.Color;
 import android.os.Bundle;
-import android.text.Editable;
-import android.text.InputType;
-import android.text.TextUtils;
-import android.text.TextWatcher;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
-import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.Toast;
 
@@ -35,6 +28,7 @@ public class AllRoomsActivity extends Activity {
     ArrayList<Room> roomsArray;
     ArrayList<String> savedRoomsList;
     String roomName;
+    AlertDialogBuilder entryDialog;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -60,7 +54,7 @@ public class AllRoomsActivity extends Activity {
     public void onBackPressed() { this.finish(); }
 
     public void onAddActionClick(MenuItem item){
-        roomNameEntry();
+        roomNameEntryConfirm();
     }
 
     public void onRemoveActionClick(MenuItem item){
@@ -96,63 +90,33 @@ public class AllRoomsActivity extends Activity {
         displayRoomsList.setAdapter(listAdapter);
     }
 
-    void roomNameEntry(){
-        final AlertDialog.Builder builder = new AlertDialog.Builder(AllRoomsActivity.this, AlertDialog.THEME_HOLO_DARK);
-        builder.setTitle(getString(R.string.dialog_title_new_room));
-        builder.setMessage(getString(R.string.dialog_new_room_name));
-        builder.setIcon(android.R.drawable.ic_dialog_info);
-
-        final EditText input = new EditText(AllRoomsActivity.this);
-        input.setInputType(InputType.TYPE_CLASS_TEXT);
-        input.setTextColor(Color.WHITE);
-        builder.setView(input);
-
-        builder.setPositiveButton(getString(R.string.dialog_button_ok), new DialogInterface.OnClickListener() {
+    void roomNameEntryConfirm(){
+        AlertDialogBuilder dialog = new AlertDialogBuilder(AllRoomsActivity.this, getString(R.string.dialog_title_new_room),
+                getString(R.string.dialog_new_room_name), android.R.drawable.ic_dialog_info);
+        entryDialog = dialog;
+        dialog.setInput();
+        dialog.getBuilder().setPositiveButton(getString(R.string.dialog_button_ok), new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
-                roomName = input.getText().toString();
-                if (roomName.equals("")) {
-                    Toast.makeText(getApplicationContext(),
-                            getString(R.string.toast_warning_empty_entry), Toast.LENGTH_SHORT).show();
-                    dialog.cancel();
-                } else {
-                    Intent intent = new Intent(getBaseContext(), NewRoomActivity.class);
-                    intent.putExtra("roomName", roomName);
-                    AllRoomsActivity.this.finish();
-                    startActivity(intent);
-                }
-            }
+                roomNameEntry(entryDialog); }
         });
+        dialog.setNegatvie(getString(R.string.dialog_button_cancel));
+        dialog.showDialog();
+        dialog.setInputListener();
+    }
 
-        builder.setNegativeButton(getString(R.string.dialog_button_cancel), new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-                dialog.cancel();
-            }
-        });
-
-        final AlertDialog dialog = builder.create();
-        dialog.show();
-        dialog.getButton(AlertDialog.BUTTON_POSITIVE).setEnabled(false);
-
-        input.addTextChangedListener(new TextWatcher() {
-            @Override
-            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-            }
-
-            @Override
-            public void onTextChanged(CharSequence s, int start, int before, int count) {
-            }
-
-            @Override
-            public void afterTextChanged(Editable s) {
-                if (TextUtils.isEmpty(s)) {
-                    dialog.getButton(AlertDialog.BUTTON_POSITIVE).setEnabled(false);
-                } else {
-                    dialog.getButton(AlertDialog.BUTTON_POSITIVE).setEnabled(true);
-                }
-            }
-        });
+    void roomNameEntry(AlertDialogBuilder dialog){
+        roomName = dialog.getInputText();
+        if (roomName.equals("")) {
+            Toast.makeText(getApplicationContext(),
+                    getString(R.string.toast_warning_empty_entry), Toast.LENGTH_SHORT).show();
+            dialog.cancelInput();
+        } else {
+            Intent intent = new Intent(getBaseContext(), NewRoomActivity.class);
+            intent.putExtra("roomName", roomName);
+            AllRoomsActivity.this.finish();
+            startActivity(intent);
+        }
     }
 
     void removeAllRoomsConfirm() {
