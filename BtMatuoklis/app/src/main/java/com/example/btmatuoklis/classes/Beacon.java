@@ -20,6 +20,12 @@ public class Beacon {
         this.calibratedRSSI = new ArrayList<Byte>();
     }
 
+    public Beacon(String name, String mac, ArrayList<Byte> calibratedRSSI){
+        this.Name = name;
+        this.mac = mac;
+        this.calibratedRSSI = calibratedRSSI;
+    }
+
     public void setRSSI(byte rssi) {
         this.previousRSSI = this.currentRSSI;
         this.currentRSSI = rssi;

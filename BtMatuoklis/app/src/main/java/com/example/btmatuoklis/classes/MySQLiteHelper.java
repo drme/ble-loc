@@ -338,6 +338,36 @@ public class MySQLiteHelper extends SQLiteOpenHelper {
         return i;
     }
 
+    public int getCalibrationID(Calibration calibration){
+        SQLiteDatabase database = this.getReadableDatabase();
+        Cursor cursor =
+                database.query(TABLE_CALIBRATIONS, // a. table
+                        new String[] {"id"}, // b. column names
+                        KEY_ROOMID+" = ? AND "+KEY_BEACONID+" = ?", // c. selections
+                        new String[] { String.valueOf(calibration.getRoomID()), String.valueOf(calibration.getBeaconID()) }, // d. selections args
+                        null, // e. group by
+                        null, // f. having
+                        null, // g. order by
+                        null); // h. limit
+        if (cursor != null)
+            cursor.moveToFirst();
+        int id = Integer.parseInt(cursor.getString(0));
+        return id;
+    }
+
+    public int updateCalibration(Calibration calibration){
+        int id = getCalibrationID(calibration);
+        SQLiteDatabase database = this.getWritableDatabase();
+        ContentValues values = new ContentValues();
+        values.put("rssi", calibration.getRSSI());
+        int i = database.update(TABLE_CALIBRATIONS, //table
+                values, // column/value
+                KEY_ID+" = ?", // selections
+                new String[] { String.valueOf(id)}); //selection args
+        database.close();
+        return i;
+    }
+
     // Deleting single room
     public void deleteRoom(Room room) {
 

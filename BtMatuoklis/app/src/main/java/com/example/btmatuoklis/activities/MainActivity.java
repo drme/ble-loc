@@ -21,6 +21,8 @@ import com.example.btmatuoklis.classes.MySQLiteHelper;
 import com.example.btmatuoklis.classes.Room;
 import com.example.btmatuoklis.classes.Settings;
 
+import java.util.ArrayList;
+
 public class MainActivity extends Activity {
 
     GlobalClass globalVariable;
@@ -118,9 +120,15 @@ public class MainActivity extends Activity {
                 beaconMac = cursor.getString(2);
                 RSSI = cursor.getString(3);
 
-                //System.out.println(list1);
+                String onlyRSSI = RSSI.replaceAll("[\\[\\]\\^]", "");
+                String[] RSSIS = onlyRSSI.split(", ");
+                ArrayList<Byte> arrays = new ArrayList<Byte>();
+                for (String rssi : RSSIS) {
+                    byte lastrssi = Byte.parseByte(rssi.toString());
+                    arrays.add(lastrssi);
+                }
 
-                currentRoom.getBeacons().add(new Beacon(beaconName, beaconMac));
+                currentRoom.getBeacons().add(new Beacon(beaconName, beaconMac, arrays));
             }
             cursor.close();
         }

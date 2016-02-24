@@ -173,7 +173,9 @@ public class RoomActivity extends Activity {
             displayBeaconsList.setItemChecked(i, calibratedDevices.get(i));
             rssi = currentRoom.getBeacons().get(i).getCalibratedRSSI().toString();
             beaconID = currentRoom.getBeacons().get(i).getId();
-            database.addCalibration(new Calibration(roomdID, beaconID, rssi));
+
+            Calibration calibation = new Calibration(roomdID, beaconID, rssi);
+            database.updateCalibration(calibation);
         }
     }
 

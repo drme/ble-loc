@@ -25,6 +25,7 @@ import android.widget.Toast;
 import com.example.btmatuoklis.R;
 import com.example.btmatuoklis.classes.AlertDialogBuilder;
 import com.example.btmatuoklis.classes.Beacon;
+import com.example.btmatuoklis.classes.Calibration;
 import com.example.btmatuoklis.classes.GlobalClass;
 import com.example.btmatuoklis.classes.MySQLiteHelper;
 import com.example.btmatuoklis.classes.Room;
@@ -193,6 +194,7 @@ public class NewRoomActivity extends Activity {
         }
         int id = (int)lastID;
         currentRoom.getBeacons().get(i).setId(id);
+        database.addCalibration(new Calibration(currentRoom.getID(), id, null));
     }
 
     void notifyCreatedRoomAndBeacons(){
