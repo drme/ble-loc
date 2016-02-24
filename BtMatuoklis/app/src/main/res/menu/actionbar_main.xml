@@ -10,6 +10,22 @@
         android:showAsAction="ifRoom" />
 
     <item
+        android:id="@+id/action_load"
+        android:icon="@android:drawable/ic_menu_rotate"
+        android:title="Užkrauti DB"
+        android:visible="true"
+        android:onClick="loadDatabase"
+        android:showAsAction="ifRoom" />
+
+    <item
+        android:id="@+id/action_clear"
+        android:icon="@android:drawable/ic_menu_delete"
+        android:title="Ištrinti DB"
+        android:visible="true"
+        android:onClick="clearDatabase"
+        android:showAsAction="ifRoom" />
+
+    <item
         android:id="@+id/action_settings"
         android:icon="@android:drawable/ic_menu_preferences"
         android:title="@string/bartext_settings"

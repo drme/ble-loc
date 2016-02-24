@@ -5,6 +5,8 @@ import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothManager;
 import android.content.Context;
 import android.content.Intent;
+import android.database.Cursor;
+import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -13,14 +15,18 @@ import android.view.View;
 import android.widget.Toast;
 
 import com.example.btmatuoklis.R;
+import com.example.btmatuoklis.classes.Beacon;
+import com.example.btmatuoklis.classes.GlobalClass;
 import com.example.btmatuoklis.classes.MySQLiteHelper;
+import com.example.btmatuoklis.classes.Room;
 import com.example.btmatuoklis.classes.Settings;
 
 public class MainActivity extends Activity {
 
+    GlobalClass globalVariable;
     public static Settings settings;
-    MySQLiteHelper database;
     BluetoothAdapter mBluetoothAdapter;
+    MenuItem helpItem;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -38,14 +44,13 @@ public class MainActivity extends Activity {
     {
         MenuInflater inflater = getMenuInflater();
         inflater.inflate(R.menu.actionbar_main, menu);
+        helpItem = menu.findItem(R.id.action_help);
         return true;
     }
 
     public void onHelpActionClick(MenuItem item){
         //Work in progress
-        //Toast.makeText(getApplicationContext(), "Not implemented.", Toast.LENGTH_SHORT).show();
-        manageDatabase();
-        Toast.makeText(getApplicationContext(), "Duombazė išvalyta", Toast.LENGTH_SHORT).show();
+        Toast.makeText(getApplicationContext(), "Not implemented.", Toast.LENGTH_SHORT).show();
     }
 
     public void onSettingsActionClick(MenuItem item){
@@ -61,14 +66,80 @@ public class MainActivity extends Activity {
     }
 
     void setDefaultValues(){
+        globalVariable = (GlobalClass) getApplicationContext();
         settings = new Settings(getApplicationContext());
     }
 
-    void manageDatabase(){
-        database = new MySQLiteHelper(this);
+    void loadRooms(){
+        MySQLiteHelper dbhelper = new MySQLiteHelper(getApplicationContext());
+        SQLiteDatabase db = dbhelper.getReadableDatabase();
+
+        String query = "SELECT  * FROM rooms";
+        Cursor cursor = db.rawQuery(query, null);
+        String roomName;
+        String id;
+        //beaconsArray = new ArrayList<Beacon>();
+
+        while (cursor.moveToNext()) {
+            id = cursor.getString(0);
+            roomName = cursor.getString(1);
+            globalVariable.getRoomsArray().add(new Room(roomName));
+            globalVariable.getRoomsList().add(roomName);
+            int roomID = globalVariable.getRoomsArray().size() - 1;
+            Room currentRoom = globalVariable.getRoomsArray().get(roomID);
+            currentRoom.setID(Integer.parseInt(id));
+        }
+        cursor.close();
+    }
+
+    void loadBeacons(){
+        String beaconName;
+        String beaconMac;
+        String RSSI;
+        String id;
+
+        MySQLiteHelper dbhelper = new MySQLiteHelper(getApplicationContext());
+        SQLiteDatabase db = dbhelper.getReadableDatabase();
+
+        for (int i = 0; i < globalVariable.getRoomsArray().size(); i++) {
+            Room currentRoom = globalVariable.getRoomsArray().get(i);
+            String uzklausaSurinkimui = "SELECT beacons.id AS BeaconID, beacons.name AS BeaconName," +
+                    "beacons.mac AS BeaconMac, calibrations.rssi AS RSSI " +
+                    "FROM calibrations " +
+                    "JOIN rooms ON (calibrations.roomid = rooms.id)"+
+                    "JOIN beacons ON (calibrations.beaconid = beacons.id)"+
+                    "WHERE roomid = " + Integer.toString(currentRoom.getID());
+
+            Cursor cursor = db.rawQuery(uzklausaSurinkimui, null);
+
+            while (cursor.moveToNext()) {
+                id = cursor.getString(0);
+                beaconName = cursor.getString(1);
+                beaconMac = cursor.getString(2);
+                RSSI = cursor.getString(3);
+
+                //System.out.println(list1);
+
+                currentRoom.getBeacons().add(new Beacon(beaconName, beaconMac));
+            }
+            cursor.close();
+        }
+    }
+
+    public void loadDatabase(MenuItem item){
+        globalVariable.getRoomsArray().clear();
+        loadRooms();
+        loadBeacons();
+        Toast.makeText(getApplicationContext(), "Duombazė užkrauta.", Toast.LENGTH_SHORT).show();
+    }
+
+    public void clearDatabase(MenuItem item){
+        MySQLiteHelper database = new MySQLiteHelper(this);
         database.deleteAll("rooms");
         database.deleteAll("beacons");
         database.deleteAll("calibrations");
+        globalVariable.getRoomsArray().clear();
+        Toast.makeText(getApplicationContext(), "Duombazė išvalyta", Toast.LENGTH_SHORT).show();
     }
 
     //Sukuriamas Bluetooth adapteris

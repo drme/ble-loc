@@ -38,7 +38,6 @@ public class AllRoomsActivity extends Activity {
         displayRoomsList = (ListView)findViewById(R.id.listAllRooms_BeaconsList);
 
         setDefaultValues();
-        setDefaultValues();
         setListListener();
     }
 
