@@ -70,7 +70,6 @@ public class ScanActivity extends Activity {
     public void onHelpActionClick(MenuItem item){
         //Work in progress
         Toast.makeText(getApplicationContext(), "Not implemented.", Toast.LENGTH_SHORT).show();
-        getActionBar().getCustomView().setVisibility(View.INVISIBLE);
     }
 
     public void onSettingsActionClick(MenuItem item){

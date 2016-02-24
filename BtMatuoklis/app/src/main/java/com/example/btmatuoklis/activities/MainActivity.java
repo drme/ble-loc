@@ -8,6 +8,7 @@ import android.content.Intent;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -76,20 +77,17 @@ public class MainActivity extends Activity {
         MySQLiteHelper dbhelper = new MySQLiteHelper(getApplicationContext());
         SQLiteDatabase db = dbhelper.getReadableDatabase();
 
-        String query = "SELECT  * FROM rooms";
+        String query = "SELECT * FROM rooms";
         Cursor cursor = db.rawQuery(query, null);
         String roomName;
-        String id;
+        int id;
         //beaconsArray = new ArrayList<Beacon>();
 
         while (cursor.moveToNext()) {
-            id = cursor.getString(0);
+            id = cursor.getInt(0);
             roomName = cursor.getString(1);
-            globalVariable.getRoomsArray().add(new Room(roomName));
+            globalVariable.getRoomsArray().add(new Room(id, roomName));
             globalVariable.getRoomsList().add(roomName);
-            int roomID = globalVariable.getRoomsArray().size() - 1;
-            Room currentRoom = globalVariable.getRoomsArray().get(roomID);
-            currentRoom.setID(Integer.parseInt(id));
         }
         cursor.close();
     }
@@ -97,8 +95,8 @@ public class MainActivity extends Activity {
     void loadBeacons(){
         String beaconName;
         String beaconMac;
-        String RSSI;
-        String id;
+        String RSSI = null;
+        int id;
 
         MySQLiteHelper dbhelper = new MySQLiteHelper(getApplicationContext());
         SQLiteDatabase db = dbhelper.getReadableDatabase();
@@ -114,28 +112,38 @@ public class MainActivity extends Activity {
 
             Cursor cursor = db.rawQuery(uzklausaSurinkimui, null);
 
-            while (cursor.moveToNext()) {
-                id = cursor.getString(0);
-                beaconName = cursor.getString(1);
-                beaconMac = cursor.getString(2);
-                RSSI = cursor.getString(3);
-
-                String onlyRSSI = RSSI.replaceAll("[\\[\\]\\^]", "");
-                String[] RSSIS = onlyRSSI.split(", ");
-                ArrayList<Byte> arrays = new ArrayList<Byte>();
-                for (String rssi : RSSIS) {
-                    byte lastrssi = Byte.parseByte(rssi.toString());
-                    arrays.add(lastrssi);
+            if (cursor != null){
+                while (cursor.moveToNext()) {
+                    id = cursor.getInt(0);
+                    beaconName = cursor.getString(1);
+                    beaconMac = cursor.getString(2);
+                    if (cursor.isLast()) {
+                        RSSI = cursor.getString(3);
+                    }
+                    currentRoom.getBeacons().add(new Beacon(id, beaconName, beaconMac, loadRSSIS(RSSI)));
                 }
-
-                currentRoom.getBeacons().add(new Beacon(beaconName, beaconMac, arrays));
             }
             cursor.close();
         }
     }
 
+    ArrayList<Byte> loadRSSIS(String rssiArray){
+        if (rssiArray == null){
+            return new ArrayList<Byte>();
+        }
+        String onlyRSSI = rssiArray.replaceAll("[\\[\\]\\^]", "");
+        String[] RSSIS = onlyRSSI.split(", ");
+        ArrayList<Byte> arrays = new ArrayList<Byte>();
+        for (String rssi : RSSIS) {
+            byte lastrssi = Byte.parseByte(rssi.toString());
+            arrays.add(lastrssi);
+        }
+        return arrays;
+    }
+
     public void loadDatabase(MenuItem item){
         globalVariable.getRoomsArray().clear();
+        globalVariable.getRoomsList().clear();
         loadRooms();
         loadBeacons();
         Toast.makeText(getApplicationContext(), "Duombazė užkrauta.", Toast.LENGTH_SHORT).show();
@@ -147,6 +155,7 @@ public class MainActivity extends Activity {
         database.deleteAll("beacons");
         database.deleteAll("calibrations");
         globalVariable.getRoomsArray().clear();
+        globalVariable.getRoomsList().clear();
         Toast.makeText(getApplicationContext(), "Duombazė išvalyta", Toast.LENGTH_SHORT).show();
     }
 

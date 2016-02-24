@@ -16,6 +16,7 @@ import android.widget.Toast;
 import com.example.btmatuoklis.R;
 import com.example.btmatuoklis.classes.AlertDialogBuilder;
 import com.example.btmatuoklis.classes.GlobalClass;
+import com.example.btmatuoklis.classes.MySQLiteHelper;
 import com.example.btmatuoklis.classes.Room;
 
 import java.util.ArrayList;
@@ -47,6 +48,12 @@ public class AllRoomsActivity extends Activity {
         MenuInflater inflater = getMenuInflater();
         inflater.inflate(R.menu.actionbar_allrooms, menu);
         return true;
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        listAdapter.notifyDataSetChanged();
     }
 
     @Override
@@ -129,6 +136,10 @@ public class AllRoomsActivity extends Activity {
     }
 
     void removeAllRooms(){
+        MySQLiteHelper database = new MySQLiteHelper(this);
+        database.deleteAll("rooms");
+        database.deleteAll("beacons");
+        database.deleteAll("calibrations");
         roomsArray.clear();
         savedRoomsList.clear();
         listAdapter.notifyDataSetChanged();

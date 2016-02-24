@@ -256,10 +256,6 @@ public class MySQLiteHelper extends SQLiteOpenHelper {
                 rooms.add(room);
             } while (cursor.moveToNext());
         }
-
-        Log.d("getAllRooms()", rooms.toString());
-
-        // return rooms
         return rooms;
     }
 
@@ -283,7 +279,6 @@ public class MySQLiteHelper extends SQLiteOpenHelper {
                 beacons.add(beacon);
             } while (cursor.moveToNext());
         }
-        Log.d("getAllBeacons()", beacons.toString());
         return beacons;
     }
 
@@ -310,9 +305,6 @@ public class MySQLiteHelper extends SQLiteOpenHelper {
                 calibrations.add(calibration);
             } while (cursor.moveToNext());
         }
-
-        Log.d("getAllCalibrations()", calibrations.toString());
-
         return calibrations;
     }
 
@@ -329,8 +321,8 @@ public class MySQLiteHelper extends SQLiteOpenHelper {
         // 3. updating row
         int i = database.update(TABLE_ROOMS, //table
                 values, // column/value
-                KEY_ID+" = ?", // selections
-                new String[] { String.valueOf(room.getID()) }); //selection args
+                KEY_ID + " = ?", // selections
+                new String[]{String.valueOf(room.getID())}); //selection args
 
         // 4. close
         database.close();
@@ -340,18 +332,48 @@ public class MySQLiteHelper extends SQLiteOpenHelper {
 
     public int getCalibrationID(Calibration calibration){
         SQLiteDatabase database = this.getReadableDatabase();
-        Cursor cursor =
+        /*Cursor cursor =
                 database.query(TABLE_CALIBRATIONS, // a. table
-                        new String[] {"id"}, // b. column names
-                        KEY_ROOMID+" = ? AND "+KEY_BEACONID+" = ?", // c. selections
-                        new String[] { String.valueOf(calibration.getRoomID()), String.valueOf(calibration.getBeaconID()) }, // d. selections args
+                        CALIBRATIONSCOLUMNS, // b. column names
+                        KEY_ROOMID + " = ? AND " + KEY_BEACONID + " = ?", // c. selections
+                        new String[]{String.valueOf(calibration.getRoomID()), String.valueOf(calibration.getBeaconID())}, // d. selections args
                         null, // e. group by
                         null, // f. having
                         null, // g. order by
-                        null); // h. limit
-        if (cursor != null)
+                        null); // h. limit*/
+        String query = "SELECT "+KEY_ID+" FROM "+TABLE_CALIBRATIONS+" WHERE "+KEY_ROOMID+" = "+
+                String.valueOf(calibration.getRoomID())+" AND "+KEY_BEACONID+" = "+String.valueOf(calibration.getBeaconID());
+        Cursor cursor = database.rawQuery(query, null);
+        int id = -1;
+        if (cursor.moveToNext()) {
             cursor.moveToFirst();
-        int id = Integer.parseInt(cursor.getString(0));
+            id = cursor.getInt(0);
+        }
+        cursor.close();
+        database.close();
+        return id;
+    }
+
+    public int getBeaconID(String mac){
+        SQLiteDatabase database = this.getReadableDatabase();
+        /*Cursor cursor =
+                database.query(TABLE_CALIBRATIONS, // a. table
+                        CALIBRATIONSCOLUMNS, // b. column names
+                        KEY_ROOMID + " = ? AND " + KEY_BEACONID + " = ?", // c. selections
+                        new String[]{String.valueOf(calibration.getRoomID()), String.valueOf(calibration.getBeaconID())}, // d. selections args
+                        null, // e. group by
+                        null, // f. having
+                        null, // g. order by
+                        null); // h. limit*/
+        String query = "SELECT "+KEY_ID+" FROM "+TABLE_BEACONS+" WHERE "+KEY_MAC+" = "+mac;
+        Cursor cursor = database.rawQuery(query, null);
+        int id = -1;
+        if (cursor.moveToNext()) {
+            cursor.moveToFirst();
+            id = cursor.getInt(0);
+        }
+        cursor.close();
+        database.close();
         return id;
     }
 
@@ -369,7 +391,7 @@ public class MySQLiteHelper extends SQLiteOpenHelper {
     }
 
     // Deleting single room
-    public void deleteRoom(Room room) {
+    public void deleteRoom(int id) {
 
         // 1. get reference to writable DB
         SQLiteDatabase database = this.getWritableDatabase();
@@ -377,14 +399,39 @@ public class MySQLiteHelper extends SQLiteOpenHelper {
         // 2. delete
         database.delete(TABLE_ROOMS,
                 KEY_ID + " = ?",
-                new String[]{String.valueOf(room.getID())});
+                new String[]{String.valueOf(id)});
 
         // 3. close
         database.close();
-
-        Log.d("deleteRoom", room.toString());
     }
 
+    public void deleteBeacon(int id) {
+
+        // 1. get reference to writable DB
+        SQLiteDatabase database = this.getWritableDatabase();
+
+        // 2. delete
+        database.delete(TABLE_BEACONS,
+                KEY_ID + " = ?",
+                new String[]{String.valueOf(id)});
+
+        // 3. close
+        database.close();
+    }
+
+    public void deleteCalibration(int id) {
+
+        // 1. get reference to writable DB
+        SQLiteDatabase database = this.getWritableDatabase();
+
+        // 2. delete
+        database.delete(TABLE_CALIBRATIONS,
+                KEY_ID + " = ?",
+                new String[]{String.valueOf(id)});
+
+        // 3. close
+        database.close();
+    }
 
     public int getCount(String table) {
 
@@ -397,8 +444,6 @@ public class MySQLiteHelper extends SQLiteOpenHelper {
         // return count
         return cursor.getCount();
     }
-
-
 
     public void deleteAll(String table){
         SQLiteDatabase database = this.getWritableDatabase();

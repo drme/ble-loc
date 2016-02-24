@@ -14,7 +14,10 @@ import android.widget.Toast;
 
 import com.example.btmatuoklis.R;
 import com.example.btmatuoklis.classes.AlertDialogBuilder;
+import com.example.btmatuoklis.classes.Beacon;
+import com.example.btmatuoklis.classes.Calibration;
 import com.example.btmatuoklis.classes.GlobalClass;
+import com.example.btmatuoklis.classes.MySQLiteHelper;
 import com.example.btmatuoklis.classes.Room;
 
 import java.util.ArrayList;
@@ -25,6 +28,8 @@ public class BeaconActivity extends Activity {
     GlobalClass globalVariable;
     int roomID, beaconID;
     Room currentRoom;
+    Beacon currentBeacon;
+    MySQLiteHelper database;
     ArrayList<Byte> rssiArray;
     TextView displayRoomName, displayBeacon, displayRSSIList;
     TextView displayRSSINum, displayRSSIAverage, displayRSSIMax, displayRSSIMin;
@@ -80,10 +85,12 @@ public class BeaconActivity extends Activity {
         roomID = getIntent().getExtras().getInt("roomID");
         beaconID = getIntent().getExtras().getInt("beaconID");
         currentRoom = globalVariable.getRoomsArray().get(roomID);
-        rssiArray = currentRoom.getBeacons().get(beaconID).getCalibratedRSSI();
+        currentBeacon = currentRoom.getBeacons().get(beaconID);
+        database = new MySQLiteHelper(this);
+        rssiArray = currentBeacon.getCalibratedRSSI();
         displayRoomName.setText(currentRoom.getName());
-        displayBeacon.setText(currentRoom.getBeacons().get(beaconID).getInfo());
-        displayRSSIList.setText(currentRoom.getBeacons().get(beaconID).getCalibratedRSSI().toString());
+        displayBeacon.setText(currentBeacon.getInfo());
+        displayRSSIList.setText(currentBeacon.getCalibratedRSSI().toString());
         displayRSSINum.setText(Integer.toString(rssiArray.size()));
         displayRSSIAverage.setText(Byte.toString(calculateAverage(rssiArray)));
         displayRSSIMax.setText(Byte.toString(Collections.max(rssiArray)));
@@ -118,7 +125,8 @@ public class BeaconActivity extends Activity {
     }
 
     void removeCalibration(){
-        currentRoom.getBeacons().get(beaconID).getCalibratedRSSI().clear();
+        database.updateCalibration(new Calibration(currentRoom.getID(), currentBeacon.getId(), null));
+        currentBeacon.getCalibratedRSSI().clear();
         Toast.makeText(getApplicationContext(), getString(R.string.toast_info_removed), Toast.LENGTH_SHORT).show();
         BeaconActivity.this.finish();
     }
@@ -128,13 +136,31 @@ public class BeaconActivity extends Activity {
                 getString(R.string.dialog_remove_calibration), android.R.drawable.ic_dialog_alert);
         dialog.getBuilder().setPositiveButton(getString(R.string.dialog_button_ok), new DialogInterface.OnClickListener() {
             @Override
-            public void onClick(DialogInterface dialog, int which) { removeCalibration(); }});
+            public void onClick(DialogInterface dialog, int which) {
+                removeCalibration();
+            }
+        });
         dialog.setNegatvie(getString(R.string.dialog_button_cancel));
         dialog.showDialog();
     }
 
     void removeBeacon(){
+        int id = database.getCalibrationID(new Calibration(currentRoom.getID(), currentBeacon.getId()));
+        database.deleteCalibration(id);
+        database.deleteBeacon(currentBeacon.getId());
         currentRoom.getBeacons().remove(beaconID);
+        if (currentRoom.getBeacons().isEmpty()){
+            database.deleteRoom(currentRoom.getID());
+            globalVariable.getRoomsArray().remove(roomID);
+            globalVariable.getRoomsList().remove(roomID);
+            if (globalVariable.getRoomsArray().isEmpty()){
+                database.deleteAll("rooms");
+                database.deleteAll("beacons");
+                database.deleteAll("calibrations");
+                globalVariable.getRoomsArray().clear();
+                globalVariable.getRoomsList().clear();
+            }
+        }
         Toast.makeText(getApplicationContext(), getString(R.string.toast_info_removed), Toast.LENGTH_SHORT).show();
         BeaconActivity.this.finish();
     }

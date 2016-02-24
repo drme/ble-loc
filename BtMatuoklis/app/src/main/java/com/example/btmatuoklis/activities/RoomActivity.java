@@ -12,6 +12,7 @@ import android.database.sqlite.SQLiteDatabase;
 import android.os.Environment;
 import android.os.Handler;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.ActionMode;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -89,12 +90,9 @@ public class RoomActivity extends Activity {
         super.onResume();
         reloadBoundDevices();
         checkCalibratedDevices();
-        if ((currentRoom.getBeacons().size() == 0) | !currentRoom.isCalibrationStarted()){
-            restoreCalibrateButton();
-        }
-        else {
-            resumeCalibrateButton();
-        }
+        if (currentRoom.getBeacons().isEmpty()){ this.finish(); }
+        else if (!currentRoom.isCalibrationStarted()){ restoreCalibrateButton(); }
+        else { resumeCalibrateButton(); }
     }
 
     @Override
@@ -173,7 +171,6 @@ public class RoomActivity extends Activity {
             displayBeaconsList.setItemChecked(i, calibratedDevices.get(i));
             rssi = currentRoom.getBeacons().get(i).getCalibratedRSSI().toString();
             beaconID = currentRoom.getBeacons().get(i).getId();
-
             Calibration calibation = new Calibration(roomdID, beaconID, rssi);
             database.updateCalibration(calibation);
         }
@@ -303,12 +300,19 @@ public class RoomActivity extends Activity {
 
     void removeRoom(){
         globalVariable.setScanning(false);
+        database.deleteRoom(currentRoom.getID());
         globalVariable.getRoomsArray().remove(roomID);
         globalVariable.getRoomsList().remove(roomID);
+        if (globalVariable.getRoomsArray().isEmpty()){
+            database.deleteAll("rooms");
+            database.deleteAll("beacons");
+            database.deleteAll("calibrations");
+            globalVariable.getRoomsArray().clear();
+            globalVariable.getRoomsList().clear();
+        }
         Toast.makeText(getApplicationContext(),
                 getString(R.string.toast_info_removed), Toast.LENGTH_SHORT).show();
         RoomActivity.this.finish();
-        startActivity(new Intent(getBaseContext(), AllRoomsActivity.class));
     }
 
     void removeRoomConfirm() {

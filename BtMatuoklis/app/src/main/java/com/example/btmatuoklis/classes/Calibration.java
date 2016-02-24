@@ -10,11 +10,25 @@ public class Calibration {
 
     public Calibration(){}
 
+    public Calibration(int id, int roomID, int beaconID, String RSSI)
+    {
+        this.id = id;
+        this.roomID = roomID;
+        this.beaconID = beaconID;
+        this.RSSI = RSSI;
+    }
+
     public Calibration(int roomID, int beaconID, String RSSI)
     {
         this.roomID = roomID;
         this.beaconID = beaconID;
         this.RSSI = RSSI;
+    }
+
+    public Calibration(int roomID, int beaconID)
+    {
+        this.roomID = roomID;
+        this.beaconID = beaconID;
     }
 
     public int getID() {
@@ -50,7 +64,7 @@ public class Calibration {
     }
 
     public String toString() {
-        return "RSSI [roomID=" + id + " roomID=" + roomID +
+        return "RSSI [calibrationID=" + id + ", roomID=" + roomID +
                 ", beaconID=" + beaconID +", RSSI " + RSSI +" \"]";
     }
 }
