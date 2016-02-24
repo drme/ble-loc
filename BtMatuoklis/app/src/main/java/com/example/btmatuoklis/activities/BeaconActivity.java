@@ -1,7 +1,6 @@
 package com.example.btmatuoklis.activities;
 
 import android.app.Activity;
-import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
@@ -14,6 +13,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.btmatuoklis.R;
+import com.example.btmatuoklis.classes.AlertDialogBuilder;
 import com.example.btmatuoklis.classes.GlobalClass;
 import com.example.btmatuoklis.classes.Room;
 
@@ -117,54 +117,36 @@ public class BeaconActivity extends Activity {
         });
     }
 
+    void removeCalibration(){
+        currentRoom.getBeacons().get(beaconID).getCalibratedRSSI().clear();
+        Toast.makeText(getApplicationContext(), getString(R.string.toast_info_removed), Toast.LENGTH_SHORT).show();
+        BeaconActivity.this.finish();
+    }
+
     void removeCalibrationConfirm() {
-        final AlertDialog.Builder builder4 = new AlertDialog.Builder(BeaconActivity.this, AlertDialog.THEME_HOLO_DARK);
-        builder4.setTitle(getString(R.string.dialog_title_remove));
-        builder4.setMessage(getString(R.string.dialog_remove_calibration));
-        builder4.setIcon(android.R.drawable.ic_dialog_alert);
-
-        builder4.setPositiveButton(getString(R.string.dialog_button_ok), new DialogInterface.OnClickListener() {
+        AlertDialogBuilder dialog = new AlertDialogBuilder(BeaconActivity.this, getString(R.string.dialog_title_remove),
+                getString(R.string.dialog_remove_calibration), android.R.drawable.ic_dialog_alert);
+        dialog.getBuilder().setPositiveButton(getString(R.string.dialog_button_ok), new DialogInterface.OnClickListener() {
             @Override
-            public void onClick(DialogInterface dialog, int which) {
-                currentRoom.getBeacons().get(beaconID).getCalibratedRSSI().clear();
-                Toast.makeText(getApplicationContext(), getString(R.string.toast_info_removed), Toast.LENGTH_SHORT).show();
-                BeaconActivity.this.finish();
-            }
-        });
+            public void onClick(DialogInterface dialog, int which) { removeCalibration(); }});
+        dialog.setNegatvie(getString(R.string.dialog_button_cancel));
+        dialog.showDialog();
+    }
 
-        builder4.setNegativeButton(getString(R.string.dialog_button_cancel), new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-                dialog.cancel();
-            }
-        });
-
-        builder4.show();
+    void removeBeacon(){
+        currentRoom.getBeacons().remove(beaconID);
+        Toast.makeText(getApplicationContext(), getString(R.string.toast_info_removed), Toast.LENGTH_SHORT).show();
+        BeaconActivity.this.finish();
     }
 
     void removeBeaconConfirm() {
-        final AlertDialog.Builder builder5 = new AlertDialog.Builder(BeaconActivity.this, AlertDialog.THEME_HOLO_DARK);
-        builder5.setTitle(getString(R.string.dialog_title_remove));
-        builder5.setMessage(getString(R.string.dialog_remove_beacon));
-        builder5.setIcon(android.R.drawable.ic_dialog_alert);
-
-        builder5.setPositiveButton(getString(R.string.dialog_button_ok), new DialogInterface.OnClickListener() {
+        AlertDialogBuilder dialog = new AlertDialogBuilder(BeaconActivity.this, getString(R.string.dialog_title_remove),
+                getString(R.string.dialog_remove_beacon), android.R.drawable.ic_dialog_alert);
+        dialog.getBuilder().setPositiveButton(getString(R.string.dialog_button_ok), new DialogInterface.OnClickListener() {
             @Override
-            public void onClick(DialogInterface dialog, int which) {
-                currentRoom.getBeacons().remove(beaconID);
-                Toast.makeText(getApplicationContext(), getString(R.string.toast_info_removed), Toast.LENGTH_SHORT).show();
-                BeaconActivity.this.finish();
-            }
-        });
-
-        builder5.setNegativeButton(getString(R.string.dialog_button_cancel), new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-                dialog.cancel();
-            }
-        });
-
-        builder5.show();
+            public void onClick(DialogInterface dialog, int which) { removeBeacon(); }});
+        dialog.setNegatvie(getString(R.string.dialog_button_cancel));
+        dialog.showDialog();
     }
 
     private byte calculateAverage(ArrayList<Byte> array){

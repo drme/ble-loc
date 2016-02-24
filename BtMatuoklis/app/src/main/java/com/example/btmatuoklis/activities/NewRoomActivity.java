@@ -1,7 +1,6 @@
 package com.example.btmatuoklis.activities;
 
 import android.app.Activity;
-import android.app.AlertDialog;
 import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;
 import android.bluetooth.BluetoothManager;
@@ -24,6 +23,7 @@ import android.widget.ListView;
 import android.widget.Toast;
 
 import com.example.btmatuoklis.R;
+import com.example.btmatuoklis.classes.AlertDialogBuilder;
 import com.example.btmatuoklis.classes.Beacon;
 import com.example.btmatuoklis.classes.GlobalClass;
 import com.example.btmatuoklis.classes.MySQLiteHelper;
@@ -137,31 +137,22 @@ public class NewRoomActivity extends Activity {
         else { buttonAccept.setEnabled(false); }
     }
 
+    void cancelCreation(){
+        globalVariable.setScanning(false);
+        Toast.makeText(getApplicationContext(),
+                getString(R.string.toast_info_cancelled), Toast.LENGTH_SHORT).show();
+        NewRoomActivity.this.finish();
+        startActivity(new Intent(getBaseContext(), AllRoomsActivity.class));
+    }
+
     void cancelCreationConfirm(){
-        final AlertDialog.Builder builder3 = new AlertDialog.Builder(NewRoomActivity.this, AlertDialog.THEME_HOLO_DARK);
-        builder3.setTitle(getString(R.string.dialog_title_cancel));
-        builder3.setMessage(getString(R.string.dialog_cancel_room_creation));
-        builder3.setIcon(android.R.drawable.ic_dialog_alert);
-
-        builder3.setPositiveButton(getString(R.string.dialog_button_ok), new DialogInterface.OnClickListener() {
+        AlertDialogBuilder dialog = new AlertDialogBuilder(NewRoomActivity.this, getString(R.string.dialog_title_cancel),
+                getString(R.string.dialog_cancel_room_creation), android.R.drawable.ic_dialog_alert);
+        dialog.getBuilder().setPositiveButton(getString(R.string.dialog_button_ok), new DialogInterface.OnClickListener() {
             @Override
-            public void onClick(DialogInterface dialog, int which) {
-                globalVariable.setScanning(false);
-                Toast.makeText(getApplicationContext(),
-                        getString(R.string.toast_info_cancelled), Toast.LENGTH_SHORT).show();
-                NewRoomActivity.this.finish();
-                startActivity(new Intent(getBaseContext(), AllRoomsActivity.class));
-            }
-        });
-
-        builder3.setNegativeButton(getString(R.string.dialog_button_cancel), new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-                dialog.cancel();
-            }
-        });
-
-        builder3.show();
+            public void onClick(DialogInterface dialog, int which) { cancelCreation(); }});
+        dialog.setNegatvie(getString(R.string.dialog_button_cancel));
+        dialog.showDialog();
     }
 
     //To-Do: patikrinti ar kambarys tokiu pavadinimu duombazeje jau neegzistuoja

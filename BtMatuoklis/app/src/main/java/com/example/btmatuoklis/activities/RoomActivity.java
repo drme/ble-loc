@@ -1,7 +1,6 @@
 package com.example.btmatuoklis.activities;
 
 import android.app.Activity;
-import android.app.AlertDialog;
 import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;
 import android.bluetooth.BluetoothManager;
@@ -27,6 +26,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.btmatuoklis.R;
+import com.example.btmatuoklis.classes.AlertDialogBuilder;
 import com.example.btmatuoklis.classes.Calibration;
 import com.example.btmatuoklis.classes.GlobalClass;
 import com.example.btmatuoklis.classes.MySQLiteHelper;
@@ -275,62 +275,58 @@ public class RoomActivity extends Activity {
     void setChoiceListener(){
         displayBeaconsList.setMultiChoiceModeListener(new AbsListView.MultiChoiceModeListener() {
             @Override
-            public void onItemCheckedStateChanged(ActionMode mode, int position, long id, boolean checked){}
+            public void onItemCheckedStateChanged(ActionMode mode, int position, long id, boolean checked) {
+            }
+
             @Override
-            public boolean onCreateActionMode(ActionMode mode, Menu menu) { return false; }
+            public boolean onCreateActionMode(ActionMode mode, Menu menu) {
+                return false;
+            }
+
             @Override
-            public boolean onPrepareActionMode(ActionMode mode, Menu menu) { return false; }
+            public boolean onPrepareActionMode(ActionMode mode, Menu menu) {
+                return false;
+            }
+
             @Override
-            public boolean onActionItemClicked(ActionMode mode, MenuItem item) { return false; }
+            public boolean onActionItemClicked(ActionMode mode, MenuItem item) {
+                return false;
+            }
+
             @Override
-            public void onDestroyActionMode(ActionMode mode) {}
+            public void onDestroyActionMode(ActionMode mode) {
+            }
         });
+    }
+
+    void removeRoom(){
+        globalVariable.setScanning(false);
+        globalVariable.getRoomsArray().remove(roomID);
+        globalVariable.getRoomsList().remove(roomID);
+        Toast.makeText(getApplicationContext(),
+                getString(R.string.toast_info_removed), Toast.LENGTH_SHORT).show();
+        RoomActivity.this.finish();
+        startActivity(new Intent(getBaseContext(), AllRoomsActivity.class));
     }
 
     void removeRoomConfirm() {
-        final AlertDialog.Builder builder2 = new AlertDialog.Builder(RoomActivity.this, AlertDialog.THEME_HOLO_DARK);
-        builder2.setTitle(getString(R.string.dialog_title_remove));
-        builder2.setMessage(getString(R.string.dialog_remove_room));
-        builder2.setIcon(android.R.drawable.ic_dialog_alert);
-
-        builder2.setPositiveButton(getString(R.string.dialog_button_ok), new DialogInterface.OnClickListener() {
+        AlertDialogBuilder dialog = new AlertDialogBuilder(RoomActivity.this, getString(R.string.dialog_title_remove),
+                getString(R.string.dialog_remove_room), android.R.drawable.ic_dialog_alert);
+        dialog.getBuilder().setPositiveButton(getString(R.string.dialog_button_ok), new DialogInterface.OnClickListener() {
             @Override
-            public void onClick(DialogInterface dialog, int which) {
-                globalVariable.setScanning(false);
-                globalVariable.getRoomsArray().remove(roomID);
-                globalVariable.getRoomsList().remove(roomID);
-                Toast.makeText(getApplicationContext(),
-                        getString(R.string.toast_info_removed), Toast.LENGTH_SHORT).show();
-                RoomActivity.this.finish();
-                startActivity(new Intent(getBaseContext(), AllRoomsActivity.class));
-            }
-        });
-
-        builder2.setNegativeButton(getString(R.string.dialog_button_cancel), new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) { dialog.cancel(); }
-        });
-
-        builder2.show();
+            public void onClick(DialogInterface dialog, int which) { removeRoom(); }});
+        dialog.setNegatvie(getString(R.string.dialog_button_cancel));
+        dialog.showDialog();
     }
 
     void ExportRoomCSVConfirm() {
-        final AlertDialog.Builder builder6 = new AlertDialog.Builder(RoomActivity.this, AlertDialog.THEME_HOLO_DARK);
-        builder6.setTitle(getString(R.string.dialog_title_export));
-        builder6.setMessage(getString(R.string.dialog_export_room_csv));
-        builder6.setIcon(android.R.drawable.ic_dialog_info);
-
-        builder6.setPositiveButton(getString(R.string.dialog_button_ok), new DialogInterface.OnClickListener() {
+        AlertDialogBuilder dialog = new AlertDialogBuilder(RoomActivity.this, getString(R.string.dialog_title_export),
+                getString(R.string.dialog_export_room_csv), android.R.drawable.ic_dialog_info);
+        dialog.getBuilder().setPositiveButton(getString(R.string.dialog_button_ok), new DialogInterface.OnClickListener() {
             @Override
-            public void onClick(DialogInterface dialog, int which) { exportRoomCSV(); }
-        });
-
-        builder6.setNegativeButton(getString(R.string.dialog_button_cancel), new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) { dialog.cancel(); }
-        });
-
-        builder6.show();
+            public void onClick(DialogInterface dialog, int which) { exportRoomCSV(); }});
+        dialog.setNegatvie(getString(R.string.dialog_button_cancel));
+        dialog.showDialog();
     }
 
     //Sukuriamas Bluetooth adapteris
