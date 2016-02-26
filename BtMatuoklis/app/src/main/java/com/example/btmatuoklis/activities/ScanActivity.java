@@ -11,7 +11,7 @@ import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
-import android.view.View;
+import android.view.WindowManager;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
 import android.widget.TextView;
@@ -56,6 +56,7 @@ public class ScanActivity extends Activity {
     {
         getActionBar().setDisplayShowCustomEnabled(true);
         getActionBar().setCustomView(R.layout.action_view_progress);
+        getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
         MenuInflater inflater = getMenuInflater();
         inflater.inflate(R.menu.actionbar_scan, menu);
         return true;

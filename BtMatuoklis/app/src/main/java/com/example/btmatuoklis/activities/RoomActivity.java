@@ -18,6 +18,7 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.WindowManager;
 import android.widget.AbsListView;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
@@ -144,6 +145,7 @@ public class RoomActivity extends Activity {
     void startCalibration(){
         globalVariable.setScanning(true);
         getActionBar().getCustomView().setVisibility(View.VISIBLE);
+        getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
         displayBeaconsList.setOnItemClickListener(null);
         buttonCalibrate.setText(getString(R.string.roomactivity_button_finish_calib));
         buttonCalibrate.setEnabled(false);
@@ -155,6 +157,7 @@ public class RoomActivity extends Activity {
     void finishCalibration(){
         globalVariable.setScanning(false);
         getActionBar().getCustomView().setVisibility(View.INVISIBLE);
+        getWindow().clearFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
         buttonCalibrate.setText(getString(R.string.roomactivity_button_resume_calib));
         buttonCalibrate.setEnabled(true);
         setListListener();

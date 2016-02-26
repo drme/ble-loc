@@ -11,6 +11,8 @@ public class Beacon {
     private ArrayList<Byte> rssi;
     private int id;
 
+    private RangeCalculator calculator = new RangeCalculator();
+
     public Beacon(){
         this.calibratedRSSI = new ArrayList<Byte>();
         this.rssi = new ArrayList<Byte>();
@@ -87,7 +89,7 @@ public class Beacon {
         String info = "Pavadinimas: " + this.Name;
         info += "\nMAC: " + this.mac;
         info += "\nRSSI: " + getPreviousRSSI() + " Current: " + getCurrentRSSI();
-        info += "\n" + RangeCalculator.getRange(getTXPower(), getCurrentRSSI());
+        info += "\n" + calculator.getRange(getTXPower(), getCurrentRSSI());
         return info;
     }
 
