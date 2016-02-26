@@ -15,6 +15,7 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.WindowManager;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
@@ -72,6 +73,7 @@ public class NewRoomActivity extends Activity {
     {
         getActionBar().setDisplayShowCustomEnabled(true);
         getActionBar().setCustomView(R.layout.action_view_progress);
+        getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
         MenuInflater inflater = getMenuInflater();
         inflater.inflate(R.menu.actionbar_newroom, menu);
         return true;
