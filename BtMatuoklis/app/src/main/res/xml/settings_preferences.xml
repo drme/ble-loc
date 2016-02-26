@@ -4,6 +4,24 @@
         android:title="@string/settingsactivity_category_main_settings"
         android:summary="@string/settingsactivity_category_main_settings" >
 
+        <EditTextPreference
+            android:id="@+id/preferences_Frequency"
+            android:key="savedDelay"
+            android:defaultValue="@integer/default_frequency"
+            android:title="@string/settingsactivity_text_frequency"
+            android:summary="@string/generic_value"
+            android:dialogMessage="@string/generic_hint"
+            android:inputType="number"
+            android:maxLength="4" />
+        <EditTextPreference
+            android:id="@+id/preferences_Shadow"
+            android:key="savedShadow"
+            android:defaultValue="@integer/default_shadow"
+            android:title="@string/settingsactivity_text_shadow"
+            android:summary="@string/generic_value"
+            android:dialogMessage="@string/settingsactivity_hint_shadow"
+            android:inputType="number"
+            android:maxLength="1" />
         <com.example.btmatuoklis.classes.SeekBarPreference
             android:id="@+id/preferences_TxPower"
             android:key="savedTXPower"
@@ -13,19 +31,10 @@
             android:summary="@string/generic_value"
             android:dialogMessage="@string/settingsactivity_hint_txpower" />
         <EditTextPreference
-            android:id="@+id/preferences_Frequency"
-            android:key="savedDelay"
-            android:defaultValue="@integer/default_frequency"
-            android:title="@string/settingsactivity_button_frequency"
-            android:summary="@string/generic_value"
-            android:dialogMessage="@string/generic_hint"
-            android:inputType="number"
-            android:maxLength="4" />
-        <EditTextPreference
             android:id="@+id/preferences_Average"
             android:key="savedAverage"
             android:defaultValue="@integer/default_average"
-            android:title="@string/settingsactivity_button_average"
+            android:title="@string/settingsactivity_text_average"
             android:summary="@string/generic_value"
             android:dialogMessage="@string/generic_hint"
             android:inputType="number"

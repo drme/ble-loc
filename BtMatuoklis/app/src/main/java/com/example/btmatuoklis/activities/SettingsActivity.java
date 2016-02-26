@@ -13,7 +13,7 @@ import com.example.btmatuoklis.classes.Settings;
 public class SettingsActivity extends PreferenceActivity implements SharedPreferences.OnSharedPreferenceChangeListener {
 
     Settings settings;
-    EditTextPreference editFrequency, editAverage;
+    EditTextPreference editFrequency, editShadow, editAverage;
     SeekBarPreference sliderTXPower;
     SwitchPreference switchGenerator;
     EditTextPreference debugBeacons, debugRSSIMin, debugRSSIMax;
@@ -24,8 +24,9 @@ public class SettingsActivity extends PreferenceActivity implements SharedPrefer
         getActionBar().setSubtitle(getString(R.string.subtitle_settings));
         addPreferencesFromResource(R.xml.settings_preferences);
         editFrequency = (EditTextPreference)findPreference("savedDelay");
-        editAverage = (EditTextPreference)findPreference("savedAverage");
+        editShadow = (EditTextPreference)findPreference("savedShadow");
         sliderTXPower = (SeekBarPreference)findPreference("savedTXPower");
+        editAverage = (EditTextPreference)findPreference("savedAverage");
         switchGenerator = (SwitchPreference)findPreference("debugGenerator");
         debugBeacons = (EditTextPreference)findPreference("debugBeacons");
         debugRSSIMin = (EditTextPreference)findPreference("debugRSSIMin");
@@ -60,8 +61,9 @@ public class SettingsActivity extends PreferenceActivity implements SharedPrefer
     //Jeigu programa leidziama ne pirma karta - nustatomos issaugotos reiksmes
     void setDefaultValues(){
         settings = MainActivity.settings;
-        sliderTXPower.setSummary(getString(R.string.settingsactivity_subtext_value) + settings.getTXPower());
         editFrequency.setSummary(getString(R.string.settingsactivity_subtext_value) + settings.getDelay());
+        editShadow.setSummary(getString(R.string.settingsactivity_subtext_value) + settings.getShadow());
+        sliderTXPower.setSummary(getString(R.string.settingsactivity_subtext_value) + settings.getTXPower());
         editFrequency.setDialogMessage(getString(R.string.settingsactivity_hint_frequency) + settings.getDefaultDelay());
         editAverage.setSummary(getString(R.string.settingsactivity_subtext_value) + settings.getAverage());
         debugBeacons.setSummary(getString(R.string.settingsactivity_subtext_value) + settings.getDebugBeacons());

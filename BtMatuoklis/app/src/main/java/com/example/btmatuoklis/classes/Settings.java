@@ -16,6 +16,10 @@ public class Settings implements SharedPreferences.OnSharedPreferenceChangeListe
     private short defaultDelay = 1000;
     private short delay;
 
+    //Kiek RSSI saugoti aktyvaus Scan rezimu
+    private byte defaultShadow = 1;
+    private byte shadow;
+
     //"Default" BTLE irenginio stiprumas
     private byte txPower = 50;//Reiksme [1-100] intervale
 
@@ -42,8 +46,9 @@ public class Settings implements SharedPreferences.OnSharedPreferenceChangeListe
 
     public void refreshValues(){
         //Nuskaitomi paskutiniai naudoti nustatymai
-        txPower = (byte)preferences.getInt("savedTXPower", txPower);
         delay = Short.parseShort(preferences.getString("savedDelay", Short.toString(defaultDelay)));
+        shadow = Byte.parseByte(preferences.getString("savedShadow", Byte.toString(defaultShadow)));
+        txPower = (byte)preferences.getInt("savedTXPower", txPower);
         average = Byte.parseByte(preferences.getString("savedAverage", Byte.toString(defaultAverage)));
         generator = preferences.getBoolean("debugGenerator", false);
         generatedBeacons = Byte.parseByte(preferences.getString("debugBeacons", Byte.toString(generatedBeacons)));
@@ -53,9 +58,11 @@ public class Settings implements SharedPreferences.OnSharedPreferenceChangeListe
 
     public byte getMaxRange(){ return this.maxRange; }
 
-    public byte getTXPower(){ return this.txPower; }
-
     public short getDelay(){ return this.delay; }
+
+    public byte getShadow(){ return this.shadow; }
+
+    public byte getTXPower(){ return this.txPower; }
 
     public byte getAverage(){ return this.average; }
 
