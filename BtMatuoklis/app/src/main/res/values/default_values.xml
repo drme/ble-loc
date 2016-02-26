@@ -1,10 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
+    <integer name="default_frequency">1000</integer>
+
+    <integer name="default_shadow">1</integer>
+
     <integer name="default_txpower">50</integer>
     <integer name="default_txpower_max">100</integer>
-
-    <integer name="default_frequency">1000</integer>
 
     <integer name="default_average">1</integer>
 

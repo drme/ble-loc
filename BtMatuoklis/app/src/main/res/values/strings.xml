@@ -71,11 +71,13 @@
     <!--SettingsActivity elementu tekstai-->
     <string name="settingsactivity_category_main_settings">Pagrindiniai Nustatymai</string>
     <string name="settingsactivity_category_debug_settings">Debug Nustatymai</string>
+    <string name="settingsactivity_text_frequency">Matavimų Dažnis</string>
+    <string name="settingsactivity_text_shadow">Reikšmių vektoriaus dydis</string>
     <string name="settingsactivity_text_txpower">Įrenginių Signalo Galingumas</string>
-    <string name="settingsactivity_button_frequency">Matavimų Dažnis</string>
-    <string name="settingsactivity_button_average">Vidurkio Reikšmių Kiekis</string>
-    <string name="settingsactivity_hint_txpower">Dabartinis aptinkamų įrenginių signalo galingumas:</string>
+    <string name="settingsactivity_text_average">Vidurkio Reikšmių Kiekis</string>
     <string name="settingsactivity_hint_frequency">Rekomenduotinos reikšmės intervale: [250; 5000], default -\u0020</string>
+    <string name="settingsactivity_hint_shadow">Ši reikšmė nurodo kiek RSSI reikšmių saugoti aktyvaus Scan rėžimo metu</string>
+    <string name="settingsactivity_hint_txpower">Dabartinis aptinkamų įrenginių signalo galingumas:</string>
     <string name="settingsactivity_subtext_value">Dabartinis:\u0020</string>
     <string name="settingsactivity_debug_slider_generator">Generatorius</string>
     <string name="settingsactivity_debug_hint_generator">Netikrų įrenginių/reikšmių generatorius</string>
