@@ -6,24 +6,26 @@ public class Beacon {
     private String Name;
     private String mac;
     private ArrayList<Byte> calibratedRSSI;
-    private byte currentRSSI;
-    private byte previousRSSI;
+    private ArrayList<Byte> rssi;
     private int id;
 
     public Beacon(){
         this.calibratedRSSI = new ArrayList<Byte>();
+        this.rssi = new ArrayList<Byte>();
     }
 
     public Beacon(String name, String mac){
         this.Name = name;
         this.mac = mac;
         this.calibratedRSSI = new ArrayList<Byte>();
+        this.rssi = new ArrayList<Byte>();
     }
 
     public Beacon(String name, String mac, ArrayList<Byte> calibratedRSSI){
         this.Name = name;
         this.mac = mac;
         this.calibratedRSSI = calibratedRSSI;
+        this.rssi = new ArrayList<Byte>();
     }
 
     public Beacon(int id, String name, String mac, ArrayList<Byte> calibratedRSSI){
@@ -31,22 +33,35 @@ public class Beacon {
         this.Name = name;
         this.mac = mac;
         this.calibratedRSSI = calibratedRSSI;
+        this.rssi = new ArrayList<Byte>();
     }
 
     public void setRSSI(byte rssi) {
-        this.previousRSSI = this.currentRSSI;
-        this.currentRSSI = rssi;
+        if (this.rssi.size() == 5){
+            this.rssi.remove(0);
+            this.rssi.add(rssi);
+        }
+        else {
+            this.rssi.add(rssi);
+        }
     }
 
     public String getName(){ return this.Name; }
 
     public String getMAC(){ return this.mac; }
 
-    public byte getCurrentRSSI() { return this.currentRSSI; }
-
-    public byte getPreviousRSSI() { return this.previousRSSI; }
-
     public ArrayList<Byte> getCalibratedRSSI() { return this.calibratedRSSI; }
+
+    public Byte getCurrentRSSI(){
+        return this.rssi.get(rssi.size()-1);
+    }
+
+    public ArrayList<Byte> getPreviousRSSI(){
+        ArrayList<Byte> previousRSSI = new ArrayList<Byte>();
+        previousRSSI.addAll(this.rssi);
+        previousRSSI.remove(this.rssi.size()-1);
+        return previousRSSI;
+    }
 
     //BT irenginio informacija (List formavimui)
     public String getInfo() {
@@ -59,9 +74,8 @@ public class Beacon {
     public String getCurrentInfo(byte txPower){
         String info = "Pavadinimas: " + this.Name;
         info += "\nMAC: " + this.mac;
-        info += "\nPrevious RSSI: " + this.previousRSSI;
-        info += " Current RSSI: " + this.currentRSSI;
-        info += "\n" + RangeCalculator.getRange(txPower, this.currentRSSI);
+        info += "\nRSSI: " + getPreviousRSSI() + " Current: " + getCurrentRSSI();
+        info += "\n" + RangeCalculator.getRange(txPower, this.getCurrentRSSI());
         return info;
     }
 
