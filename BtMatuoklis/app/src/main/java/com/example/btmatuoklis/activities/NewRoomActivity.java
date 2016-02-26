@@ -248,15 +248,14 @@ public class NewRoomActivity extends Activity {
             mBluetoothAdapter.startLeScan(new BluetoothAdapter.LeScanCallback() {
                 @Override
                 public void onLeScan(BluetoothDevice device, int rssi, byte[] scanRecord) {
-                    scantools.scanLogic(device, rssi, settings.getTXPower(), beaconsArray, savedBeaconsList);
+                    scantools.scanLogic(device, rssi, beaconsArray, savedBeaconsList);
                     mBluetoothAdapter.stopLeScan(this); //Scan stabdomas
                 }
             });
         }
         else{
-            scantools.fakeScanLogic(settings.getDebugBeacons(),
-                    settings.getDebugRSSIMin(), settings.getDebugRSSIMax(),
-                    settings.getTXPower(), beaconsArray, savedBeaconsList);
+            scantools.fakeScanLogic(settings.getDebugBeacons(), settings.getDebugRSSIMin(),
+                    settings.getDebugRSSIMax(), beaconsArray, savedBeaconsList);
         }
     }
 }

@@ -1,5 +1,7 @@
 package com.example.btmatuoklis.classes;
 
+import com.example.btmatuoklis.activities.MainActivity;
+
 import java.util.ArrayList;
 
 public class Beacon {
@@ -36,8 +38,18 @@ public class Beacon {
         this.rssi = new ArrayList<Byte>();
     }
 
+    private byte getShadow(){
+        Settings settings = MainActivity.settings;
+        return settings.getShadow();
+    }
+
+    private byte getTXPower(){
+        Settings settings = MainActivity.settings;
+        return settings.getTXPower();
+    }
+
     public void setRSSI(byte rssi) {
-        if (this.rssi.size() == 5){
+        if (this.rssi.size() == getShadow()+1){
             this.rssi.remove(0);
             this.rssi.add(rssi);
         }
@@ -71,11 +83,11 @@ public class Beacon {
     }
 
     //BT irenginio papildoma informacija (List formavimui)
-    public String getCurrentInfo(byte txPower){
+    public String getCurrentInfo(){
         String info = "Pavadinimas: " + this.Name;
         info += "\nMAC: " + this.mac;
         info += "\nRSSI: " + getPreviousRSSI() + " Current: " + getCurrentRSSI();
-        info += "\n" + RangeCalculator.getRange(txPower, this.getCurrentRSSI());
+        info += "\n" + RangeCalculator.getRange(getTXPower(), getCurrentRSSI());
         return info;
     }
 
