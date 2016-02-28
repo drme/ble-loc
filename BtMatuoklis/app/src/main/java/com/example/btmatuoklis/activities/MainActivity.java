@@ -116,13 +116,11 @@ public class MainActivity extends Activity {
                     id = cursor.getInt(0);
                     beaconName = cursor.getString(1);
                     beaconMac = cursor.getString(2);
-                    if (cursor.isLast()) {
-                        RSSI = cursor.getString(3);
-                    }
+                    RSSI = cursor.getString(3);
                     currentRoom.getBeacons().add(new Beacon(id, beaconName, beaconMac, loadRSSIS(RSSI)));
                 }
+                cursor.close();
             }
-            cursor.close();
         }
     }
 
