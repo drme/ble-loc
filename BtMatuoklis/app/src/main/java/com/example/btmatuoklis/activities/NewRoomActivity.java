@@ -45,6 +45,7 @@ public class NewRoomActivity extends Activity {
     Room currentRoom;
     MySQLiteHelper database;
     BluetoothAdapter mBluetoothAdapter;
+    BluetoothAdapter.LeScanCallback mLeScanCallback;
     String roomName;
     ListView displayBeaconsList;
     ArrayList<Beacon> beaconsArray;
@@ -65,6 +66,7 @@ public class NewRoomActivity extends Activity {
         setDefaultValues();
         setListListener();
         createBT();
+        createBTLECallBack();
         continuousScan();
     }
 
@@ -153,7 +155,10 @@ public class NewRoomActivity extends Activity {
                 getString(R.string.dialog_cancel_room_creation), android.R.drawable.ic_dialog_alert);
         dialog.getBuilder().setPositiveButton(getString(R.string.dialog_button_ok), new DialogInterface.OnClickListener() {
             @Override
-            public void onClick(DialogInterface dialog, int which) { cancelCreation(); }});
+            public void onClick(DialogInterface dialog, int which) {
+                cancelCreation();
+            }
+        });
         dialog.setNegatvie(getString(R.string.dialog_button_cancel));
         dialog.showDialog();
     }
@@ -213,6 +218,16 @@ public class NewRoomActivity extends Activity {
         mBluetoothAdapter = bluetoothManager.getAdapter();
     }
 
+    void createBTLECallBack(){
+        mLeScanCallback = new BluetoothAdapter.LeScanCallback() {
+            @Override
+            public void onLeScan(BluetoothDevice device, int rssi, byte[] scanRecord) {
+                scantools.scanLogic(device, rssi, beaconsArray, savedBeaconsList);
+                mBluetoothAdapter.stopLeScan(this); //Scan stabdomas
+            }
+        };
+    }
+
     //Nuolatos pradedamas ir stabdomas scan
     void continuousScan(){
         final Handler handler2 = new Handler();
@@ -247,13 +262,8 @@ public class NewRoomActivity extends Activity {
     //Jeigu randamas BTLE irenginys, gaunama jo RSSI reiksme
     void startBTLEScan(){
         if (!settings.isGeneratorEnabled()) {
-            mBluetoothAdapter.startLeScan(new BluetoothAdapter.LeScanCallback() {
-                @Override
-                public void onLeScan(BluetoothDevice device, int rssi, byte[] scanRecord) {
-                    scantools.scanLogic(device, rssi, beaconsArray, savedBeaconsList);
-                    mBluetoothAdapter.stopLeScan(this); //Scan stabdomas
-                }
-            });
+            mBluetoothAdapter.stopLeScan(mLeScanCallback);
+            mBluetoothAdapter.startLeScan(mLeScanCallback);
         }
         else{
             scantools.fakeScanLogic(settings.getDebugBeacons(), settings.getDebugRSSIMin(),

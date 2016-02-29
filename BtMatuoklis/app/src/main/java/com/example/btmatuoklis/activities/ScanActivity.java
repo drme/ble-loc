@@ -31,6 +31,7 @@ public class ScanActivity extends Activity {
     Settings settings;
     ScanTools scantools;
     BluetoothAdapter mBluetoothAdapter;
+    BluetoothAdapter.LeScanCallback mLeScanCallback;
     ArrayList<Beacon> beaconsArray;
     ArrayList<String> savedBeaconsList;
     ArrayList<String> beaconsList;
@@ -48,6 +49,7 @@ public class ScanActivity extends Activity {
 
         setDefaultValues();
         createBT();
+        createBTLECallBack();
         continuousScan();
     }
 
@@ -82,6 +84,16 @@ public class ScanActivity extends Activity {
         BluetoothManager bluetoothManager =
                 (BluetoothManager)getSystemService(Context.BLUETOOTH_SERVICE);
         mBluetoothAdapter = bluetoothManager.getAdapter();
+    }
+
+    void createBTLECallBack(){
+        mLeScanCallback = new BluetoothAdapter.LeScanCallback() {
+            @Override
+            public void onLeScan(BluetoothDevice device, int rssi, byte[] scanRecord) {
+                scantools.scanLogic(device, rssi, beaconsArray, savedBeaconsList);
+                mBluetoothAdapter.stopLeScan(this); //Scan stabdomas
+            }
+        };
     }
 
     //Nustatomos "default" reiksmes
@@ -137,13 +149,8 @@ public class ScanActivity extends Activity {
     //Jeigu randamas BTLE irenginys, gaunama jo RSSI reiksme
     void startBTLEScan(){
         if (!settings.isGeneratorEnabled()){
-            mBluetoothAdapter.startLeScan(new BluetoothAdapter.LeScanCallback() {
-                @Override
-                public void onLeScan(BluetoothDevice device, int rssi, byte[] scanRecord) {
-                    scantools.scanLogic(device, rssi, beaconsArray, savedBeaconsList);
-                    mBluetoothAdapter.stopLeScan(this); //Scan stabdomas
-                }
-            });
+            mBluetoothAdapter.stopLeScan(mLeScanCallback);
+            mBluetoothAdapter.startLeScan(mLeScanCallback);
         }
         else {
             scantools.fakeScanLogic(settings.getDebugBeacons(), settings.getDebugRSSIMin(),

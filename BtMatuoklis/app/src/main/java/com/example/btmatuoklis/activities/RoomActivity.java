@@ -50,6 +50,7 @@ public class RoomActivity extends Activity {
     Room currentRoom;
     MySQLiteHelper database;
     BluetoothAdapter mBluetoothAdapter;
+    BluetoothAdapter.LeScanCallback mLeScanCallback;
     MenuItem exportItem;
     ArrayList<String> boundBeaconsList;
     ArrayAdapter<String> listAdapter;
@@ -71,6 +72,7 @@ public class RoomActivity extends Activity {
         setChoiceListener();
         checkCompleted();
         createBT();
+        createBTLECallBack();
     }
 
     @Override
@@ -323,7 +325,10 @@ public class RoomActivity extends Activity {
                 getString(R.string.dialog_remove_room), android.R.drawable.ic_dialog_alert);
         dialog.getBuilder().setPositiveButton(getString(R.string.dialog_button_ok), new DialogInterface.OnClickListener() {
             @Override
-            public void onClick(DialogInterface dialog, int which) { removeRoom(); }});
+            public void onClick(DialogInterface dialog, int which) {
+                removeRoom();
+            }
+        });
         dialog.setNegatvie(getString(R.string.dialog_button_cancel));
         dialog.showDialog();
     }
@@ -343,6 +348,16 @@ public class RoomActivity extends Activity {
         BluetoothManager bluetoothManager =
                 (BluetoothManager)getSystemService(Context.BLUETOOTH_SERVICE);
         mBluetoothAdapter = bluetoothManager.getAdapter();
+    }
+
+    void createBTLECallBack(){
+        mLeScanCallback = new BluetoothAdapter.LeScanCallback() {
+            @Override
+            public void onLeScan(BluetoothDevice device, int rssi, byte[] scanRecord) {
+                scantools.calibrateLogic(device, rssi, currentRoom);
+                mBluetoothAdapter.stopLeScan(this); //Scan stabdomas
+            }
+        };
     }
 
     void reloadBoundDevices(){
@@ -397,18 +412,12 @@ public class RoomActivity extends Activity {
 
     void startBTLEScan(){
         if (!settings.isGeneratorEnabled()) {
-            mBluetoothAdapter.startLeScan(new BluetoothAdapter.LeScanCallback() {
-                @Override
-                public void onLeScan(BluetoothDevice device, int rssi, byte[] scanRecord) {
-                    scantools.calibrateLogic(device, rssi, currentRoom);
-                    mBluetoothAdapter.stopLeScan(this); //Scan stabdomas
-                }
-            });
+            mBluetoothAdapter.stopLeScan(mLeScanCallback);
+            mBluetoothAdapter.startLeScan(mLeScanCallback);
         }
         else {
             scantools.fakeCalibrateLogic(settings.getDebugBeacons(),
                     settings.getDebugRSSIMin(), settings.getDebugRSSIMax(), currentRoom);
         }
     }
-
 }
