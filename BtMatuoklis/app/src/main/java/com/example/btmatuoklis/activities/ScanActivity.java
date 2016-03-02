@@ -17,7 +17,6 @@ import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.example.btmatuoklis.classes.Beacon;
 import com.example.btmatuoklis.R;
 import com.example.btmatuoklis.classes.GlobalClass;
 import com.example.btmatuoklis.classes.Room;
@@ -33,7 +32,6 @@ public class ScanActivity extends Activity {
     ScanTools scantools;
     BluetoothAdapter mBluetoothAdapter;
     BluetoothAdapter.LeScanCallback mLeScanCallback;
-    ArrayList<Beacon> beaconsArray;
     ArrayList<String> savedBeaconsList;
     ArrayList<String> beaconsList;
     ArrayAdapter<String> listAdapter;
@@ -106,7 +104,6 @@ public class ScanActivity extends Activity {
         globalVariable = (GlobalClass) getApplicationContext();
         settings = MainActivity.settings;
         scantools = new ScanTools();
-        beaconsArray = new ArrayList<Beacon>();
         savedBeaconsList = new ArrayList<String>();
         beaconsList = new ArrayList<String>();
         listAdapter = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, beaconsList);

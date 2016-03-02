@@ -34,6 +34,14 @@ public class ScanTools{
         }
     }
 
+    public String detectRoomLogic(BluetoothDevice device, int rssi, ArrayList<String> beacons, Room scanEnviroment){
+        String currentMAC = device.getAddress();
+        if (beacons.contains(currentMAC)){
+            //---
+        }
+        return "Not implemented";
+    }
+
     //------------Debug------------
 
     public void fakeScanLogic(int generatedBeacons, int generatedRSSIMin, int generatedRSSIMax, Room room){

@@ -40,6 +40,7 @@
 
     <!--Toast informaciniai tekstai-->
     <string name="toast_warning_empty_entry">Neįvesta reikšmė!</string>
+    <string name="toast_warning_duplicate_entry">Kambarys tokiu pavadinimu jau yra!</string>
     <string name="toast_warning_wrong_range">Netinkamas intervalas!</string>
     <string name="toast_warning_no_beacons">Nepasirinktas nei vienas įrenginys!</string>
     <string name="toast_info_saved">Išsaugota</string>
