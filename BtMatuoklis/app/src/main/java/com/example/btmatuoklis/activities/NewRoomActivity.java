@@ -41,7 +41,7 @@ public class NewRoomActivity extends Activity {
     long lastID;
     Settings settings;
     ScanTools scantools;
-    Room currentRoom;
+    Room environment, currentRoom;
     MySQLiteHelper database;
     BluetoothAdapter mBluetoothAdapter;
     BluetoothAdapter.LeScanCallback mLeScanCallback;
@@ -52,8 +52,6 @@ public class NewRoomActivity extends Activity {
     ArrayAdapter<String> listAdapter;
     ArrayList<Integer> selectedBeacons;
     Button buttonAccept;
-
-    Room newRoomEnviroment;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -112,14 +110,13 @@ public class NewRoomActivity extends Activity {
         roomName = getIntent().getExtras().getString("roomName");
         settings = MainActivity.settings;
         scantools = new ScanTools();
+        environment = new Room();
         database = new MySQLiteHelper(this);
         savedBeaconsList = new ArrayList<String>();
         beaconsList = new ArrayList<String>();
         listAdapter = new ArrayAdapter<String>(this, R.layout.list_multiple_choice, beaconsList);
         selectedBeacons = new ArrayList<Integer>();
         displayBeaconsList.setAdapter(listAdapter);
-
-        newRoomEnviroment = new Room();
     }
 
     void setListListener(){
@@ -175,11 +172,10 @@ public class NewRoomActivity extends Activity {
     void saveSelectedBeacons(){
         createRoomInDatabase();
         for (int i = 0; i < selectedBeacons.size(); i++){
-            currentRoom.getBeacons().add(newRoomEnviroment.getBeacons().get(i));
+            currentRoom.getBeacons().add(environment.getBeacons().get(i));
             saveBeaconsInDatabase(i);
         }
         notifyCreatedRoomAndBeacons();
-        selectedBeacons.clear();
     }
 
     void createRoomInDatabase(){
@@ -224,7 +220,7 @@ public class NewRoomActivity extends Activity {
             @Override
             public void onLeScan(BluetoothDevice device, int rssi, byte[] scanRecord) {
                 //scantools.scanLogic(device, rssi, beaconsArray, savedBeaconsList);
-                scantools.scanLogic(device, rssi, newRoomEnviroment);
+                scantools.scanLogic(device, rssi, environment);
                 mBluetoothAdapter.stopLeScan(this); //Scan stabdomas
             }
         };
@@ -269,8 +265,8 @@ public class NewRoomActivity extends Activity {
         }
         else{
             scantools.fakeScanLogic(settings.getDebugBeacons(), settings.getDebugRSSIMin(),
-                    settings.getDebugRSSIMax(), newRoomEnviroment);
+                    settings.getDebugRSSIMax(), environment);
         }
-        savedBeaconsList = newRoomEnviroment.getCurrentInfoList();
+        savedBeaconsList = environment.getCurrentInfoList();
     }
 }

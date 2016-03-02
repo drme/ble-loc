@@ -32,13 +32,11 @@ public class ScanActivity extends Activity {
     ScanTools scantools;
     BluetoothAdapter mBluetoothAdapter;
     BluetoothAdapter.LeScanCallback mLeScanCallback;
-    ArrayList<String> savedBeaconsList;
-    ArrayList<String> beaconsList;
+    Room environment;
+    ArrayList<String> beaconsList, savedBeaconsList;
     ArrayAdapter<String> listAdapter;
     TextView detectedRoom;
     ListView displayBeaconsList;
-
-    Room scanEnviroment;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -92,7 +90,7 @@ public class ScanActivity extends Activity {
             @Override
             public void onLeScan(BluetoothDevice device, int rssi, byte[] scanRecord) {
                 //scantools.scanLogic(device, rssi, beaconsArray, savedBeaconsList);
-                scantools.scanLogic(device, rssi, scanEnviroment);
+                scantools.scanLogic(device, rssi, environment);
                 mBluetoothAdapter.stopLeScan(this); //Scan stabdomas
             }
         };
@@ -109,7 +107,7 @@ public class ScanActivity extends Activity {
         listAdapter = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, beaconsList);
         displayBeaconsList.setAdapter(listAdapter);
 
-        scanEnviroment = new Room();
+        environment = new Room();
     }
 
     //Nuolatos pradedamas ir stabdomas scan
@@ -152,8 +150,8 @@ public class ScanActivity extends Activity {
         }
         else {
             scantools.fakeScanLogic(settings.getDebugBeacons(), settings.getDebugRSSIMin(),
-                    settings.getDebugRSSIMax(), scanEnviroment);
+                    settings.getDebugRSSIMax(), environment);
         }
-        savedBeaconsList = scanEnviroment.getCurrentInfoList();
+        savedBeaconsList = environment.getCurrentInfoList();
     }
 }
