@@ -38,6 +38,22 @@ public class Room {
         return res;
     }
 
+    public ArrayList<Byte> getBeaconsCurrentRSSIs(){
+        ArrayList<Byte> res = new ArrayList<Byte>();
+        for (int i = 0; i < this.beacons.size(); i++){
+            res.add(this.beacons.get(i).getCurrentRSSI());
+        }
+        return res;
+    }
+
+    public ArrayList<Integer> getBeaconsIDs(){
+        ArrayList<Integer> res = new ArrayList<Integer>();
+        for (int i = 0; i < this.beacons.size(); i++){
+            res.add(this.beacons.get(i).getId());
+        }
+        return res;
+    }
+
     public ArrayList<String> getBeaconsCalibrationCount(){
         ArrayList<String> res = new ArrayList<String>();
         for (int i = 0; i < this.beacons.size(); i++){
