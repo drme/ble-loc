@@ -20,6 +20,7 @@ import android.widget.Toast;
 import com.example.btmatuoklis.classes.Beacon;
 import com.example.btmatuoklis.R;
 import com.example.btmatuoklis.classes.GlobalClass;
+import com.example.btmatuoklis.classes.Room;
 import com.example.btmatuoklis.classes.ScanTools;
 import com.example.btmatuoklis.classes.Settings;
 
@@ -38,6 +39,8 @@ public class ScanActivity extends Activity {
     ArrayAdapter<String> listAdapter;
     TextView detectedRoom;
     ListView displayBeaconsList;
+
+    Room scanEnviroment;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -90,7 +93,8 @@ public class ScanActivity extends Activity {
         mLeScanCallback = new BluetoothAdapter.LeScanCallback() {
             @Override
             public void onLeScan(BluetoothDevice device, int rssi, byte[] scanRecord) {
-                scantools.scanLogic(device, rssi, beaconsArray, savedBeaconsList);
+                //scantools.scanLogic(device, rssi, beaconsArray, savedBeaconsList);
+                scantools.scanLogic(device, rssi, scanEnviroment);
                 mBluetoothAdapter.stopLeScan(this); //Scan stabdomas
             }
         };
@@ -107,11 +111,8 @@ public class ScanActivity extends Activity {
         beaconsList = new ArrayList<String>();
         listAdapter = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, beaconsList);
         displayBeaconsList.setAdapter(listAdapter);
-    }
 
-    String detectRoom(){
-        //To-Do - Room Detection
-        return "Not implemented";
+        scanEnviroment = new Room();
     }
 
     //Nuolatos pradedamas ir stabdomas scan
@@ -127,7 +128,7 @@ public class ScanActivity extends Activity {
                     beaconsList.clear();
                     beaconsList.addAll(savedBeaconsList);
                     listAdapter.notifyDataSetChanged();
-                    detectedRoom.setText(getString(R.string.scanactivity_text_name)+detectRoom());
+                    detectedRoom.setText(getString(R.string.scanactivity_text_name));
                 }
             }
         };
@@ -154,7 +155,8 @@ public class ScanActivity extends Activity {
         }
         else {
             scantools.fakeScanLogic(settings.getDebugBeacons(), settings.getDebugRSSIMin(),
-                    settings.getDebugRSSIMax(), beaconsArray, savedBeaconsList);
+                    settings.getDebugRSSIMax(), scanEnviroment);
         }
+        savedBeaconsList = scanEnviroment.getCurrentInfoList();
     }
 }
