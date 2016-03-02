@@ -55,6 +55,8 @@ public class NewRoomActivity extends Activity {
     ArrayList<Integer> selectedBeacons;
     Button buttonAccept;
 
+    Room newRoomEnviroment;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -119,6 +121,8 @@ public class NewRoomActivity extends Activity {
         listAdapter = new ArrayAdapter<String>(this, R.layout.list_multiple_choice, beaconsList);
         selectedBeacons = new ArrayList<Integer>();
         displayBeaconsList.setAdapter(listAdapter);
+
+        newRoomEnviroment = new Room();
     }
 
     void setListListener(){
@@ -222,7 +226,8 @@ public class NewRoomActivity extends Activity {
         mLeScanCallback = new BluetoothAdapter.LeScanCallback() {
             @Override
             public void onLeScan(BluetoothDevice device, int rssi, byte[] scanRecord) {
-                scantools.scanLogic(device, rssi, beaconsArray, savedBeaconsList);
+                //scantools.scanLogic(device, rssi, beaconsArray, savedBeaconsList);
+                scantools.scanLogic(device, rssi, newRoomEnviroment);
                 mBluetoothAdapter.stopLeScan(this); //Scan stabdomas
             }
         };
@@ -267,7 +272,8 @@ public class NewRoomActivity extends Activity {
         }
         else{
             scantools.fakeScanLogic(settings.getDebugBeacons(), settings.getDebugRSSIMin(),
-                    settings.getDebugRSSIMax(), beaconsArray, savedBeaconsList);
+                    settings.getDebugRSSIMax(), newRoomEnviroment);
         }
+        savedBeaconsList = newRoomEnviroment.getCurrentInfoList();
     }
 }

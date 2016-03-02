@@ -59,6 +59,14 @@ public class Room {
         return res;
     }
 
+    public ArrayList<String> getCurrentInfoList(){
+        ArrayList<String> res = new ArrayList<String>();
+        for (int i = 0; i < this.beacons.size(); i++){
+            res.add(this.beacons.get(i).getCurrentInfo());
+        }
+        return res;
+    }
+
     public ArrayList<Beacon> getBeacons(){
         return this.beacons;
     }
