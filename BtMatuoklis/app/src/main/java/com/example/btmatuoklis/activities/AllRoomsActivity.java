@@ -112,12 +112,16 @@ public class AllRoomsActivity extends Activity {
     }
 
     void roomNameEntry(AlertDialogBuilder dialog){
-        roomName = dialog.getInputText();
+        roomName = dialog.getInputText().trim();
         if (roomName.equals("")) {
             Toast.makeText(getApplicationContext(),
                     getString(R.string.toast_warning_empty_entry), Toast.LENGTH_SHORT).show();
             dialog.cancelInput();
-        } else {
+        } else if (savedRoomsList.contains(roomName)) {
+            Toast.makeText(getApplicationContext(),
+                    getString(R.string.toast_warning_duplicate_entry), Toast.LENGTH_SHORT).show();
+        }
+        else {
             Intent intent = new Intent(getBaseContext(), NewRoomActivity.class);
             intent.putExtra("roomName", roomName);
             AllRoomsActivity.this.finish();

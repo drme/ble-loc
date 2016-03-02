@@ -25,7 +25,6 @@ import android.widget.Toast;
 
 import com.example.btmatuoklis.R;
 import com.example.btmatuoklis.classes.AlertDialogBuilder;
-import com.example.btmatuoklis.classes.Beacon;
 import com.example.btmatuoklis.classes.Calibration;
 import com.example.btmatuoklis.classes.GlobalClass;
 import com.example.btmatuoklis.classes.MySQLiteHelper;
@@ -48,7 +47,6 @@ public class NewRoomActivity extends Activity {
     BluetoothAdapter.LeScanCallback mLeScanCallback;
     String roomName;
     ListView displayBeaconsList;
-    ArrayList<Beacon> beaconsArray;
     ArrayList<String> savedBeaconsList;
     ArrayList<String> beaconsList;
     ArrayAdapter<String> listAdapter;
@@ -115,7 +113,6 @@ public class NewRoomActivity extends Activity {
         settings = MainActivity.settings;
         scantools = new ScanTools();
         database = new MySQLiteHelper(this);
-        beaconsArray = new ArrayList<Beacon>();
         savedBeaconsList = new ArrayList<String>();
         beaconsList = new ArrayList<String>();
         listAdapter = new ArrayAdapter<String>(this, R.layout.list_multiple_choice, beaconsList);
@@ -178,7 +175,7 @@ public class NewRoomActivity extends Activity {
     void saveSelectedBeacons(){
         createRoomInDatabase();
         for (int i = 0; i < selectedBeacons.size(); i++){
-            currentRoom.getBeacons().add(beaconsArray.get(selectedBeacons.get(i)));
+            currentRoom.getBeacons().add(newRoomEnviroment.getBeacons().get(i));
             saveBeaconsInDatabase(i);
         }
         notifyCreatedRoomAndBeacons();
