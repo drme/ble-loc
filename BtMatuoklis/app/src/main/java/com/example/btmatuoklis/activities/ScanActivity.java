@@ -20,6 +20,7 @@ import android.widget.Toast;
 import com.example.btmatuoklis.R;
 import com.example.btmatuoklis.classes.GlobalClass;
 import com.example.btmatuoklis.classes.Room;
+import com.example.btmatuoklis.classes.RoomDetector;
 import com.example.btmatuoklis.classes.ScanTools;
 import com.example.btmatuoklis.classes.Settings;
 
@@ -33,10 +34,12 @@ public class ScanActivity extends Activity {
     BluetoothAdapter mBluetoothAdapter;
     BluetoothAdapter.LeScanCallback mLeScanCallback;
     Room environment;
+    RoomDetector detector;
     ArrayList<String> beaconsList, savedBeaconsList;
     ArrayAdapter<String> listAdapter;
     TextView detectedRoom;
     ListView displayBeaconsList;
+    String roomName;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -108,6 +111,7 @@ public class ScanActivity extends Activity {
         displayBeaconsList.setAdapter(listAdapter);
 
         environment = new Room();
+        detector = new RoomDetector();
     }
 
     //Nuolatos pradedamas ir stabdomas scan
@@ -123,7 +127,7 @@ public class ScanActivity extends Activity {
                     beaconsList.clear();
                     beaconsList.addAll(savedBeaconsList);
                     listAdapter.notifyDataSetChanged();
-                    detectedRoom.setText(getString(R.string.scanactivity_text_name));
+                    detectedRoom.setText(getString(R.string.scanactivity_text_name)+roomName);
                 }
             }
         };
@@ -153,5 +157,6 @@ public class ScanActivity extends Activity {
                     settings.getDebugRSSIMax(), environment);
         }
         savedBeaconsList = environment.getCurrentInfoList();
+        roomName = detector.getRoomName(globalVariable.getRoomsArray(), environment);
     }
 }

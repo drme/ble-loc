@@ -9,24 +9,49 @@ public class RoomDetector {
 
     public String getRoomName(ArrayList<Room> rooms, Room enviroment){
         if (!rooms.isEmpty()){
-            ArrayList<String> roomIDs = new ArrayList<String>();
-            ArrayList<Byte> rssiMin = new ArrayList<Byte>();
-            ArrayList<Byte> rssiMax = new ArrayList<Byte>();
+            ArrayList<Integer> roomIDs = new ArrayList<Integer>();
+            ArrayList<Float> compareList = new ArrayList<Float>();
             for (int i = 0; i < rooms.size(); i++){
-                Room currentRoom = rooms.get(i);
-                for (int j = 0; j < currentRoom.getBeacons().size(); j++){
-                    ArrayList<Byte> currentRSSI = currentRoom.getBeacons().get(j).getCalibratedRSSI();
-                    rssiMin.add(Collections.min(currentRSSI));
-                    rssiMax.add(Collections.max(currentRSSI));
+                Room room = rooms.get(i);
+                ArrayList<Beacon> beacons = room.getBeacons();
+                for (int j = 0; j < beacons.size(); j++){
+                    ArrayList<Beacon> scannedBeacons = enviroment.getBeacons();
+                    for (int k = 0; k < scannedBeacons.size(); k++){
+                        if (room.getMACList().contains(scannedBeacons.get(k).getMAC())){
+                            float res = compareCalibrationShadow(beacons.get(j).getCalibratedRSSI(), scannedBeacons.get(k).getFullRSSI());
+                            roomIDs.add(rooms.indexOf(room));
+                            compareList.add(res);
+                        }
+                    }
                 }
             }
-            if (rssiMin.isEmpty() | rssiMax.isEmpty()){
-                return "Nėra kambarių kalibracijų";
+            if (!compareList.isEmpty()){
+                float max = Collections.max(compareList);
+                int id = compareList.indexOf(max);
+                int roomID = roomIDs.get(id);
+                return rooms.get(roomID).getName();
             }
             else {
-
+                return "Neaptikta";
             }
         }
-        return "Kambarys neaptiktas";
+        else {
+            return "Nėra sukurtų kambarių!";
+        }
+    }
+
+    private float compareCalibrationShadow(ArrayList<Byte> calibrations, ArrayList<Byte> rssis){
+        byte min = Collections.min(calibrations);
+        byte max = Collections.max(calibrations);
+        int size = rssis.size();
+        float res = 0;
+        for (int i = 0; i < size; i++){
+            byte currentRSSI = rssis.get(i);
+            if ((currentRSSI >= min) && (currentRSSI <= max)){
+                res = res + 1;
+            }
+        }
+        res = res/size;
+        return res;
     }
 }

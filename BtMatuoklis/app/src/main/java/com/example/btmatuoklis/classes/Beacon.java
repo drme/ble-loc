@@ -77,6 +77,10 @@ public class Beacon {
         return previousRSSI;
     }
 
+    public ArrayList<Byte> getFullRSSI(){
+        return this.rssi;
+    }
+
     //BT irenginio informacija (List formavimui)
     public String getInfo() {
         String info = "Pavadinimas: " + this.Name;
