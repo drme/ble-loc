@@ -5,7 +5,7 @@ import com.example.btmatuoklis.activities.MainActivity;
 import java.util.ArrayList;
 
 public class Beacon {
-    private String Name;
+    private String name;
     private String mac;
     private ArrayList<Byte> calibratedRSSI;
     private ArrayList<Byte> rssi;
@@ -19,14 +19,14 @@ public class Beacon {
     }
 
     public Beacon(String name, String mac){
-        this.Name = name;
+        this.name = name;
         this.mac = mac;
         this.calibratedRSSI = new ArrayList<Byte>();
         this.rssi = new ArrayList<Byte>();
     }
 
     public Beacon(String name, String mac, ArrayList<Byte> calibratedRSSI){
-        this.Name = name;
+        this.name = name;
         this.mac = mac;
         this.calibratedRSSI = calibratedRSSI;
         this.rssi = new ArrayList<Byte>();
@@ -34,7 +34,7 @@ public class Beacon {
 
     public Beacon(int id, String name, String mac, ArrayList<Byte> calibratedRSSI){
         this.id = id;
-        this.Name = name;
+        this.name = name;
         this.mac = mac;
         this.calibratedRSSI = calibratedRSSI;
         this.rssi = new ArrayList<Byte>();
@@ -60,7 +60,7 @@ public class Beacon {
         }
     }
 
-    public String getName(){ return this.Name; }
+    public String getName(){ return this.name; }
 
     public String getMAC(){ return this.mac; }
 
@@ -82,38 +82,28 @@ public class Beacon {
     }
 
     //BT irenginio informacija (List formavimui)
-    public String getInfo() {
-        String info = "Pavadinimas: " + this.Name;
+    public String getInfo(String choice) {
+        String info = "Pavadinimas: " + this.name;
         info += "\nMAC: " + this.mac;
+        switch (choice) {
+            case "current":
+                info += "\nRSSI: " + getPreviousRSSI() + " Last: " + getCurrentRSSI();
+                info += "\n" + calculator.getRange(getTXPower(), getCurrentRSSI());
+                break;
+            case "calibration":
+                info += "\nKalibracijos RSSI reikšmių: " + this.calibratedRSSI.size();
+                break;
+            default:
+                break;
+        }
         return info;
     }
 
-    //BT irenginio papildoma informacija (List formavimui)
-    public String getCurrentInfo(){
-        String info = "Pavadinimas: " + this.Name;
-        info += "\nMAC: " + this.mac;
-        info += "\nRSSI: " + getPreviousRSSI() + " Last: " + getCurrentRSSI();
-        info += "\n" + calculator.getRange(getTXPower(), getCurrentRSSI());
-        return info;
-    }
-
-    public String getCalibrationCount(){
-        String info = "Pavadinimas: " + this.Name;
-        info += "\nMAC: " + this.mac;
-        info += "\nKalibracijos RSSI reikšmių: " + this.calibratedRSSI.size();
-        return info;
-    }
-
-    public int getId() {
+    public int getID() {
         return id;
     }
 
-    public void setId(int id) {
+    public void setID(int id) {
         this.id = id;
-    }
-
-    @Override
-    public String toString() {
-        return "Beacon [id=" + id + ", name=" + Name + ", mac=" + mac + "]";
     }
 }

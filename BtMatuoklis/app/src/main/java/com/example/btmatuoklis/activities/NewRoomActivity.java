@@ -197,7 +197,7 @@ public class NewRoomActivity extends Activity {
             lastID = c.getLong(0); //The 0 is the column index, we only have 1 column, so the index is 0
         }
         int id = (int)lastID;
-        currentRoom.getBeacons().get(i).setId(id);
+        currentRoom.getBeacons().get(i).setID(id);
         database.addCalibration(new Calibration(currentRoom.getID(), id, null));
     }
 

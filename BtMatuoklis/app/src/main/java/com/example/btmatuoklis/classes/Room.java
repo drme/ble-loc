@@ -49,7 +49,7 @@ public class Room {
     public ArrayList<Integer> getBeaconsIDs(){
         ArrayList<Integer> res = new ArrayList<Integer>();
         for (int i = 0; i < this.beacons.size(); i++){
-            res.add(this.beacons.get(i).getId());
+            res.add(this.beacons.get(i).getID());
         }
         return res;
     }
@@ -57,7 +57,7 @@ public class Room {
     public ArrayList<String> getBeaconsCalibrationCount(){
         ArrayList<String> res = new ArrayList<String>();
         for (int i = 0; i < this.beacons.size(); i++){
-            res.add(this.beacons.get(i).getCalibrationCount());
+            res.add(this.beacons.get(i).getInfo("calibration"));
         }
         return res;
     }
@@ -78,7 +78,7 @@ public class Room {
     public ArrayList<String> getCurrentInfoList(){
         ArrayList<String> res = new ArrayList<String>();
         for (int i = 0; i < this.beacons.size(); i++){
-            res.add(this.beacons.get(i).getCurrentInfo());
+            res.add(this.beacons.get(i).getInfo("current"));
         }
         return res;
     }
@@ -101,11 +101,5 @@ public class Room {
         return id;
     }
 
-    public void setID(int id) {
-        this.id = id;
-    }
-    @Override
-    public String toString() {
-        return "Room [id=" + id + ", name=" + name + "]";
-    }
+    public void setID(int id) { this.id = id; }
 }

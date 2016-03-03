@@ -193,7 +193,7 @@ public class MySQLiteHelper extends SQLiteOpenHelper {
 
         // 4. build object
         Beacon beacon = new Beacon(cursor.getString(1), cursor.getString(2));
-        beacon.setId(Integer.parseInt(cursor.getString(0)));
+        beacon.setID(Integer.parseInt(cursor.getString(0)));
 
         Log.d("getBeacon(" + id + ")", beacon.toString());
 
@@ -274,7 +274,7 @@ public class MySQLiteHelper extends SQLiteOpenHelper {
         if (cursor.moveToFirst()) {
             do {
                 beacon = new Beacon(cursor.getString(1), cursor.getString(2));
-                beacon.setId(Integer.parseInt(cursor.getString(0)));
+                beacon.setID(Integer.parseInt(cursor.getString(0)));
 
                 beacons.add(beacon);
             } while (cursor.moveToNext());

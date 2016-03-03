@@ -89,7 +89,7 @@ public class BeaconActivity extends Activity {
         database = new MySQLiteHelper(this);
         rssiArray = currentBeacon.getCalibratedRSSI();
         displayRoomName.setText(currentRoom.getName());
-        displayBeacon.setText(currentBeacon.getInfo());
+        displayBeacon.setText(currentBeacon.getInfo(""));
         displayRSSIList.setText(currentBeacon.getCalibratedRSSI().toString());
         displayRSSINum.setText(Integer.toString(rssiArray.size()));
         displayRSSIAverage.setText(Byte.toString(calculateAverage(rssiArray)));
@@ -125,7 +125,7 @@ public class BeaconActivity extends Activity {
     }
 
     void removeCalibration(){
-        database.updateCalibration(new Calibration(currentRoom.getID(), currentBeacon.getId(), null));
+        database.updateCalibration(new Calibration(currentRoom.getID(), currentBeacon.getID(), null));
         currentBeacon.getCalibratedRSSI().clear();
         Toast.makeText(getApplicationContext(), getString(R.string.toast_info_removed), Toast.LENGTH_SHORT).show();
         BeaconActivity.this.finish();
@@ -145,9 +145,9 @@ public class BeaconActivity extends Activity {
     }
 
     void removeBeacon(){
-        int id = database.getCalibrationID(new Calibration(currentRoom.getID(), currentBeacon.getId()));
+        int id = database.getCalibrationID(new Calibration(currentRoom.getID(), currentBeacon.getID()));
         database.deleteCalibration(id);
-        database.deleteBeacon(currentBeacon.getId());
+        database.deleteBeacon(currentBeacon.getID());
         currentRoom.getBeacons().remove(beaconID);
         if (currentRoom.getBeacons().isEmpty()){
             database.deleteRoom(currentRoom.getID());

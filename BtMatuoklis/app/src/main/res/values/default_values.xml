@@ -3,6 +3,8 @@
 
     <integer name="default_frequency">1000</integer>
 
+    <integer name="default_timeout">10</integer>
+
     <integer name="default_shadow">1</integer>
 
     <integer name="default_txpower">50</integer>
