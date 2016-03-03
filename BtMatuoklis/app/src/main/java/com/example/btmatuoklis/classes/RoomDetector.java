@@ -17,7 +17,7 @@ public class RoomDetector {
                 for (int j = 0; j < beacons.size(); j++){
                     ArrayList<Beacon> scannedBeacons = enviroment.getBeacons();
                     for (int k = 0; k < scannedBeacons.size(); k++){
-                        if (room.getMACList().contains(scannedBeacons.get(k).getMAC())){
+                        if (room.getMACList().contains(scannedBeacons.get(k).getMAC()) && room.isCalibrated()){
                             float res = compareCalibrationShadow(beacons.get(j).getCalibratedRSSI(), scannedBeacons.get(k).getFullRSSI());
                             roomIDs.add(rooms.indexOf(room));
                             compareList.add(res);
@@ -32,7 +32,7 @@ public class RoomDetector {
                 return rooms.get(roomID).getName();
             }
             else {
-                return "Neaptikta";
+                return "Neaptikta!";
             }
         }
         else {

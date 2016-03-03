@@ -16,6 +16,11 @@ public class Settings implements SharedPreferences.OnSharedPreferenceChangeListe
     private short defaultDelay = 1000;
     private short delay;
 
+    //Kokiu intervalu kartosis aptiktu ienginiu salinimas
+    //Salinimo daznis: timeout * delay = x ms
+    private byte defaultTimeout = 10;
+    private byte timeout;
+
     //Kiek RSSI saugoti aktyvaus Scan rezimu
     private byte defaultShadow = 1;
     private byte shadow;
@@ -47,6 +52,7 @@ public class Settings implements SharedPreferences.OnSharedPreferenceChangeListe
     public void refreshValues(){
         //Nuskaitomi paskutiniai naudoti nustatymai
         delay = Short.parseShort(preferences.getString("savedDelay", Short.toString(defaultDelay)));
+        timeout = Byte.parseByte(preferences.getString("savedTimeout", Byte.toString(defaultTimeout)));
         shadow = Byte.parseByte(preferences.getString("savedShadow", Byte.toString(defaultShadow)));
         txPower = (byte)preferences.getInt("savedTXPower", txPower);
         average = Byte.parseByte(preferences.getString("savedAverage", Byte.toString(defaultAverage)));
@@ -59,6 +65,8 @@ public class Settings implements SharedPreferences.OnSharedPreferenceChangeListe
     public byte getMaxRange(){ return this.maxRange; }
 
     public short getDelay(){ return this.delay; }
+
+    public byte getTimeout(){ return this.timeout; }
 
     public byte getShadow(){ return this.shadow; }
 

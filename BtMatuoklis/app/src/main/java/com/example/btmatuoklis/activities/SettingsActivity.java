@@ -13,7 +13,7 @@ import com.example.btmatuoklis.classes.Settings;
 public class SettingsActivity extends PreferenceActivity implements SharedPreferences.OnSharedPreferenceChangeListener {
 
     Settings settings;
-    EditTextPreference editFrequency, editShadow, editAverage;
+    EditTextPreference editFrequency, editTimeout, editShadow, editAverage;
     SeekBarPreference sliderTXPower;
     SwitchPreference switchGenerator;
     EditTextPreference debugBeacons, debugRSSIMin, debugRSSIMax;
@@ -24,6 +24,7 @@ public class SettingsActivity extends PreferenceActivity implements SharedPrefer
         getActionBar().setSubtitle(getString(R.string.subtitle_settings));
         addPreferencesFromResource(R.xml.settings_preferences);
         editFrequency = (EditTextPreference)findPreference("savedDelay");
+        editTimeout = (EditTextPreference)findPreference("savedTimeout");
         editShadow = (EditTextPreference)findPreference("savedShadow");
         sliderTXPower = (SeekBarPreference)findPreference("savedTXPower");
         editAverage = (EditTextPreference)findPreference("savedAverage");
@@ -62,6 +63,7 @@ public class SettingsActivity extends PreferenceActivity implements SharedPrefer
     void setDefaultValues(){
         settings = MainActivity.settings;
         editFrequency.setSummary(getString(R.string.settingsactivity_subtext_value) + settings.getDelay());
+        editTimeout.setSummary(getString(R.string.settingsactivity_subtext_value) + settings.getTimeout());
         editShadow.setSummary(getString(R.string.settingsactivity_subtext_value) + settings.getShadow());
         sliderTXPower.setSummary(getString(R.string.settingsactivity_subtext_value) + settings.getTXPower());
         editFrequency.setDialogMessage(getString(R.string.settingsactivity_hint_frequency) + settings.getDefaultDelay());

@@ -40,6 +40,7 @@ public class ScanActivity extends Activity {
     TextView detectedRoom;
     ListView displayBeaconsList;
     String roomName;
+    byte cycles;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -112,6 +113,7 @@ public class ScanActivity extends Activity {
 
         environment = new Room();
         detector = new RoomDetector();
+        cycles = 0;
     }
 
     //Nuolatos pradedamas ir stabdomas scan
@@ -137,7 +139,12 @@ public class ScanActivity extends Activity {
             @Override
             public void run() {
                 if (globalVariable.isScanning()) {
+                    if (settings.getTimeout() < cycles){
+                        environment.getBeacons().clear();
+                        cycles = 0;
+                    }
                     startBTLEScan();
+                    cycles++;
                     handler.postDelayed(this, settings.getDelay());
                     handler.postDelayed(uiRunnable, settings.getDelay() + 1);
                 }
