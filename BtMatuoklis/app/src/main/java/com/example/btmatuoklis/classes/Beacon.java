@@ -77,6 +77,10 @@ public class Beacon {
         return previousRSSI;
     }
 
+    public ArrayList<Byte> getFullRSSI(){
+        return this.rssi;
+    }
+
     //BT irenginio informacija (List formavimui)
     public String getInfo() {
         String info = "Pavadinimas: " + this.Name;
@@ -88,7 +92,7 @@ public class Beacon {
     public String getCurrentInfo(){
         String info = "Pavadinimas: " + this.Name;
         info += "\nMAC: " + this.mac;
-        info += "\nRSSI: " + getPreviousRSSI() + " Current: " + getCurrentRSSI();
+        info += "\nRSSI: " + getPreviousRSSI() + " Last: " + getCurrentRSSI();
         info += "\n" + calculator.getRange(getTXPower(), getCurrentRSSI());
         return info;
     }

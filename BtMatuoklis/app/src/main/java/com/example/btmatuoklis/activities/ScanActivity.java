@@ -20,6 +20,7 @@ import android.widget.Toast;
 import com.example.btmatuoklis.R;
 import com.example.btmatuoklis.classes.GlobalClass;
 import com.example.btmatuoklis.classes.Room;
+import com.example.btmatuoklis.classes.RoomDetector;
 import com.example.btmatuoklis.classes.ScanTools;
 import com.example.btmatuoklis.classes.Settings;
 
@@ -32,13 +33,13 @@ public class ScanActivity extends Activity {
     ScanTools scantools;
     BluetoothAdapter mBluetoothAdapter;
     BluetoothAdapter.LeScanCallback mLeScanCallback;
-    ArrayList<String> savedBeaconsList;
-    ArrayList<String> beaconsList;
+    Room environment;
+    RoomDetector detector;
+    ArrayList<String> beaconsList, savedBeaconsList;
     ArrayAdapter<String> listAdapter;
     TextView detectedRoom;
     ListView displayBeaconsList;
-
-    Room scanEnviroment;
+    String roomName;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -92,7 +93,7 @@ public class ScanActivity extends Activity {
             @Override
             public void onLeScan(BluetoothDevice device, int rssi, byte[] scanRecord) {
                 //scantools.scanLogic(device, rssi, beaconsArray, savedBeaconsList);
-                scantools.scanLogic(device, rssi, scanEnviroment);
+                scantools.scanLogic(device, rssi, environment);
                 mBluetoothAdapter.stopLeScan(this); //Scan stabdomas
             }
         };
@@ -109,7 +110,8 @@ public class ScanActivity extends Activity {
         listAdapter = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, beaconsList);
         displayBeaconsList.setAdapter(listAdapter);
 
-        scanEnviroment = new Room();
+        environment = new Room();
+        detector = new RoomDetector();
     }
 
     //Nuolatos pradedamas ir stabdomas scan
@@ -125,7 +127,7 @@ public class ScanActivity extends Activity {
                     beaconsList.clear();
                     beaconsList.addAll(savedBeaconsList);
                     listAdapter.notifyDataSetChanged();
-                    detectedRoom.setText(getString(R.string.scanactivity_text_name));
+                    detectedRoom.setText(getString(R.string.scanactivity_text_name)+roomName);
                 }
             }
         };
@@ -152,8 +154,9 @@ public class ScanActivity extends Activity {
         }
         else {
             scantools.fakeScanLogic(settings.getDebugBeacons(), settings.getDebugRSSIMin(),
-                    settings.getDebugRSSIMax(), scanEnviroment);
+                    settings.getDebugRSSIMax(), environment);
         }
-        savedBeaconsList = scanEnviroment.getCurrentInfoList();
+        savedBeaconsList = environment.getCurrentInfoList();
+        roomName = detector.getRoomName(globalVariable.getRoomsArray(), environment);
     }
 }
