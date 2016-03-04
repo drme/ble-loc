@@ -125,11 +125,8 @@ public class NewRoomActivity extends Activity {
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 CheckedTextView checkedTextView = ((CheckedTextView) view);
                 checkedTextView.setChecked(!checkedTextView.isChecked());
-                if (checkedTextView.isChecked()) {
-                    selectedBeacons.add(position);
-                } else {
-                    selectedBeacons.remove(selectedBeacons.indexOf(position));
-                }
+                if (checkedTextView.isChecked()) { selectedBeacons.add(position); }
+                else { selectedBeacons.remove(selectedBeacons.indexOf(position)); }
                 enableFinishButton();
             }
         });
@@ -172,7 +169,7 @@ public class NewRoomActivity extends Activity {
     void saveSelectedBeacons(){
         createRoomInDatabase();
         for (int i = 0; i < selectedBeacons.size(); i++){
-            currentRoom.getBeacons().add(environment.getBeacons().get(i));
+            currentRoom.getBeacons().add(environment.getBeacons().get(selectedBeacons.get(i)));
             saveBeaconsInDatabase(i);
         }
         notifyCreatedRoomAndBeacons();
@@ -191,6 +188,7 @@ public class NewRoomActivity extends Activity {
 
     void saveBeaconsInDatabase(int i){
         database.addBeacon(currentRoom.getBeacons().get(i));
+
         SQLiteDatabase dd = database.getReadableDatabase();
         Cursor c = dd.rawQuery("SELECT ROWID FROM beacons ORDER BY ROWID DESC LIMIT 1", null);
         if (c != null && c.moveToFirst()) {
