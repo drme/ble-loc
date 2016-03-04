@@ -249,8 +249,8 @@ public class NewRoomActivity extends Activity {
             public void run() {
                 if (globalVariable.isScanning()) {
                     startBTLEScan();
-                    handler2.postDelayed(this, settings.getDelay());
-                    handler2.postDelayed(uiRunnable2, settings.getDelay()+1);
+                    handler2.postDelayed(this, settings.getFrequency());
+                    handler2.postDelayed(uiRunnable2, settings.getFrequency()+1);
                 }
             }
         };

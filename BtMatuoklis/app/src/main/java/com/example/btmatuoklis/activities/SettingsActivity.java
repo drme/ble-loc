@@ -62,11 +62,11 @@ public class SettingsActivity extends PreferenceActivity implements SharedPrefer
     //Jeigu programa leidziama ne pirma karta - nustatomos issaugotos reiksmes
     void setDefaultValues(){
         settings = MainActivity.settings;
-        editFrequency.setSummary(getString(R.string.settingsactivity_subtext_value) + settings.getDelay());
+        editFrequency.setSummary(getString(R.string.settingsactivity_subtext_value) + settings.getFrequency());
         editTimeout.setSummary(getString(R.string.settingsactivity_subtext_value) + settings.getTimeout());
         editShadow.setSummary(getString(R.string.settingsactivity_subtext_value) + settings.getShadow());
         sliderTXPower.setSummary(getString(R.string.settingsactivity_subtext_value) + settings.getTXPower());
-        editFrequency.setDialogMessage(getString(R.string.settingsactivity_hint_frequency) + settings.getDefaultDelay());
+        editFrequency.setDialogMessage(getString(R.string.settingsactivity_hint_frequency) + settings.getDefaultFrequency());
         editAverage.setSummary(getString(R.string.settingsactivity_subtext_value) + settings.getAverage());
         debugBeacons.setSummary(getString(R.string.settingsactivity_subtext_value) + settings.getDebugBeacons());
         debugRSSIMin.setSummary(getString(R.string.settingsactivity_subtext_value) + settings.getDebugRSSIMin());

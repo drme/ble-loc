@@ -4,43 +4,44 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import android.preference.PreferenceManager;
 
+import com.example.btmatuoklis.R;
+
 public class Settings implements SharedPreferences.OnSharedPreferenceChangeListener {
-    public static byte REQUEST_ENABLE_BT = 1;
+    private Context context;
     private SharedPreferences preferences;
+    public static byte REQUEST_ENABLE_BT = 1;
 
     //Maksimalus teorinis BLE aptikimo atstumas metrais
-    public static byte maxRange = 100;
+    public static byte maxRange;
 
     //Kas kiek laiko kartosis scan
     //Matuojant su maziau negu 300ms, po kurio laiko uzstringa
-    private short defaultDelay = 1000;
-    private short delay;
+    private short frequency, defaultFrequency;
 
     //Kokiu intervalu kartosis aptiktu ienginiu salinimas
     //Salinimo daznis: timeout * delay = x ms
-    private byte defaultTimeout = 10;
-    private byte timeout;
+    private byte timeout, defaultTimeout;
 
     //Kiek RSSI saugoti aktyvaus Scan rezimu
-    private byte defaultShadow = 1;
-    private byte shadow;
+    private byte shadow, defaultShadow;
 
-    //"Default" BTLE irenginio stiprumas
-    private byte txPower = 50;//Reiksme [1-100] intervale
+    //"Default" BTLE irenginio stiprumas, reiksme [1-100] intervale
+    private byte txPower, defaultTXPower;
 
     //Matavimu kiekis, vieno beacon'o vidutinei RSSI reiksmei surasti
-    private byte defaultAverage = 1;
-    private byte average;
+    private byte average, defaultAverage;
 
     //Debug - netikru irenginiu generatoriaus reiksmes
-    private boolean generator;
-    private byte generatedBeacons = 2;
-    private byte generatedRSSIMin = -90;
-    private byte generatedRSSIMax = 4;
+    private boolean generator, defaultGenerator;
+    private byte generatedBeacons, defaultGeneratedBeacons;
+    private byte generatedRSSIMin, defaultGeneratedRSSIMin;
+    private byte generatedRSSIMax, defaultGeneratedRSSIMax;
 
     public Settings(Context context){
-        preferences = PreferenceManager.getDefaultSharedPreferences(context);
-        preferences.registerOnSharedPreferenceChangeListener(this);
+        this.context = context;
+        this.preferences = PreferenceManager.getDefaultSharedPreferences(context);
+        this.preferences.registerOnSharedPreferenceChangeListener(this);
+        setDefaultValues();
         refreshValues();
     }
 
@@ -49,22 +50,34 @@ public class Settings implements SharedPreferences.OnSharedPreferenceChangeListe
         refreshValues();
     }
 
+    public void setDefaultValues(){
+        defaultFrequency = (short)context.getResources().getInteger(R.integer.default_frequency);
+        defaultTimeout = (byte)context.getResources().getInteger(R.integer.default_timeout);
+        defaultShadow = (byte)context.getResources().getInteger(R.integer.default_shadow);
+        defaultTXPower = (byte)context.getResources().getInteger(R.integer.default_txpower);
+        defaultAverage = (byte)context.getResources().getInteger(R.integer.default_average);
+        defaultGenerator = context.getResources().getBoolean(R.bool.debug_default_generator);
+        defaultGeneratedBeacons = (byte)context.getResources().getInteger(R.integer.debug_default_beacons);
+        defaultGeneratedRSSIMin = (byte)context.getResources().getInteger(R.integer.debug_default_rssi_min);
+        defaultGeneratedRSSIMax = (byte)context.getResources().getInteger(R.integer.debug_default_rssi_max);
+        maxRange = (byte)context.getResources().getInteger(R.integer.default_max_range);
+    }
+
     public void refreshValues(){
-        //Nuskaitomi paskutiniai naudoti nustatymai
-        delay = Short.parseShort(preferences.getString("savedDelay", Short.toString(defaultDelay)));
+        frequency = Short.parseShort(preferences.getString("savedDelay", Short.toString(defaultFrequency)));
         timeout = Byte.parseByte(preferences.getString("savedTimeout", Byte.toString(defaultTimeout)));
         shadow = Byte.parseByte(preferences.getString("savedShadow", Byte.toString(defaultShadow)));
-        txPower = (byte)preferences.getInt("savedTXPower", txPower);
+        txPower = (byte)preferences.getInt("savedTXPower", defaultTXPower);
         average = Byte.parseByte(preferences.getString("savedAverage", Byte.toString(defaultAverage)));
-        generator = preferences.getBoolean("debugGenerator", false);
-        generatedBeacons = Byte.parseByte(preferences.getString("debugBeacons", Byte.toString(generatedBeacons)));
-        generatedRSSIMin = Byte.parseByte(preferences.getString("debugRSSIMin", Byte.toString(generatedRSSIMin)));
-        generatedRSSIMax = Byte.parseByte(preferences.getString("debugRSSIMax", Byte.toString(generatedRSSIMax)));
+        generator = preferences.getBoolean("debugGenerator", defaultGenerator);
+        generatedBeacons = Byte.parseByte(preferences.getString("debugBeacons", Byte.toString(defaultGeneratedBeacons)));
+        generatedRSSIMin = Byte.parseByte(preferences.getString("debugRSSIMin", Byte.toString(defaultGeneratedRSSIMin)));
+        generatedRSSIMax = Byte.parseByte(preferences.getString("debugRSSIMax", Byte.toString(defaultGeneratedRSSIMax)));
     }
 
     public byte getMaxRange(){ return this.maxRange; }
 
-    public short getDelay(){ return this.delay; }
+    public short getFrequency(){ return this.frequency; }
 
     public byte getTimeout(){ return this.timeout; }
 
@@ -74,7 +87,7 @@ public class Settings implements SharedPreferences.OnSharedPreferenceChangeListe
 
     public byte getAverage(){ return this.average; }
 
-    public short getDefaultDelay() { return this.defaultDelay; }
+    public short getDefaultFrequency() { return this.defaultFrequency; }
 
     public byte getDefaultAverage() { return this.defaultAverage; }
 

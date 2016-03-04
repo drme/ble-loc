@@ -145,8 +145,8 @@ public class ScanActivity extends Activity {
                     }
                     startBTLEScan();
                     cycles++;
-                    handler.postDelayed(this, settings.getDelay());
-                    handler.postDelayed(uiRunnable, settings.getDelay() + 1);
+                    handler.postDelayed(this, settings.getFrequency());
+                    handler.postDelayed(uiRunnable, settings.getFrequency()+1);
                 }
             }
         };
