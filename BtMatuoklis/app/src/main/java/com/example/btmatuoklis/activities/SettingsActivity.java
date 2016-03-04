@@ -72,6 +72,8 @@ public class SettingsActivity extends PreferenceActivity implements SharedPrefer
         debugRSSIMin.setSummary(getString(R.string.settingsactivity_subtext_value) + settings.getDebugRSSIMin());
         debugRSSIMax.setSummary(getString(R.string.settingsactivity_subtext_value) + settings.getDebugRSSIMax());
         toogleDebugSettings(settings.isGeneratorEnabled());
+
+        editTimeout.setEnabled(false);
     }
 
     void toogleDebugSettings(boolean toggle){
