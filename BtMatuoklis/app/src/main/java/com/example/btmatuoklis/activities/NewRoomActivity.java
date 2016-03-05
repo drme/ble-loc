@@ -126,7 +126,10 @@ public class NewRoomActivity extends Activity {
                 CheckedTextView checkedTextView = ((CheckedTextView) view);
                 checkedTextView.setChecked(!checkedTextView.isChecked());
                 if (checkedTextView.isChecked()) { selectedBeacons.add(position); }
-                else { selectedBeacons.remove(selectedBeacons.indexOf(position)); }
+                else {
+                    int checkIndex = selectedBeacons.indexOf(position);
+                    if (!(checkIndex == -1)){ selectedBeacons.remove(checkIndex); }
+                }
                 enableFinishButton();
             }
         });
