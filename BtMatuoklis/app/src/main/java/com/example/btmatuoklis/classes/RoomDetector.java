@@ -11,8 +11,8 @@ public class RoomDetector {
 
     public String getRoomName(ArrayList<Room> rooms, Room enviroment){
         if (!rooms.isEmpty()) {
-            ArrayList<Integer> roomIDs = new ArrayList<Integer>();
-            ArrayList<Float> compareList = new ArrayList<Float>();
+            int roomID = -1;
+            short max = -1;
             for (int i = 0; i < rooms.size(); i++) {
                 Room room = rooms.get(i);
                 ArrayList<Beacon> beacons = room.getBeacons();
@@ -20,22 +20,17 @@ public class RoomDetector {
                     ArrayList<Beacon> scannedBeacons = enviroment.getBeacons();
                     for (int k = 0; k < scannedBeacons.size(); k++) {
                         if (room.getMACList().contains(scannedBeacons.get(k).getMAC()) && room.isCalibrated()) {
-                            float res = compareCalibrationShadow(beacons.get(j).getCalibratedRSSI(), scannedBeacons.get(k).getFullRSSI());
-                            roomIDs.add(rooms.indexOf(room));
-                            compareList.add(res);
+                            short res = compareCalibrationShadow(beacons.get(j).getCalibratedRSSI(), scannedBeacons.get(k).getFullRSSI());
+                            if (res >= max){
+                                roomID = rooms.indexOf(room);
+                                max = res;
+                            }
                         }
                     }
                 }
             }
-            if (!compareList.isEmpty()) {
-                float max = Collections.max(compareList);
-                if (max > getAccuracy()) {
-                    int id = compareList.indexOf(max);
-                    int roomID = roomIDs.get(id);
-                    return rooms.get(roomID).getName();
-                }
-                return "Neaptikta!";
-            }
+            if (max > getAccuracy() && roomID > -1) { return rooms.get(roomID).getName(); }
+            return "Neaptikta!";
         }
         return "Nėra sukurtų kambarių!";
     }
