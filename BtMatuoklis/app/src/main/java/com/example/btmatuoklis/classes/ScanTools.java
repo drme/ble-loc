@@ -30,7 +30,7 @@ public class ScanTools{
         byte currentRSSI = (byte)rssi;
         if (macs.contains(currentMAC)){
             int macPosition = macs.indexOf(currentMAC);
-            room.getBeacons().get(macPosition).getCalibratedRSSI().add(currentRSSI);
+            room.getBeacons().get(macPosition).getFullRSSI().add(currentRSSI);
         }
     }
 
@@ -60,7 +60,7 @@ public class ScanTools{
         ArrayList<String> macs = room.getMACList();
         if (macs.contains(mac)){
             int macPosition = macs.indexOf(mac);
-            room.getBeacons().get(macPosition).getCalibratedRSSI().add(rssi);
+            room.getBeacons().get(macPosition).getFullRSSI().add(rssi);
         }
     }
 

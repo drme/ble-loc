@@ -20,7 +20,7 @@ public class RoomDetector {
                     ArrayList<Beacon> scannedBeacons = enviroment.getBeacons();
                     for (int k = 0; k < scannedBeacons.size(); k++) {
                         if (room.getMACList().contains(scannedBeacons.get(k).getMAC()) && room.isCalibrated()) {
-                            short res = compareCalibrationShadow(beacons.get(j).getCalibratedRSSI(), scannedBeacons.get(k).getFullRSSI());
+                            short res = compareCalibrationShadow(beacons.get(j).getFullRSSI(), scannedBeacons.get(k).getFullRSSI());
                             if (res >= max){
                                 roomID = rooms.indexOf(room);
                                 max = res;
