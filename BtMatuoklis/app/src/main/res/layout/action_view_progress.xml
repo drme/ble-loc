@@ -4,4 +4,4 @@
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
     android:id="@+id/pbProgressAction"
-    android:layout_gravity="right" />
+    android:layout_gravity="end" />

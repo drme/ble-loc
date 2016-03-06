@@ -87,10 +87,10 @@ public class BeaconActivity extends Activity {
         currentRoom = globalVariable.getRoomsArray().get(roomID);
         currentBeacon = currentRoom.getBeacons().get(beaconID);
         database = new MySQLiteHelper(this);
-        rssiArray = currentBeacon.getCalibratedRSSI();
+        rssiArray = currentBeacon.getFullRSSI();
         displayRoomName.setText(currentRoom.getName());
         displayBeacon.setText(currentBeacon.getInfo(""));
-        displayRSSIList.setText(currentBeacon.getCalibratedRSSI().toString());
+        displayRSSIList.setText(currentBeacon.getFullRSSI().toString());
         displayRSSINum.setText(Integer.toString(rssiArray.size()));
         displayRSSIAverage.setText(Byte.toString(calculateAverage(rssiArray)));
         displayRSSIMax.setText(Byte.toString(Collections.max(rssiArray)));
@@ -126,7 +126,7 @@ public class BeaconActivity extends Activity {
 
     void removeCalibration(){
         database.updateCalibration(new Calibration(currentRoom.getID(), currentBeacon.getID(), null));
-        currentBeacon.getCalibratedRSSI().clear();
+        currentBeacon.getFullRSSI().clear();
         Toast.makeText(getApplicationContext(), getString(R.string.toast_info_removed), Toast.LENGTH_SHORT).show();
         BeaconActivity.this.finish();
     }

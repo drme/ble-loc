@@ -65,7 +65,7 @@ public class Room {
     public ArrayList<Boolean> getCalibratedBeacons(){
         ArrayList<Boolean> res = new ArrayList<Boolean>();
         for (int i = 0; i < this.beacons.size(); i++){
-            if (this.beacons.get(i).getCalibratedRSSI().size() == 0){
+            if (this.beacons.get(i).getFullRSSI().size() == 0){
                 res.add(i, false);
             }
             else {

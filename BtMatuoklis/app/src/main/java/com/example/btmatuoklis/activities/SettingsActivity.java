@@ -14,7 +14,7 @@ public class SettingsActivity extends PreferenceActivity implements SharedPrefer
 
     Settings settings;
     EditTextPreference editFrequency, editTimeout, editShadow, editAverage;
-    SeekBarPreference sliderTXPower;
+    SeekBarPreference sliderAccuracy, sliderTXPower;
     SwitchPreference switchGenerator;
     EditTextPreference debugBeacons, debugRSSIMin, debugRSSIMax;
 
@@ -26,6 +26,7 @@ public class SettingsActivity extends PreferenceActivity implements SharedPrefer
         editFrequency = (EditTextPreference)findPreference("savedDelay");
         editTimeout = (EditTextPreference)findPreference("savedTimeout");
         editShadow = (EditTextPreference)findPreference("savedShadow");
+        sliderAccuracy = (SeekBarPreference)findPreference("savedAccuracy");
         sliderTXPower = (SeekBarPreference)findPreference("savedTXPower");
         editAverage = (EditTextPreference)findPreference("savedAverage");
         switchGenerator = (SwitchPreference)findPreference("debugGenerator");
@@ -62,12 +63,14 @@ public class SettingsActivity extends PreferenceActivity implements SharedPrefer
     //Jeigu programa leidziama ne pirma karta - nustatomos issaugotos reiksmes
     void setDefaultValues(){
         settings = MainActivity.settings;
-        editFrequency.setSummary(getString(R.string.settingsactivity_subtext_value) + settings.getFrequency());
+        editFrequency.setSummary(getString(R.string.settingsactivity_subtext_value) + settings.getFrequency() + "ms");
         editTimeout.setSummary(getString(R.string.settingsactivity_subtext_value) + settings.getTimeout());
         editShadow.setSummary(getString(R.string.settingsactivity_subtext_value) + settings.getShadow());
+        sliderAccuracy.setSummary(getString(R.string.settingsactivity_subtext_value) + settings.getAccuracy() + "%");
         sliderTXPower.setSummary(getString(R.string.settingsactivity_subtext_value) + settings.getTXPower());
-        editFrequency.setDialogMessage(getString(R.string.settingsactivity_hint_frequency) + settings.getDefaultFrequency());
         editAverage.setSummary(getString(R.string.settingsactivity_subtext_value) + settings.getAverage());
+        editFrequency.setDialogMessage(getString(R.string.settingsactivity_hint_frequency) + settings.getDefaultFrequency());
+
         debugBeacons.setSummary(getString(R.string.settingsactivity_subtext_value) + settings.getDebugBeacons());
         debugRSSIMin.setSummary(getString(R.string.settingsactivity_subtext_value) + settings.getDebugRSSIMin());
         debugRSSIMax.setSummary(getString(R.string.settingsactivity_subtext_value) + settings.getDebugRSSIMax());

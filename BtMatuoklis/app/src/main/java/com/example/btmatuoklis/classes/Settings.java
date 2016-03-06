@@ -25,6 +25,9 @@ public class Settings implements SharedPreferences.OnSharedPreferenceChangeListe
     //Kiek RSSI saugoti aktyvaus Scan rezimu
     private byte shadow, defaultShadow;
 
+    //Kiek RSSI turi pakliuti i kalibravimo intervala
+    private byte accuracy, defaultAccuracy;
+
     //"Default" BTLE irenginio stiprumas, reiksme [1-100] intervale
     private byte txPower, defaultTXPower;
 
@@ -54,6 +57,7 @@ public class Settings implements SharedPreferences.OnSharedPreferenceChangeListe
         defaultFrequency = (short)context.getResources().getInteger(R.integer.default_frequency);
         defaultTimeout = (byte)context.getResources().getInteger(R.integer.default_timeout);
         defaultShadow = (byte)context.getResources().getInteger(R.integer.default_shadow);
+        defaultAccuracy = (byte)context.getResources().getInteger(R.integer.default_accuracy);
         defaultTXPower = (byte)context.getResources().getInteger(R.integer.default_txpower);
         defaultAverage = (byte)context.getResources().getInteger(R.integer.default_average);
         defaultGenerator = context.getResources().getBoolean(R.bool.debug_default_generator);
@@ -67,6 +71,7 @@ public class Settings implements SharedPreferences.OnSharedPreferenceChangeListe
         frequency = Short.parseShort(preferences.getString("savedDelay", Short.toString(defaultFrequency)));
         timeout = Byte.parseByte(preferences.getString("savedTimeout", Byte.toString(defaultTimeout)));
         shadow = Byte.parseByte(preferences.getString("savedShadow", Byte.toString(defaultShadow)));
+        accuracy = (byte)preferences.getInt("savedPercentage", defaultAccuracy);
         txPower = (byte)preferences.getInt("savedTXPower", defaultTXPower);
         average = Byte.parseByte(preferences.getString("savedAverage", Byte.toString(defaultAverage)));
         generator = preferences.getBoolean("debugGenerator", defaultGenerator);
@@ -82,6 +87,8 @@ public class Settings implements SharedPreferences.OnSharedPreferenceChangeListe
     public byte getTimeout(){ return this.timeout; }
 
     public byte getShadow(){ return this.shadow; }
+
+    public byte getAccuracy(){ return this.accuracy; }
 
     public byte getTXPower(){ return this.txPower; }
 

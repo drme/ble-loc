@@ -174,7 +174,7 @@ public class RoomActivity extends Activity {
         String rssi;
         for (int i = 0; i < calibratedDevices.size(); i++){
             displayBeaconsList.setItemChecked(i, calibratedDevices.get(i));
-            rssi = currentRoom.getBeacons().get(i).getCalibratedRSSI().toString();
+            rssi = currentRoom.getBeacons().get(i).getFullRSSI().toString();
             beaconID = currentRoom.getBeacons().get(i).getID();
             Calibration calibation = new Calibration(roomdID, beaconID, rssi);
             database.updateCalibration(calibation);

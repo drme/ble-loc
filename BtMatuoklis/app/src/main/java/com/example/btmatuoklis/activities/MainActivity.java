@@ -70,6 +70,7 @@ public class MainActivity extends Activity {
     void setDefaultValues(){
         globalVariable = (GlobalClass) getApplicationContext();
         settings = new Settings(getApplicationContext());
+        loadDatabase(null);
     }
 
     void loadRooms(){
@@ -80,7 +81,6 @@ public class MainActivity extends Activity {
         Cursor cursor = db.rawQuery(query, null);
         String roomName;
         int id;
-        //beaconsArray = new ArrayList<Beacon>();
 
         while (cursor.moveToNext()) {
             id = cursor.getInt(0);

@@ -7,37 +7,32 @@ import java.util.ArrayList;
 public class Beacon {
     private String name;
     private String mac;
-    private ArrayList<Byte> calibratedRSSI;
     private ArrayList<Byte> rssi;
     private int id;
 
     private RangeCalculator calculator = new RangeCalculator();
 
     public Beacon(){
-        this.calibratedRSSI = new ArrayList<Byte>();
         this.rssi = new ArrayList<Byte>();
     }
 
     public Beacon(String name, String mac){
         this.name = name;
         this.mac = mac;
-        this.calibratedRSSI = new ArrayList<Byte>();
         this.rssi = new ArrayList<Byte>();
     }
 
-    public Beacon(String name, String mac, ArrayList<Byte> calibratedRSSI){
+    public Beacon(String name, String mac, ArrayList<Byte> rssi){
         this.name = name;
         this.mac = mac;
-        this.calibratedRSSI = calibratedRSSI;
-        this.rssi = new ArrayList<Byte>();
+        this.rssi = rssi;
     }
 
-    public Beacon(int id, String name, String mac, ArrayList<Byte> calibratedRSSI){
+    public Beacon(int id, String name, String mac, ArrayList<Byte> rssi){
         this.id = id;
         this.name = name;
         this.mac = mac;
-        this.calibratedRSSI = calibratedRSSI;
-        this.rssi = new ArrayList<Byte>();
+        this.rssi = rssi;
     }
 
     private byte getShadow(){
@@ -64,8 +59,6 @@ public class Beacon {
 
     public String getMAC(){ return this.mac; }
 
-    public ArrayList<Byte> getCalibratedRSSI() { return this.calibratedRSSI; }
-
     public Byte getCurrentRSSI(){
         return this.rssi.get(rssi.size()-1);
     }
@@ -91,7 +84,7 @@ public class Beacon {
                 info += "\n" + calculator.getRange(getTXPower(), getCurrentRSSI());
                 break;
             case "calibration":
-                info += "\nKalibracijos RSSI reikšmių: " + this.calibratedRSSI.size();
+                info += "\nKalibracijos RSSI reikšmių: " + this.rssi.size();
                 break;
             default:
                 break;
