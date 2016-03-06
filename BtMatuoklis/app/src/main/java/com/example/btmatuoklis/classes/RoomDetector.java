@@ -1,11 +1,11 @@
 package com.example.btmatuoklis.classes;
 
+import com.example.btmatuoklis.activities.MainActivity;
+
 import java.util.ArrayList;
 import java.util.Collections;
 
 public class RoomDetector {
-
-    private float roomCoefficient = 0.3f;
 
     public RoomDetector() {}
 
@@ -29,7 +29,7 @@ public class RoomDetector {
             }
             if (!compareList.isEmpty()) {
                 float max = Collections.max(compareList);
-                if (max > roomCoefficient) {
+                if (max > getAccuracy()) {
                     int id = compareList.indexOf(max);
                     int roomID = roomIDs.get(id);
                     return rooms.get(roomID).getName();
@@ -40,15 +40,19 @@ public class RoomDetector {
         return "Nėra sukurtų kambarių!";
     }
 
-    private float compareCalibrationShadow(ArrayList<Byte> calibrations, ArrayList<Byte> rssis){
+    private short compareCalibrationShadow(ArrayList<Byte> calibrations, ArrayList<Byte> rssis){
         byte min = Collections.min(calibrations);
         int size = rssis.size();
-        float res = 0;
-        for (int i = 0; i < size; i++){
+        short res = 0;
+        for (short i = 0; i < size; i++){
             byte currentRSSI = rssis.get(i);
-            if (currentRSSI >= min){ res = res + 1; }
+            if (currentRSSI >= min){ res += 100; }
         }
-        res = res/size;
-        return res;
+        return (short)(res/size);
+    }
+
+    private byte getAccuracy(){
+        Settings settings = MainActivity.settings;
+        return settings.getAccuracy();
     }
 }

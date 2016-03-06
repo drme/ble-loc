@@ -32,6 +32,14 @@
             android:inputType="number"
             android:maxLength="1" />
         <com.example.btmatuoklis.classes.SeekBarPreference
+            android:id="@+id/preferences_Accuracy"
+            android:key="savedAccuracy"
+            android:defaultValue="@integer/default_accuracy"
+            android:max="@integer/default_accuracy_max"
+            android:title="@string/settingsactivity_text_accuracy"
+            android:summary="@string/generic_value"
+            android:dialogMessage="@string/settingsactivity_hint_accuracy" />
+        <com.example.btmatuoklis.classes.SeekBarPreference
             android:id="@+id/preferences_TxPower"
             android:key="savedTXPower"
             android:defaultValue="@integer/default_txpower"
