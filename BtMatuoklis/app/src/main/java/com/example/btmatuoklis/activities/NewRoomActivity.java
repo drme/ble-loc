@@ -174,8 +174,7 @@ public class NewRoomActivity extends Activity {
         createRoomInDatabase();
         for (int i = 0; i < selectedBeacons.size(); i++){
             Beacon beacon = environment.getBeacons().get(selectedBeacons.get(i));
-            beacon.getFullRSSI().clear();
-            currentRoom.getBeacons().add(beacon);
+            currentRoom.getBeacons().add(new Beacon(beacon.getName(), beacon.getMAC()));
             saveBeaconsInDatabase(i);
         }
         notifyCreatedRoomAndBeacons();
