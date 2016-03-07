@@ -445,7 +445,13 @@ public class MySQLiteHelper extends SQLiteOpenHelper {
         return cursor.getCount();
     }
 
-    public void deleteAll(String table){
+    public void clearDB(){
+        deleteTable("rooms");
+        deleteTable("beacons");
+        deleteTable("calibrations");
+    }
+
+    public void deleteTable(String table){
         SQLiteDatabase database = this.getWritableDatabase();
         database.delete(table, null, null);
     }

@@ -12,7 +12,6 @@ import android.database.sqlite.SQLiteDatabase;
 import android.os.Environment;
 import android.os.Handler;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.ActionMode;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -309,9 +308,7 @@ public class RoomActivity extends Activity {
         globalVariable.getRoomsArray().remove(roomID);
         globalVariable.getRoomsList().remove(roomID);
         if (globalVariable.getRoomsArray().isEmpty()){
-            database.deleteAll("rooms");
-            database.deleteAll("beacons");
-            database.deleteAll("calibrations");
+            database.clearDB();
             globalVariable.getRoomsArray().clear();
             globalVariable.getRoomsList().clear();
         }

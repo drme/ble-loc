@@ -22,6 +22,7 @@ import com.example.btmatuoklis.classes.Room;
 import com.example.btmatuoklis.classes.Settings;
 
 import java.util.ArrayList;
+import java.util.List;
 
 public class MainActivity extends Activity {
 
@@ -74,21 +75,12 @@ public class MainActivity extends Activity {
     }
 
     void loadRooms(){
-        MySQLiteHelper dbhelper = new MySQLiteHelper(getApplicationContext());
-        SQLiteDatabase db = dbhelper.getReadableDatabase();
-
-        String query = "SELECT * FROM rooms";
-        Cursor cursor = db.rawQuery(query, null);
-        String roomName;
-        int id;
-
-        while (cursor.moveToNext()) {
-            id = cursor.getInt(0);
-            roomName = cursor.getString(1);
-            globalVariable.getRoomsArray().add(new Room(id, roomName));
-            globalVariable.getRoomsList().add(roomName);
+        MySQLiteHelper database = new MySQLiteHelper(this);
+        List<Room> rooms = database.getAllRooms();
+        for (int i = 0; i < rooms.size(); i++){
+            globalVariable.getRoomsArray().add(rooms.get(i));
+            globalVariable.getRoomsList().add(rooms.get(i).getName());
         }
-        cursor.close();
     }
 
     void loadBeacons(){
@@ -148,9 +140,7 @@ public class MainActivity extends Activity {
 
     public void clearDatabase(MenuItem item){
         MySQLiteHelper database = new MySQLiteHelper(this);
-        database.deleteAll("rooms");
-        database.deleteAll("beacons");
-        database.deleteAll("calibrations");
+        database.clearDB();
         globalVariable.getRoomsArray().clear();
         globalVariable.getRoomsList().clear();
         Toast.makeText(getApplicationContext(), "Duombazė išvalyta", Toast.LENGTH_SHORT).show();

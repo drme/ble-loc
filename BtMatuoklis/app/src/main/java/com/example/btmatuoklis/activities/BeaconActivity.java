@@ -154,9 +154,7 @@ public class BeaconActivity extends Activity {
             globalVariable.getRoomsArray().remove(roomID);
             globalVariable.getRoomsList().remove(roomID);
             if (globalVariable.getRoomsArray().isEmpty()){
-                database.deleteAll("rooms");
-                database.deleteAll("beacons");
-                database.deleteAll("calibrations");
+                database.clearDB();
                 globalVariable.getRoomsArray().clear();
                 globalVariable.getRoomsList().clear();
             }
