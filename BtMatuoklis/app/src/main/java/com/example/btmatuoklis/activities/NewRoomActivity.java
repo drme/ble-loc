@@ -25,6 +25,7 @@ import android.widget.Toast;
 
 import com.example.btmatuoklis.R;
 import com.example.btmatuoklis.classes.AlertDialogBuilder;
+import com.example.btmatuoklis.classes.Beacon;
 import com.example.btmatuoklis.classes.Calibration;
 import com.example.btmatuoklis.classes.GlobalClass;
 import com.example.btmatuoklis.classes.MySQLiteHelper;
@@ -172,7 +173,9 @@ public class NewRoomActivity extends Activity {
     void saveSelectedBeacons(){
         createRoomInDatabase();
         for (int i = 0; i < selectedBeacons.size(); i++){
-            currentRoom.getBeacons().add(environment.getBeacons().get(selectedBeacons.get(i)));
+            Beacon beacon = environment.getBeacons().get(selectedBeacons.get(i));
+            beacon.getFullRSSI().clear();
+            currentRoom.getBeacons().add(beacon);
             saveBeaconsInDatabase(i);
         }
         notifyCreatedRoomAndBeacons();
