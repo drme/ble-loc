@@ -82,19 +82,24 @@ public class RoomActivity extends Activity {
         getActionBar().getCustomView().setVisibility(View.INVISIBLE);
         MenuInflater inflater = getMenuInflater();
         inflater.inflate(R.menu.actionbar_room, menu);
-        exportItem = menu.findItem(R.id.action_export);
-        enableMenuItem(exportItem, false);
         return true;
+    }
+
+    @Override
+    public boolean onPrepareOptionsMenu(Menu menu) {
+        exportItem = menu.findItem(R.id.action_export);
+        if (currentRoom.getBeacons().isEmpty()){ this.finish(); }
+        else if (!currentRoom.isCalibrationStarted()){ restoreCalibrateButton(); }
+        else { resumeCalibrateButton(); }
+        return super.onPrepareOptionsMenu(menu);
     }
 
     @Override
     protected void onResume() {
         super.onResume();
+        invalidateOptionsMenu();
         reloadBoundDevices();
         checkCalibratedDevices();
-        if (currentRoom.getBeacons().isEmpty()){ this.finish(); }
-        else if (!currentRoom.isCalibrationStarted()){ restoreCalibrateButton(); }
-        else { resumeCalibrateButton(); }
     }
 
     @Override
@@ -233,7 +238,7 @@ public class RoomActivity extends Activity {
         buttonCalibrate.setText(getString(R.string.roomactivity_button_calibrate));
         buttonCalibrate.setEnabled(true);
         displayBeaconsList.setOnItemClickListener(null);
-        //enableMenuItem(exportItem, false);
+        enableMenuItem(exportItem, false);
         //Grizus i Activity arba rotate screen - reiktu vel atstatyti CSV export menu item
     }
 
@@ -243,7 +248,7 @@ public class RoomActivity extends Activity {
         buttonCalibrate.setText(getString(R.string.roomactivity_button_resume_calib));
         buttonCalibrate.setEnabled(true);
         setListListener();
-        //enableMenuItem(exportItem, true);
+        enableMenuItem(exportItem, true);
         //Grizus i Activity arba rotate screen - reiktu vel atstatyti CSV export menu item
     }
 
