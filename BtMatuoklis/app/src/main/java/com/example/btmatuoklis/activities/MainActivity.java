@@ -5,8 +5,6 @@ import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothManager;
 import android.content.Context;
 import android.content.Intent;
-import android.database.Cursor;
-import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -15,14 +13,12 @@ import android.view.View;
 import android.widget.Toast;
 
 import com.example.btmatuoklis.R;
-import com.example.btmatuoklis.classes.Beacon;
 import com.example.btmatuoklis.classes.GlobalClass;
 import com.example.btmatuoklis.classes.MySQLiteHelper;
 import com.example.btmatuoklis.classes.Room;
 import com.example.btmatuoklis.classes.Settings;
 
 import java.util.ArrayList;
-import java.util.List;
 
 public class MainActivity extends Activity {
 
@@ -76,7 +72,7 @@ public class MainActivity extends Activity {
 
     void loadRooms(){
         MySQLiteHelper database = new MySQLiteHelper(this);
-        List<Room> rooms = database.getAllRooms();
+        ArrayList<Room> rooms = database.getAllRooms();
         for (int i = 0; i < rooms.size(); i++){
             globalVariable.getRoomsArray().add(rooms.get(i));
             globalVariable.getRoomsList().add(rooms.get(i).getName());
@@ -84,50 +80,8 @@ public class MainActivity extends Activity {
     }
 
     void loadBeacons(){
-        String beaconName;
-        String beaconMac;
-        String RSSI = null;
-        int id;
-
-        MySQLiteHelper dbhelper = new MySQLiteHelper(getApplicationContext());
-        SQLiteDatabase db = dbhelper.getReadableDatabase();
-
-        for (int i = 0; i < globalVariable.getRoomsArray().size(); i++) {
-            Room currentRoom = globalVariable.getRoomsArray().get(i);
-            String uzklausaSurinkimui = "SELECT beacons.id AS BeaconID, beacons.name AS BeaconName," +
-                    "beacons.mac AS BeaconMac, calibrations.rssi AS RSSI " +
-                    "FROM calibrations " +
-                    "JOIN rooms ON (calibrations.roomid = rooms.id)"+
-                    "JOIN beacons ON (calibrations.beaconid = beacons.id)"+
-                    "WHERE roomid = " + Integer.toString(currentRoom.getID());
-
-            Cursor cursor = db.rawQuery(uzklausaSurinkimui, null);
-
-            if (cursor != null){
-                while (cursor.moveToNext()) {
-                    id = cursor.getInt(0);
-                    beaconName = cursor.getString(1);
-                    beaconMac = cursor.getString(2);
-                    RSSI = cursor.getString(3);
-                    currentRoom.getBeacons().add(new Beacon(id, beaconName, beaconMac, loadRSSIS(RSSI)));
-                }
-                cursor.close();
-            }
-        }
-    }
-
-    ArrayList<Byte> loadRSSIS(String rssiArray){
-        if (rssiArray == null){
-            return new ArrayList<Byte>();
-        }
-        String onlyRSSI = rssiArray.replaceAll("[\\[\\]\\^]", "");
-        String[] RSSIS = onlyRSSI.split(", ");
-        ArrayList<Byte> arrays = new ArrayList<Byte>();
-        for (String rssi : RSSIS) {
-            byte lastrssi = Byte.parseByte(rssi.toString());
-            arrays.add(lastrssi);
-        }
-        return arrays;
+        MySQLiteHelper database = new MySQLiteHelper(this);
+        database.loadAllBeacons(globalVariable.getRoomsArray());
     }
 
     public void loadDatabase(MenuItem item){

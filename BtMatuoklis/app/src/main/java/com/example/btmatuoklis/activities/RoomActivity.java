@@ -7,8 +7,6 @@ import android.bluetooth.BluetoothManager;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.database.Cursor;
-import android.database.sqlite.SQLiteDatabase;
 import android.os.Environment;
 import android.os.Handler;
 import android.os.Bundle;
@@ -28,6 +26,7 @@ import android.widget.Toast;
 
 import com.example.btmatuoklis.R;
 import com.example.btmatuoklis.classes.AlertDialogBuilder;
+import com.example.btmatuoklis.classes.Beacon;
 import com.example.btmatuoklis.classes.Calibration;
 import com.example.btmatuoklis.classes.GlobalClass;
 import com.example.btmatuoklis.classes.MySQLiteHelper;
@@ -56,6 +55,7 @@ public class RoomActivity extends Activity {
     ListView displayBeaconsList;
     TextView displayRoomName;
     Button buttonCalibrate;
+    String[] columns;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -140,6 +140,7 @@ public class RoomActivity extends Activity {
         listAdapter = new ArrayAdapter<String>(this, R.layout.list_checked, boundBeaconsList);
         displayBeaconsList.setAdapter(listAdapter);
         displayRoomName.setText(currentRoom.getName());
+        columns = new String[] {"BeaconName","BeaconMac","RSSI"};
     }
 
     //Veiksmai kalibracijai pradeti
@@ -181,7 +182,6 @@ public class RoomActivity extends Activity {
     }
 
     private void exportRoomCSV() {
-        MySQLiteHelper dbhelper = new MySQLiteHelper(getApplicationContext());
         String directory = getExternalStorageDirectory(getString(R.string.app_name));
         File exportDir = new File(directory, "");
         if (!exportDir.exists()) {
@@ -193,22 +193,13 @@ public class RoomActivity extends Activity {
         try {
             file.createNewFile();
             CSVWriter csvWrite = new CSVWriter(new FileWriter(file));
-            SQLiteDatabase db = dbhelper.getReadableDatabase();
-            String uzklausaSurinkimui = "SELECT rooms.name AS RoomName, beacons.name AS BeaconName," +
-                    "beacons.mac AS BeaconMac, calibrations.rssi AS RSSI " +
-                    "FROM calibrations " +
-                    "JOIN rooms ON (calibrations.roomid = rooms.id)"+
-                    "JOIN beacons ON (calibrations.beaconid = beacons.id)"+
-                    "WHERE roomid = " + Integer.toString(currentRoom.getID());
-            Cursor curCSV = db.rawQuery(uzklausaSurinkimui, null);
-            csvWrite.writeNext(curCSV.getColumnNames());
-            while (curCSV.moveToNext()) {
-                //Which column you want to exprort
-                String arrStr[] = {curCSV.getString(0), curCSV.getString(1), curCSV.getString(2), curCSV.getString(3)};
+            ArrayList<Beacon> beacons = currentRoom.getBeacons();
+            csvWrite.writeNext(columns);
+            for (int i = 0; i < beacons.size(); i++){
+                String arrStr[] = {beacons.get(i).getName(), beacons.get(i).getMAC(), beacons.get(i).getFullRSSI().toString()};
                 csvWrite.writeNext(arrStr);
             }
             csvWrite.close();
-            curCSV.close();
             notifyExportedCSV(fileName, directory);
         } catch (Exception sqlEx) {
             //Log.e("MainActivity", sqlEx.getMessage(), sqlEx);

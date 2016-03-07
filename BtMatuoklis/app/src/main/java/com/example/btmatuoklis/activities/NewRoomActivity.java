@@ -7,8 +7,6 @@ import android.bluetooth.BluetoothManager;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.database.Cursor;
-import android.database.sqlite.SQLiteDatabase;
 import android.os.Handler;
 import android.os.Bundle;
 import android.view.Menu;
@@ -39,7 +37,6 @@ public class NewRoomActivity extends Activity {
 
     GlobalClass globalVariable;
     int roomID;
-    long lastID;
     Settings settings;
     ScanTools scantools;
     Room environment, currentRoom;
@@ -174,32 +171,22 @@ public class NewRoomActivity extends Activity {
         for (int i = 0; i < selectedBeacons.size(); i++){
             Beacon beacon = environment.getBeacons().get(selectedBeacons.get(i));
             currentRoom.getBeacons().add(new Beacon(beacon.getName(), beacon.getMAC()));
-            saveBeaconsInDatabase(i);
+            saveBeaconsInDatabase(currentRoom.getBeacons().get(i));
         }
         notifyCreatedRoomAndBeacons();
     }
 
     void createRoomInDatabase(){
+        MySQLiteHelper database = new MySQLiteHelper(this);
         database.addRoom(currentRoom);
-        SQLiteDatabase dd = database.getReadableDatabase();
-        Cursor c = dd.rawQuery("SELECT ROWID FROM rooms ORDER BY ROWID DESC LIMIT 1", null);
-        if (c != null && c.moveToFirst()) {
-            lastID = c.getLong(0); //The 0 is the column index, we only have 1 column, so the index is 0
-        }
-        int id = (int)lastID;
-        currentRoom.setID(id);
+        currentRoom.setID(database.getLastRoomID());
     }
 
-    void saveBeaconsInDatabase(int i){
-        database.addBeacon(currentRoom.getBeacons().get(i));
-
-        SQLiteDatabase dd = database.getReadableDatabase();
-        Cursor c = dd.rawQuery("SELECT ROWID FROM beacons ORDER BY ROWID DESC LIMIT 1", null);
-        if (c != null && c.moveToFirst()) {
-            lastID = c.getLong(0); //The 0 is the column index, we only have 1 column, so the index is 0
-        }
-        int id = (int)lastID;
-        currentRoom.getBeacons().get(i).setID(id);
+    void saveBeaconsInDatabase(Beacon beacon){
+        MySQLiteHelper database = new MySQLiteHelper(this);
+        database.addBeacon(beacon);
+        int id = database.getLastBeaconID();
+        beacon.setID(id);
         database.addCalibration(new Calibration(currentRoom.getID(), id, null));
     }
 

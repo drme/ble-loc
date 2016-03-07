@@ -7,8 +7,7 @@ import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.util.Log;
 
-import java.util.LinkedList;
-import java.util.List;
+import java.util.ArrayList;
 
 public class MySQLiteHelper extends SQLiteOpenHelper {
 
@@ -99,6 +98,16 @@ public class MySQLiteHelper extends SQLiteOpenHelper {
         database.close();
     }
 
+    public int getLastRoomID(){
+        int id = -1;
+        SQLiteDatabase dd = this.getReadableDatabase();
+        Cursor c = dd.rawQuery("SELECT ROWID FROM rooms ORDER BY ROWID DESC LIMIT 1", null);
+        if (c != null && c.moveToFirst()) {
+            id = c.getInt(0); //The 0 is the column index, we only have 1 column, so the index is 0
+        }
+        return id;
+    }
+
     public void addBeacon(Beacon beacon){
         Log.d("addBeacon", beacon.toString());
         // 1. get reference to writable DB
@@ -116,6 +125,16 @@ public class MySQLiteHelper extends SQLiteOpenHelper {
 
         // 4. close
         database.close();
+    }
+
+    public int getLastBeaconID(){
+        int id = -1;
+        SQLiteDatabase dd = this.getReadableDatabase();
+        Cursor c = dd.rawQuery("SELECT ROWID FROM beacons ORDER BY ROWID DESC LIMIT 1", null);
+        if (c != null && c.moveToFirst()) {
+            id = c.getInt(0); //The 0 is the column index, we only have 1 column, so the index is 0
+        }
+        return id;
     }
 
     public void addCalibration(Calibration calibration){
@@ -181,7 +200,7 @@ public class MySQLiteHelper extends SQLiteOpenHelper {
                 database.query(TABLE_BEACONS, // a. table
                         BEACONSCOLUMNS, // b. column names
                         " id = ?", // c. selections
-                        new String[] { String.valueOf(id) }, // d. selections args
+                        new String[]{String.valueOf(id)}, // d. selections args
                         null, // e. group by
                         null, // f. having
                         null, // g. order by
@@ -234,8 +253,8 @@ public class MySQLiteHelper extends SQLiteOpenHelper {
         return calibration;
     }
 
-    public List<Room> getAllRooms() {
-        List<Room> rooms = new LinkedList<Room>();
+    public ArrayList<Room> getAllRooms() {
+        ArrayList<Room> rooms = new ArrayList<Room>();
 
         // 1. build the query
         String query = "SELECT  * FROM " + TABLE_ROOMS;
@@ -259,7 +278,54 @@ public class MySQLiteHelper extends SQLiteOpenHelper {
         return rooms;
     }
 
-    public List<Beacon> getAllBeacons() {
+    public void loadAllBeacons(ArrayList<Room> rooms){
+        String beaconName;
+        String beaconMac;
+        String RSSI = null;
+        int id;
+
+        //MySQLiteHelper dbhelper = new MySQLiteHelper(getApplicationContext());
+        SQLiteDatabase db = this.getReadableDatabase();
+
+        for (int i = 0; i < rooms.size(); i++) {
+            Room currentRoom = rooms.get(i);
+            String uzklausaSurinkimui = "SELECT beacons.id AS BeaconID, beacons.name AS BeaconName," +
+                    "beacons.mac AS BeaconMac, calibrations.rssi AS RSSI " +
+                    "FROM calibrations " +
+                    "JOIN rooms ON (calibrations.roomid = rooms.id)"+
+                    "JOIN beacons ON (calibrations.beaconid = beacons.id)"+
+                    "WHERE roomid = " + Integer.toString(currentRoom.getID());
+
+            Cursor cursor = db.rawQuery(uzklausaSurinkimui, null);
+
+            if (cursor != null){
+                while (cursor.moveToNext()) {
+                    id = cursor.getInt(0);
+                    beaconName = cursor.getString(1);
+                    beaconMac = cursor.getString(2);
+                    RSSI = cursor.getString(3);
+                    currentRoom.getBeacons().add(new Beacon(id, beaconName, beaconMac, loadRSSIS(RSSI)));
+                }
+                cursor.close();
+            }
+        }
+    }
+
+    ArrayList<Byte> loadRSSIS(String rssiArray){
+        if (rssiArray == null){
+            return new ArrayList<Byte>();
+        }
+        String onlyRSSI = rssiArray.replaceAll("[\\[\\]\\^]", "");
+        String[] RSSIS = onlyRSSI.split(", ");
+        ArrayList<Byte> arrays = new ArrayList<Byte>();
+        for (String rssi : RSSIS) {
+            byte lastrssi = Byte.parseByte(rssi.toString());
+            arrays.add(lastrssi);
+        }
+        return arrays;
+    }
+
+    /*public List<Beacon> getAllBeacons() {
         List<Beacon> beacons = new LinkedList<Beacon>();
 
         // 1. build the query
@@ -306,7 +372,7 @@ public class MySQLiteHelper extends SQLiteOpenHelper {
             } while (cursor.moveToNext());
         }
         return calibrations;
-    }
+    }*/
 
     // Updating single room
     public int updateRoom(Room room) {

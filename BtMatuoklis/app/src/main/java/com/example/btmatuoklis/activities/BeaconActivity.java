@@ -174,7 +174,7 @@ public class BeaconActivity extends Activity {
     }
 
     private byte calculateAverage(ArrayList<Byte> array){
-        int sum = 0;
+        long sum = 0;
         int size = array.size();
         if(!array.isEmpty()){
             for (int i = 0; i < size; i++){
