@@ -162,7 +162,6 @@ public class NewRoomActivity extends Activity {
         dialog.showDialog();
     }
 
-    //To-Do: patikrinti ar kambarys tokiu pavadinimu duombazeje jau neegzistuoja
     void createRoom(){
         globalVariable.getRoomsArray().add(new Room(roomName));
         globalVariable.getRoomsList().add(roomName);
