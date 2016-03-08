@@ -8,6 +8,7 @@ import com.opencsv.CSVWriter;
 
 import java.io.File;
 import java.io.FileWriter;
+import java.io.IOException;
 import java.util.ArrayList;
 
 public class ExportCSVHelper {
@@ -41,8 +42,8 @@ public class ExportCSVHelper {
                 csvWrite.writeNext(arrStr);
             }
             csvWrite.close();
-        } catch (Exception sqlEx) {
-            //Log.e("MainActivity", sqlEx.getMessage(), sqlEx);
+        } catch (IOException e) {
+            e.printStackTrace();
         }
         return res;
     }

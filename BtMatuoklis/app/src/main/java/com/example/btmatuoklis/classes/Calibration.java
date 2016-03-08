@@ -2,7 +2,6 @@ package com.example.btmatuoklis.classes;
 
 public class Calibration {
 
-
     private int id;
     private int roomID;
     private int beaconID;
@@ -59,12 +58,5 @@ public class Calibration {
         return this.RSSI;
     }
 
-    public void setRSSI(String RSSI) {
-        this.RSSI = RSSI;
-    }
-
-    public String toString() {
-        return "RSSI [calibrationID=" + id + ", roomID=" + roomID +
-                ", beaconID=" + beaconID +", RSSI " + RSSI +" \"]";
-    }
+    public void setRSSI(String RSSI) { this.RSSI = RSSI; }
 }
