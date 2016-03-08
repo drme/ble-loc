@@ -28,6 +28,7 @@ import com.example.btmatuoklis.R;
 import com.example.btmatuoklis.classes.AlertDialogBuilder;
 import com.example.btmatuoklis.classes.Beacon;
 import com.example.btmatuoklis.classes.Calibration;
+import com.example.btmatuoklis.classes.ExportCSVHelper;
 import com.example.btmatuoklis.classes.GlobalClass;
 import com.example.btmatuoklis.classes.MySQLiteHelper;
 import com.example.btmatuoklis.classes.Room;
@@ -47,6 +48,7 @@ public class RoomActivity extends Activity {
     ScanTools scantools;
     Room currentRoom;
     MySQLiteHelper database;
+    ExportCSVHelper exportCSV;
     BluetoothAdapter mBluetoothAdapter;
     BluetoothAdapter.LeScanCallback mLeScanCallback;
     MenuItem exportItem;
@@ -55,7 +57,6 @@ public class RoomActivity extends Activity {
     ListView displayBeaconsList;
     TextView displayRoomName;
     Button buttonCalibrate;
-    String[] columns;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -141,11 +142,11 @@ public class RoomActivity extends Activity {
         scantools = new ScanTools();
         currentRoom = globalVariable.getRoomsArray().get(roomID);
         database = new MySQLiteHelper(this);
+        exportCSV = new ExportCSVHelper(this);
         boundBeaconsList = new ArrayList<String>();
         listAdapter = new ArrayAdapter<String>(this, R.layout.list_checked, boundBeaconsList);
         displayBeaconsList.setAdapter(listAdapter);
         displayRoomName.setText(currentRoom.getName());
-        columns = new String[] {"BeaconName","BeaconMac","RSSI"};
     }
 
     //Veiksmai kalibracijai pradeti
@@ -186,50 +187,12 @@ public class RoomActivity extends Activity {
         }
     }
 
-    private void exportRoomCSV() {
-        String directory = getExternalStorageDirectory(getString(R.string.app_name));
-        File exportDir = new File(directory, "");
-        if (!exportDir.exists()) {
-            exportDir.mkdirs();
-        }
-
-        String fileName = getString(R.string.generic_calibrate)+currentRoom.getName()+".csv";
-        File file = new File(exportDir, fileName);
-        try {
-            file.createNewFile();
-            CSVWriter csvWrite = new CSVWriter(new FileWriter(file));
-            ArrayList<Beacon> beacons = currentRoom.getBeacons();
-            csvWrite.writeNext(columns);
-            for (int i = 0; i < beacons.size(); i++){
-                String arrStr[] = {beacons.get(i).getName(), beacons.get(i).getMAC(), beacons.get(i).getFullRSSI().toString()};
-                csvWrite.writeNext(arrStr);
-            }
-            csvWrite.close();
-            notifyExportedCSV(fileName, directory);
-        } catch (Exception sqlEx) {
-            //Log.e("MainActivity", sqlEx.getMessage(), sqlEx);
-        }
-    }
-
-    void notifyExportedCSV(String fileName, String directory){
+    void exportRoomCSV(){
+        String[] res = exportCSV.exportRoomCSV(currentRoom);
         Toast.makeText(getApplicationContext(), getString(R.string.toast_info_created_file1)+
-                        fileName+ getString(R.string.toast_info_created_file2)+
-                        getString(R.string.toast_info_created_file3)+directory,
+                        res[0]+ getString(R.string.toast_info_created_file2)+
+                        getString(R.string.toast_info_created_file3)+res[1],
                 Toast.LENGTH_LONG).show();
-    }
-
-    String getExternalStorageDirectory(String folder){
-        String sdpath="/storage/extSdCard/";
-        String sd1path="/storage/sdcard1/";
-        //String sd2path="/storage/external_SD/";
-        String usbdiskpath="/storage/usbcard1/";
-        String sd0path="/storage/sdcard0/";
-        if(new File(sdpath).exists()) { return sdpath+folder; }
-        else if(new File(sd1path).exists()) { return sd1path+folder; }
-        //else if(new File(sd2path).exists()) { return sd2path+folder; }
-        else if(new File(usbdiskpath).exists()) { return usbdiskpath+folder; }
-        else if(new File(sd0path).exists()) { return sd0path+folder; }
-        else return Environment.getExternalStorageDirectory().toString()+folder;
     }
 
     //Veiksmai pradinei mygtuko isvaizdai atstayti, kai nera kalibraciniu reiksmiu
