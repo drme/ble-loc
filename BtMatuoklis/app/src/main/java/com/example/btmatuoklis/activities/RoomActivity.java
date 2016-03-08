@@ -7,7 +7,6 @@ import android.bluetooth.BluetoothManager;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.os.Environment;
 import android.os.Handler;
 import android.os.Bundle;
 import android.view.ActionMode;
@@ -26,7 +25,6 @@ import android.widget.Toast;
 
 import com.example.btmatuoklis.R;
 import com.example.btmatuoklis.classes.AlertDialogBuilder;
-import com.example.btmatuoklis.classes.Beacon;
 import com.example.btmatuoklis.classes.Calibration;
 import com.example.btmatuoklis.classes.ExportCSVHelper;
 import com.example.btmatuoklis.classes.GlobalClass;
@@ -34,10 +32,7 @@ import com.example.btmatuoklis.classes.MySQLiteHelper;
 import com.example.btmatuoklis.classes.Room;
 import com.example.btmatuoklis.classes.ScanTools;
 import com.example.btmatuoklis.classes.Settings;
-import com.opencsv.CSVWriter;
 
-import java.io.File;
-import java.io.FileWriter;
 import java.util.ArrayList;
 
 public class RoomActivity extends Activity {
