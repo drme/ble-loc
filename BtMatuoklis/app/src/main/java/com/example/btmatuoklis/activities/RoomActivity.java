@@ -7,12 +7,8 @@ import android.bluetooth.BluetoothManager;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.database.Cursor;
-import android.database.sqlite.SQLiteDatabase;
-import android.os.Environment;
 import android.os.Handler;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.ActionMode;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -30,15 +26,13 @@ import android.widget.Toast;
 import com.example.btmatuoklis.R;
 import com.example.btmatuoklis.classes.AlertDialogBuilder;
 import com.example.btmatuoklis.classes.Calibration;
+import com.example.btmatuoklis.classes.ExportCSVHelper;
 import com.example.btmatuoklis.classes.GlobalClass;
 import com.example.btmatuoklis.classes.MySQLiteHelper;
 import com.example.btmatuoklis.classes.Room;
 import com.example.btmatuoklis.classes.ScanTools;
 import com.example.btmatuoklis.classes.Settings;
-import com.opencsv.CSVWriter;
 
-import java.io.File;
-import java.io.FileWriter;
 import java.util.ArrayList;
 
 public class RoomActivity extends Activity {
@@ -49,6 +43,7 @@ public class RoomActivity extends Activity {
     ScanTools scantools;
     Room currentRoom;
     MySQLiteHelper database;
+    ExportCSVHelper exportCSV;
     BluetoothAdapter mBluetoothAdapter;
     BluetoothAdapter.LeScanCallback mLeScanCallback;
     MenuItem exportItem;
@@ -83,19 +78,24 @@ public class RoomActivity extends Activity {
         getActionBar().getCustomView().setVisibility(View.INVISIBLE);
         MenuInflater inflater = getMenuInflater();
         inflater.inflate(R.menu.actionbar_room, menu);
-        exportItem = menu.findItem(R.id.action_export);
-        enableMenuItem(exportItem, false);
         return true;
+    }
+
+    @Override
+    public boolean onPrepareOptionsMenu(Menu menu) {
+        exportItem = menu.findItem(R.id.action_export);
+        if (currentRoom.getBeacons().isEmpty()){ this.finish(); }
+        else if (!currentRoom.isCalibrationStarted()){ restoreCalibrateButton(); }
+        else { resumeCalibrateButton(); }
+        return super.onPrepareOptionsMenu(menu);
     }
 
     @Override
     protected void onResume() {
         super.onResume();
+        invalidateOptionsMenu();
         reloadBoundDevices();
         checkCalibratedDevices();
-        if (currentRoom.getBeacons().isEmpty()){ this.finish(); }
-        else if (!currentRoom.isCalibrationStarted()){ restoreCalibrateButton(); }
-        else { resumeCalibrateButton(); }
     }
 
     @Override
@@ -137,6 +137,7 @@ public class RoomActivity extends Activity {
         scantools = new ScanTools();
         currentRoom = globalVariable.getRoomsArray().get(roomID);
         database = new MySQLiteHelper(this);
+        exportCSV = new ExportCSVHelper(this);
         boundBeaconsList = new ArrayList<String>();
         listAdapter = new ArrayAdapter<String>(this, R.layout.list_checked, boundBeaconsList);
         displayBeaconsList.setAdapter(listAdapter);
@@ -176,65 +177,16 @@ public class RoomActivity extends Activity {
             displayBeaconsList.setItemChecked(i, calibratedDevices.get(i));
             rssi = currentRoom.getBeacons().get(i).getFullRSSI().toString();
             beaconID = currentRoom.getBeacons().get(i).getID();
-            Calibration calibation = new Calibration(roomdID, beaconID, rssi);
-            database.updateCalibration(calibation);
+            database.updateCalibration(new Calibration(roomdID, beaconID, rssi));
         }
     }
 
-    private void exportRoomCSV() {
-        MySQLiteHelper dbhelper = new MySQLiteHelper(getApplicationContext());
-        String directory = getExternalStorageDirectory(getString(R.string.app_name));
-        File exportDir = new File(directory, "");
-        if (!exportDir.exists()) {
-            exportDir.mkdirs();
-        }
-
-        String fileName = getString(R.string.generic_calibrate)+currentRoom.getName()+".csv";
-        File file = new File(exportDir, fileName);
-        try {
-            file.createNewFile();
-            CSVWriter csvWrite = new CSVWriter(new FileWriter(file));
-            SQLiteDatabase db = dbhelper.getReadableDatabase();
-            String uzklausaSurinkimui = "SELECT rooms.name AS RoomName, beacons.name AS BeaconName," +
-                    "beacons.mac AS BeaconMac, calibrations.rssi AS RSSI " +
-                    "FROM calibrations " +
-                    "JOIN rooms ON (calibrations.roomid = rooms.id)"+
-                    "JOIN beacons ON (calibrations.beaconid = beacons.id)"+
-                    "WHERE roomid = " + Integer.toString(currentRoom.getID());
-            Cursor curCSV = db.rawQuery(uzklausaSurinkimui, null);
-            csvWrite.writeNext(curCSV.getColumnNames());
-            while (curCSV.moveToNext()) {
-                //Which column you want to exprort
-                String arrStr[] = {curCSV.getString(0), curCSV.getString(1), curCSV.getString(2), curCSV.getString(3)};
-                csvWrite.writeNext(arrStr);
-            }
-            csvWrite.close();
-            curCSV.close();
-            notifyExportedCSV(fileName, directory);
-        } catch (Exception sqlEx) {
-            //Log.e("MainActivity", sqlEx.getMessage(), sqlEx);
-        }
-    }
-
-    void notifyExportedCSV(String fileName, String directory){
+    void exportRoomCSV(){
+        String[] res = exportCSV.exportRoomCSV(currentRoom);
         Toast.makeText(getApplicationContext(), getString(R.string.toast_info_created_file1)+
-                        fileName+ getString(R.string.toast_info_created_file2)+
-                        getString(R.string.toast_info_created_file3)+directory,
+                        res[0]+ getString(R.string.toast_info_created_file2)+
+                        getString(R.string.toast_info_created_file3)+res[1],
                 Toast.LENGTH_LONG).show();
-    }
-
-    String getExternalStorageDirectory(String folder){
-        String sdpath="/storage/extSdCard/";
-        String sd1path="/storage/sdcard1/";
-        //String sd2path="/storage/external_SD/";
-        String usbdiskpath="/storage/usbcard1/";
-        String sd0path="/storage/sdcard0/";
-        if(new File(sdpath).exists()) { return sdpath+folder; }
-        else if(new File(sd1path).exists()) { return sd1path+folder; }
-        //else if(new File(sd2path).exists()) { return sd2path+folder; }
-        else if(new File(usbdiskpath).exists()) { return usbdiskpath+folder; }
-        else if(new File(sd0path).exists()) { return sd0path+folder; }
-        else return Environment.getExternalStorageDirectory().toString()+folder;
     }
 
     //Veiksmai pradinei mygtuko isvaizdai atstayti, kai nera kalibraciniu reiksmiu
@@ -243,7 +195,7 @@ public class RoomActivity extends Activity {
         buttonCalibrate.setText(getString(R.string.roomactivity_button_calibrate));
         buttonCalibrate.setEnabled(true);
         displayBeaconsList.setOnItemClickListener(null);
-        //enableMenuItem(exportItem, false);
+        enableMenuItem(exportItem, false);
         //Grizus i Activity arba rotate screen - reiktu vel atstatyti CSV export menu item
     }
 
@@ -253,7 +205,7 @@ public class RoomActivity extends Activity {
         buttonCalibrate.setText(getString(R.string.roomactivity_button_resume_calib));
         buttonCalibrate.setEnabled(true);
         setListListener();
-        //enableMenuItem(exportItem, true);
+        enableMenuItem(exportItem, true);
         //Grizus i Activity arba rotate screen - reiktu vel atstatyti CSV export menu item
     }
 
@@ -309,9 +261,7 @@ public class RoomActivity extends Activity {
         globalVariable.getRoomsArray().remove(roomID);
         globalVariable.getRoomsList().remove(roomID);
         if (globalVariable.getRoomsArray().isEmpty()){
-            database.deleteAll("rooms");
-            database.deleteAll("beacons");
-            database.deleteAll("calibrations");
+            database.clearDB();
             globalVariable.getRoomsArray().clear();
             globalVariable.getRoomsList().clear();
         }

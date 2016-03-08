@@ -63,7 +63,6 @@
     <!--Bendrai naudojami tekstai-->
     <string name="generic_hint">Hint</string>
     <string name="generic_value">value</string>
-    <string name="generic_calibrate">kalibracija.</string>
 
     <!--MainActivity elementu tekstai-->
     <string name="mainactivity_button_scan">Scan</string>
@@ -100,8 +99,8 @@
     <string name="roomactivity_text_name">Pavadinimas:\u0020</string>
     <string name="roomactivity_text_bound_devices">Susieti įrenginiai:</string>
     <string name="roomactivity_button_calibrate">Kalibruoti įrenginius</string>
-    <!--not used atm--> <string name="roomactivity_button_finish_calib">Baigti kalibraciją</string>
-    <!--not used atm--> <string name="roomactivity_button_resume_calib">Tęsti kalibraciją</string>
+    <string name="roomactivity_button_finish_calib">Baigti kalibraciją</string>
+    <string name="roomactivity_button_resume_calib">Tęsti kalibraciją</string>
 
     <!--BeaconActivity elementu tekstai-->
     <string name="beaconactivity_text_name">Patalpa:\u0020</string>
@@ -110,4 +109,11 @@
     <string name="beaconactivity_text_rssi_average">RSSI reikšmių vidurkis:\u0020</string>
     <string name="beaconactivity_text_rssi_max">RSSI Max:\u0020</string>
     <string name="beaconactivity_text_rssi_min">RSSI Min:\u0020</string>
+
+    <!--exportCSVHelper klases tekstai-->
+    <string name="exportcsv_name_calibrate">kalibracija</string>
+    <string name="exportcsv_column_beacon">BeaconName</string>
+    <string name="exportcsv_column_mac">BeaconMac</string>
+    <string name="exportcsv_column_rssi">RSSI</string>
+
 </resources>

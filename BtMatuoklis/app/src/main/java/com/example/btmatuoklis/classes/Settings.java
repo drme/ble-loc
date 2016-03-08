@@ -71,7 +71,7 @@ public class Settings implements SharedPreferences.OnSharedPreferenceChangeListe
         frequency = Short.parseShort(preferences.getString("savedDelay", Short.toString(defaultFrequency)));
         timeout = Byte.parseByte(preferences.getString("savedTimeout", Byte.toString(defaultTimeout)));
         shadow = Byte.parseByte(preferences.getString("savedShadow", Byte.toString(defaultShadow)));
-        accuracy = (byte)preferences.getInt("savedPercentage", defaultAccuracy);
+        accuracy = (byte)preferences.getInt("savedAccuracy", defaultAccuracy);
         txPower = (byte)preferences.getInt("savedTXPower", defaultTXPower);
         average = Byte.parseByte(preferences.getString("savedAverage", Byte.toString(defaultAverage)));
         generator = preferences.getBoolean("debugGenerator", defaultGenerator);

@@ -141,9 +141,7 @@ public class AllRoomsActivity extends Activity {
 
     void removeAllRooms(){
         MySQLiteHelper database = new MySQLiteHelper(this);
-        database.deleteAll("rooms");
-        database.deleteAll("beacons");
-        database.deleteAll("calibrations");
+        database.clearDB();
         roomsArray.clear();
         savedRoomsList.clear();
         listAdapter.notifyDataSetChanged();

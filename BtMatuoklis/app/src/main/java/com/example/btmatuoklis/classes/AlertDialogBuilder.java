@@ -16,7 +16,7 @@ public class AlertDialogBuilder {
     Context context;
     EditText input;
     int theme = AlertDialog.THEME_HOLO_DARK;
-    int inputType = InputType.TYPE_CLASS_TEXT;
+    int inputType = InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_FLAG_CAP_SENTENCES;
     int color = Color.WHITE;
 
     public AlertDialogBuilder(Context context, String title, String message, int icon) {

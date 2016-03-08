@@ -154,9 +154,7 @@ public class BeaconActivity extends Activity {
             globalVariable.getRoomsArray().remove(roomID);
             globalVariable.getRoomsList().remove(roomID);
             if (globalVariable.getRoomsArray().isEmpty()){
-                database.deleteAll("rooms");
-                database.deleteAll("beacons");
-                database.deleteAll("calibrations");
+                database.clearDB();
                 globalVariable.getRoomsArray().clear();
                 globalVariable.getRoomsList().clear();
             }
@@ -176,7 +174,7 @@ public class BeaconActivity extends Activity {
     }
 
     private byte calculateAverage(ArrayList<Byte> array){
-        int sum = 0;
+        long sum = 0;
         int size = array.size();
         if(!array.isEmpty()){
             for (int i = 0; i < size; i++){

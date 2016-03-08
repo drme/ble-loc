@@ -3,7 +3,6 @@ package com.example.btmatuoklis.classes;
 import com.example.btmatuoklis.activities.MainActivity;
 
 import java.util.ArrayList;
-import java.util.Collections;
 
 public class RoomDetector {
 
@@ -36,14 +35,23 @@ public class RoomDetector {
     }
 
     private short compareCalibrationShadow(ArrayList<Byte> calibrations, ArrayList<Byte> rssis){
-        byte min = Collections.min(calibrations);
+        long res = 0;
+        byte min = getMinRange(calibrations);
         int size = rssis.size();
-        short res = 0;
         for (short i = 0; i < size; i++){
             byte currentRSSI = rssis.get(i);
             if (currentRSSI >= min){ res += 100; }
         }
         return (short)(res/size);
+    }
+
+    private byte getMinRange(ArrayList<Byte> calibrations){
+        long res = 0;
+        int size = calibrations.size();
+        for (int i = 0; i < size; i++){
+            res += calibrations.get(i);
+        }
+        return (byte)(res/size);
     }
 
     private byte getAccuracy(){
