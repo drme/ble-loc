@@ -3,6 +3,7 @@ package com.example.btmatuoklis.classes;
 import com.example.btmatuoklis.activities.MainActivity;
 
 import java.util.ArrayList;
+import java.util.Collections;
 
 public class RoomDetector {
 
@@ -28,30 +29,21 @@ public class RoomDetector {
                     }
                 }
             }
-            if (max > getAccuracy() && roomID > -1) { return rooms.get(roomID).getName(); }
-            return "Neaptikta!";
+            if (max >= getAccuracy() && roomID > -1) { return "Esate patalpoje: "+rooms.get(roomID).getName(); }
+            return "Lokacija nenustatyta!";
         }
         return "Nėra sukurtų kambarių!";
     }
 
     private short compareCalibrationShadow(ArrayList<Byte> calibrations, ArrayList<Byte> rssis){
         long res = 0;
-        byte min = getMinRange(calibrations);
+        byte min = Collections.min(calibrations);
         int size = rssis.size();
         for (short i = 0; i < size; i++){
-            byte currentRSSI = rssis.get(i);
-            if (currentRSSI >= min){ res += 100; }
+            byte rssi = rssis.get(i);
+            if (rssi >= min){ res += 100; }
         }
         return (short)(res/size);
-    }
-
-    private byte getMinRange(ArrayList<Byte> calibrations){
-        long res = 0;
-        int size = calibrations.size();
-        for (int i = 0; i < size; i++){
-            res += calibrations.get(i);
-        }
-        return (byte)(res/size);
     }
 
     private byte getAccuracy(){

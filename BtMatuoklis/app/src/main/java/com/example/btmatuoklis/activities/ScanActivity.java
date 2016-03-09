@@ -129,7 +129,7 @@ public class ScanActivity extends Activity {
                     beaconsList.clear();
                     beaconsList.addAll(savedBeaconsList);
                     listAdapter.notifyDataSetChanged();
-                    detectedRoom.setText(getString(R.string.scanactivity_text_name)+roomName);
+                    detectedRoom.setText(roomName);
                 }
             }
         };
