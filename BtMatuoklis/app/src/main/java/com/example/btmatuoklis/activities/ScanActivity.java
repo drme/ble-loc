@@ -46,7 +46,7 @@ public class ScanActivity extends Activity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_scan);
-        getActionBar().setSubtitle(getString(R.string.subtitle_scan));
+        getActionBar().setSubtitle(getString(R.string.subtitle_scan)+":");
         detectedRoom = (TextView)findViewById(R.id.textScan_DetectedRoom);
         displayBeaconsList = (ListView)findViewById(R.id.listScan_BeaconsList);
 
