@@ -116,6 +116,32 @@ public class Beacon {
         return res;
     }
 
+    //Isvedame kiekvienos reiksmes pasikartojimu daznio sarasa
+    //Kad tinkamai veiktu, paduoti reiksmiu sarasa be dublikatu
+    //Darome prielaida, kad pasikartojanciu reiksmiu nebus daugiau nei 127, todel naudojam Byte tipa
+    public ArrayList<Byte> countRSSIFrequencies(){
+        ArrayList<Byte> uniques = getUniqueRSSIs();
+        ArrayList<Byte> frequencies = new ArrayList<Byte>();
+        for (int i = 0; i < uniques.size(); i++){
+            Byte value = uniques.get(i);
+            Byte res = (byte)Collections.frequency(this.rssi, value);
+            if (res > 0){
+                frequencies.add(res);
+            }
+        }
+        return frequencies;
+    }
+
+    public String getAllFrequencies(){
+        String res = "";
+        ArrayList<Byte> uniques = getUniqueRSSIs();
+        ArrayList<Byte> frequencies = countRSSIFrequencies();
+        for (int i = 0; i < uniques.size(); i++){
+            res += "\n"+uniques.get(i)+": "+frequencies.get(i);
+        }
+        return res;
+    }
+
     public int getID() {
         return id;
     }

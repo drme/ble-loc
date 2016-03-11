@@ -93,7 +93,7 @@ public class BeaconActivity extends Activity {
         rssiAverage = currentBeacon.getRSSIAverage();
         displayRoomName.setText(currentRoom.getName());
         displayBeacon.setText(currentBeacon.getInfo(""));
-        displayRSSIList.setText(currentBeacon.getFullRSSI().toString());
+        displayRSSIList.setText(currentBeacon.getFullRSSI().toString()+"\n[RSSI dažniai:]"+currentBeacon.getAllFrequencies());
         displayRSSINum.setText(Integer.toString(rssiArray.size()));
         displayRSSIAverage.setText(Byte.toString(rssiAverage));
         displayRSSIMax.setText(Byte.toString(rssiMax));
