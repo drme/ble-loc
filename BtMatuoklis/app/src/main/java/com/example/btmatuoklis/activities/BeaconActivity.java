@@ -21,7 +21,6 @@ import com.example.btmatuoklis.classes.MySQLiteHelper;
 import com.example.btmatuoklis.classes.Room;
 
 import java.util.ArrayList;
-import java.util.Collections;
 
 public class BeaconActivity extends Activity {
 
@@ -31,6 +30,7 @@ public class BeaconActivity extends Activity {
     Beacon currentBeacon;
     MySQLiteHelper database;
     ArrayList<Byte> rssiArray;
+    byte rssiMax, rssiMin, rssiAverage;
     TextView displayRoomName, displayBeacon, displayRSSIList;
     TextView displayRSSINum, displayRSSIAverage, displayRSSIMax, displayRSSIMin;
     View displayArrayFrame;
@@ -88,13 +88,16 @@ public class BeaconActivity extends Activity {
         currentBeacon = currentRoom.getBeacons().get(beaconID);
         database = new MySQLiteHelper(this);
         rssiArray = currentBeacon.getFullRSSI();
+        rssiMax = currentBeacon.getRSSIMax();
+        rssiMin = currentBeacon.getRSSIMin();
+        rssiAverage = currentBeacon.getRSSIAverage();
         displayRoomName.setText(currentRoom.getName());
         displayBeacon.setText(currentBeacon.getInfo(""));
         displayRSSIList.setText(currentBeacon.getFullRSSI().toString());
         displayRSSINum.setText(Integer.toString(rssiArray.size()));
-        displayRSSIAverage.setText(Byte.toString(calculateAverage(rssiArray)));
-        displayRSSIMax.setText(Byte.toString(Collections.max(rssiArray)));
-        displayRSSIMin.setText(Byte.toString(Collections.min(rssiArray)));
+        displayRSSIAverage.setText(Byte.toString(rssiAverage));
+        displayRSSIMax.setText(Byte.toString(rssiMax));
+        displayRSSIMin.setText(Byte.toString(rssiMin));
     }
 
     //RSSI reiksmiu vaizdo keitimas tarp vienos elutes daugelio eiluciu
@@ -171,17 +174,5 @@ public class BeaconActivity extends Activity {
             public void onClick(DialogInterface dialog, int which) { removeBeacon(); }});
         dialog.setNegatvie(getString(R.string.dialog_button_cancel));
         dialog.showDialog();
-    }
-
-    private byte calculateAverage(ArrayList<Byte> array){
-        long sum = 0;
-        int size = array.size();
-        if(!array.isEmpty()){
-            for (int i = 0; i < size; i++){
-                sum += array.get(i);
-            }
-            return (byte)(sum/size);
-        }
-        return (byte)sum;
     }
 }

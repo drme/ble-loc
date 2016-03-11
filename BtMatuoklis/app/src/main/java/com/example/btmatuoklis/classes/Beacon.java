@@ -3,6 +3,7 @@ package com.example.btmatuoklis.classes;
 import com.example.btmatuoklis.activities.MainActivity;
 
 import java.util.ArrayList;
+import java.util.Collections;
 
 public class Beacon {
     private String name;
@@ -68,6 +69,26 @@ public class Beacon {
         previousRSSI.addAll(this.rssi);
         previousRSSI.remove(this.rssi.size()-1);
         return previousRSSI;
+    }
+
+    public byte getRSSIMin(){
+        return Collections.min(this.rssi);
+    }
+
+    public byte getRSSIMax(){
+        return Collections.max(this.rssi);
+    }
+
+    public byte getRSSIAverage(){
+        long sum = 0;
+        int size = this.rssi.size();
+        if(!this.rssi.isEmpty()){
+            for (int i = 0; i < size; i++){
+                sum += this.rssi.get(i);
+            }
+            return (byte)(sum/size);
+        }
+        return (byte)sum;
     }
 
     public ArrayList<Byte> getFullRSSI(){
