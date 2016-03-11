@@ -4,6 +4,7 @@ import com.example.btmatuoklis.activities.MainActivity;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashSet;
 
 public class Beacon {
     private String name;
@@ -60,9 +61,7 @@ public class Beacon {
 
     public String getMAC(){ return this.mac; }
 
-    public Byte getCurrentRSSI(){
-        return this.rssi.get(rssi.size()-1);
-    }
+    public byte getCurrentRSSI(){ return this.rssi.get(rssi.size()-1); }
 
     public ArrayList<Byte> getPreviousRSSI(){
         ArrayList<Byte> previousRSSI = new ArrayList<Byte>();
@@ -71,29 +70,7 @@ public class Beacon {
         return previousRSSI;
     }
 
-    public byte getRSSIMin(){
-        return Collections.min(this.rssi);
-    }
-
-    public byte getRSSIMax(){
-        return Collections.max(this.rssi);
-    }
-
-    public byte getRSSIAverage(){
-        long sum = 0;
-        int size = this.rssi.size();
-        if(!this.rssi.isEmpty()){
-            for (int i = 0; i < size; i++){
-                sum += this.rssi.get(i);
-            }
-            return (byte)(sum/size);
-        }
-        return (byte)sum;
-    }
-
-    public ArrayList<Byte> getFullRSSI(){
-        return this.rssi;
-    }
+    public ArrayList<Byte> getFullRSSI(){ return this.rssi; }
 
     //BT irenginio informacija (List formavimui)
     public String getInfo(String choice) {
@@ -111,6 +88,32 @@ public class Beacon {
                 break;
         }
         return info;
+    }
+
+    public byte getRSSIMin(){ return Collections.min(this.rssi); }
+
+    public byte getRSSIMax(){
+        return Collections.max(this.rssi);
+    }
+
+    public byte getRSSIAverage(){
+        long sum = 0;
+        int size = this.rssi.size();
+        if(!this.rssi.isEmpty()){
+            for (int i = 0; i < size; i++){
+                sum += this.rssi.get(i);
+            }
+            return (byte)(sum/size);
+        }
+        return (byte)sum;
+    }
+
+    public ArrayList<Byte> getUniqueRSSIs(){
+        HashSet<Byte> unique = new HashSet<Byte>();
+        ArrayList<Byte> res = new ArrayList<Byte>();
+        unique.addAll(this.rssi);
+        res.addAll(unique);
+        return res;
     }
 
     public int getID() {
