@@ -58,7 +58,7 @@ public class RoomActivity extends Activity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_room);
         getActionBar().setSubtitle(getString(R.string.subtitle_existing_room));
-        displayRoomName = (TextView)findViewById(R.id.textSingleRoom_ActiveName);
+        displayRoomName = (TextView)findViewById(R.id.textSingleRoom_Name);
         displayBeaconsList = (ListView)findViewById(R.id.listSingleRoom_BeaconsList);
         buttonCalibrate = (Button)findViewById(R.id.buttonSingleRoom_Calibrate);
 
@@ -141,7 +141,7 @@ public class RoomActivity extends Activity {
         boundBeaconsList = new ArrayList<String>();
         listAdapter = new ArrayAdapter<String>(this, R.layout.list_checked, boundBeaconsList);
         displayBeaconsList.setAdapter(listAdapter);
-        displayRoomName.setText(currentRoom.getName());
+        displayRoomName.setText(getString(R.string.roomactivity_text_name)+" "+currentRoom.getName());
     }
 
     //Veiksmai kalibracijai pradeti
@@ -183,9 +183,8 @@ public class RoomActivity extends Activity {
 
     void exportRoomCSV(){
         String[] res = exportCSV.exportRoomCSV(currentRoom);
-        Toast.makeText(getApplicationContext(), getString(R.string.toast_info_created_file1)+
-                        res[0]+ getString(R.string.toast_info_created_file2)+
-                        getString(R.string.toast_info_created_file3)+res[1],
+        Toast.makeText(getApplicationContext(), getString(R.string.toast_info_created_file1)+" "+
+                        res[0]+" "+getString(R.string.toast_info_created_file2)+"\n"+res[1],
                 Toast.LENGTH_LONG).show();
     }
 

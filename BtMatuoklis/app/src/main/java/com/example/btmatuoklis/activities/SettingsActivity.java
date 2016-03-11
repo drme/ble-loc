@@ -63,17 +63,17 @@ public class SettingsActivity extends PreferenceActivity implements SharedPrefer
     //Jeigu programa leidziama ne pirma karta - nustatomos issaugotos reiksmes
     void setDefaultValues(){
         settings = MainActivity.settings;
-        editFrequency.setSummary(getString(R.string.settingsactivity_subtext_value) + settings.getFrequency() + "ms");
-        editTimeout.setSummary(getString(R.string.settingsactivity_subtext_value) + settings.getTimeout());
-        editShadow.setSummary(getString(R.string.settingsactivity_subtext_value) + settings.getShadow());
-        sliderAccuracy.setSummary(getString(R.string.settingsactivity_subtext_value) + settings.getAccuracy() + "%");
-        sliderTXPower.setSummary(getString(R.string.settingsactivity_subtext_value) + settings.getTXPower());
-        editAverage.setSummary(getString(R.string.settingsactivity_subtext_value) + settings.getAverage());
-        editFrequency.setDialogMessage(getString(R.string.settingsactivity_hint_frequency) + settings.getDefaultFrequency());
+        editFrequency.setSummary(getString(R.string.settingsactivity_subtext_value)+" "+settings.getFrequency() + "ms");
+        editTimeout.setSummary(getString(R.string.settingsactivity_subtext_value)+" "+settings.getTimeout());
+        editShadow.setSummary(getString(R.string.settingsactivity_subtext_value)+" "+settings.getShadow());
+        sliderAccuracy.setSummary(getString(R.string.settingsactivity_subtext_value)+" "+settings.getAccuracy()+"%");
+        sliderTXPower.setSummary(getString(R.string.settingsactivity_subtext_value)+" "+settings.getTXPower());
+        editAverage.setSummary(getString(R.string.settingsactivity_subtext_value)+" "+settings.getAverage());
+        editFrequency.setDialogMessage(getString(R.string.settingsactivity_hint_frequency)+" "+settings.getDefaultFrequency());
 
-        debugBeacons.setSummary(getString(R.string.settingsactivity_subtext_value) + settings.getDebugBeacons());
-        debugRSSIMin.setSummary(getString(R.string.settingsactivity_subtext_value) + settings.getDebugRSSIMin());
-        debugRSSIMax.setSummary(getString(R.string.settingsactivity_subtext_value) + settings.getDebugRSSIMax());
+        debugBeacons.setSummary(getString(R.string.settingsactivity_subtext_value)+" "+settings.getDebugBeacons());
+        debugRSSIMin.setSummary(getString(R.string.settingsactivity_subtext_value)+" "+settings.getDebugRSSIMin());
+        debugRSSIMax.setSummary(getString(R.string.settingsactivity_subtext_value)+" "+settings.getDebugRSSIMax());
         toogleDebugSettings(settings.isGeneratorEnabled());
 
         editTimeout.setEnabled(false);

@@ -55,7 +55,7 @@ public class NewRoomActivity extends Activity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_new_room);
-        getActionBar().setSubtitle(getString(R.string.subtitle_new_room_beacons));
+        getActionBar().setSubtitle(getString(R.string.subtitle_new_room_beacons)+":");
         displayBeaconsList = (ListView)findViewById(R.id.listNewRoom_BeaconsList);
         buttonAccept = (Button)findViewById(R.id.buttonNewRoom_End);
 
@@ -192,9 +192,9 @@ public class NewRoomActivity extends Activity {
 
     void notifyCreatedRoomAndBeacons(){
         Toast.makeText(getApplicationContext(), getString(R.string.toast_info_created_room1)+
-                roomName+getString(R.string.toast_info_created_room2)+
-                getString(R.string.toast_info_created_room3)+
-                currentRoom.getBeacons().size(), Toast.LENGTH_SHORT).show();
+                " \""+roomName+"\" "+getString(R.string.toast_info_created_room2)+"\n"+
+                getString(R.string.toast_info_created_room3)+" "+ currentRoom.getBeacons().size(),
+                Toast.LENGTH_SHORT).show();
     }
 
     //Sukuriamas Bluetooth adapteris

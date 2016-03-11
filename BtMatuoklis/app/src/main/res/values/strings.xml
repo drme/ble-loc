@@ -46,12 +46,11 @@
     <string name="toast_info_saved">Išsaugota</string>
     <string name="toast_info_removed">Pašalinta</string>
     <string name="toast_info_cancelled">Atšaukta</string>
-    <string name="toast_info_created_file1">Failas\u0020</string>
-    <string name="toast_info_created_file2">\u0020išsaugotas</string>
-    <string name="toast_info_created_file3">\u0020aplanke:\n</string>
-    <string name="toast_info_created_room1">Patalpa \"</string>
-    <string name="toast_info_created_room2">\" sukurta</string>
-    <string name="toast_info_created_room3">\nPriskirta įrenginių:\u0020</string>
+    <string name="toast_info_created_file1">Failas</string>
+    <string name="toast_info_created_file2">išsaugotas aplanke:</string>
+    <string name="toast_info_created_room1">Patalpa</string>
+    <string name="toast_info_created_room2">sukurta</string>
+    <string name="toast_info_created_room3">Priskirta įrenginių:</string>
 
     <!--Beacon informacijos tekstai-->
     <!--Siuo metu niekur nepanaudoti-->
@@ -78,11 +77,11 @@
     <string name="settingsactivity_text_txpower">Įrenginių Signalo Galingumas</string>
     <string name="settingsactivity_text_average">Vidurkio Reikšmių Kiekis</string>
     <string name="settingsactivity_hint_frequency">Rekomenduotinos reikšmės intervale: [250; 5000], default -\u0020</string>
-    <string name="settingsactivity_hint_timeout">Ši reikšmė nurodo kas kiek ciklų bus išvalomas aptiktų įrenginių sąrašas.\nIšvalymo dažnis * Matavimų Dažnis = x ms </string>
+    <string name="settingsactivity_hint_timeout">Ši reikšmė nurodo kas kiek ciklų bus išvalomas aptiktų įrenginių sąrašas.\nIšvalymo dažnis * Matavimų Dažnis = x ms</string>
     <string name="settingsactivity_hint_shadow">Ši reikšmė nurodo kiek RSSI reikšmių saugoti aktyvaus Scan rėžimo metu</string>
     <string name="settingsactivity_hint_accuracy">Koks procentas visų aptikto įrenginio reikšmių turi pakliūti į sukalibruotą intervalą</string>
     <string name="settingsactivity_hint_txpower">Dabartinis aptinkamų įrenginių signalo galingumas:</string>
-    <string name="settingsactivity_subtext_value">Dabartinis:\u0020</string>
+    <string name="settingsactivity_subtext_value">Dabartinis:</string>
     <string name="settingsactivity_debug_slider_generator">Generatorius</string>
     <string name="settingsactivity_debug_hint_generator">Netikrų įrenginių/reikšmių generatorius</string>
     <string name="settingsactivity_debug_beacons">Generuojamų Įrenginių Kiekis</string>
@@ -90,13 +89,13 @@
     <string name="settingsactivity_debug_rssi_max">Maksimali Generuojama RSSI Reikšmė</string>
 
     <!--ScanActivity elementu tekstai-->
-    <string name="scanactivity_text_name">Esate patalpoje:\u0020</string>
+    <string name="scanactivity_text_name">Esate patalpoje:</string>
 
     <!--NewRoomActivity elementu tekstai-->
     <string name="newroomactivity_button_finish">Baigti</string>
 
     <!--RoomActivity elementu tekstai-->
-    <string name="roomactivity_text_name">Pavadinimas:\u0020</string>
+    <string name="roomactivity_text_name">Pavadinimas:</string>
     <string name="roomactivity_text_bound_devices">Susieti įrenginiai:</string>
     <string name="roomactivity_button_calibrate">Kalibruoti įrenginius</string>
     <string name="roomactivity_button_finish_calib">Baigti kalibraciją</string>
