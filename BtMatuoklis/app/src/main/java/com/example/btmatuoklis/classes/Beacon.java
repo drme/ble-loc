@@ -132,16 +132,6 @@ public class Beacon {
         return frequencies;
     }
 
-    public String getAllFrequencies(){
-        String res = "";
-        ArrayList<Byte> uniques = getUniqueRSSIs();
-        ArrayList<Byte> frequencies = countRSSIFrequencies();
-        for (int i = 0; i < uniques.size(); i++){
-            res += "\n"+uniques.get(i)+": "+frequencies.get(i);
-        }
-        return res;
-    }
-
     public int getID() {
         return id;
     }

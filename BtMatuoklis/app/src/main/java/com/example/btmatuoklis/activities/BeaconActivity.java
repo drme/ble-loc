@@ -16,6 +16,7 @@ import com.example.btmatuoklis.R;
 import com.example.btmatuoklis.classes.AlertDialogBuilder;
 import com.example.btmatuoklis.classes.Beacon;
 import com.example.btmatuoklis.classes.Calibration;
+import com.example.btmatuoklis.classes.ChartHelper;
 import com.example.btmatuoklis.classes.GlobalClass;
 import com.example.btmatuoklis.classes.MySQLiteHelper;
 import com.example.btmatuoklis.classes.Room;
@@ -93,11 +94,14 @@ public class BeaconActivity extends Activity {
         rssiAverage = currentBeacon.getRSSIAverage();
         displayRoomName.setText(currentRoom.getName());
         displayBeacon.setText(currentBeacon.getInfo(""));
-        displayRSSIList.setText(currentBeacon.getFullRSSI().toString()+"\n[RSSI dažniai:]"+currentBeacon.getAllFrequencies());
+        displayRSSIList.setText(currentBeacon.getFullRSSI().toString());
         displayRSSINum.setText(Integer.toString(rssiArray.size()));
         displayRSSIAverage.setText(Byte.toString(rssiAverage));
         displayRSSIMax.setText(Byte.toString(rssiMax));
         displayRSSIMin.setText(Byte.toString(rssiMin));
+
+        displayChart(R.id.viewBeacon_chart1);
+        displayChart(R.id.viewBeacon_chart2);
     }
 
     //RSSI reiksmiu vaizdo keitimas tarp vienos elutes daugelio eiluciu
@@ -171,8 +175,16 @@ public class BeaconActivity extends Activity {
                 getString(R.string.dialog_remove_beacon), android.R.drawable.ic_dialog_alert);
         dialog.getBuilder().setPositiveButton(getString(R.string.dialog_button_ok), new DialogInterface.OnClickListener() {
             @Override
-            public void onClick(DialogInterface dialog, int which) { removeBeacon(); }});
+            public void onClick(DialogInterface dialog, int which) {
+                removeBeacon();
+            }
+        });
         dialog.setNegatvie(getString(R.string.dialog_button_cancel));
         dialog.showDialog();
+    }
+
+    void displayChart(int id){
+        ChartHelper chart = new ChartHelper();
+        chart.setDashboardContent(this, currentBeacon, id);
     }
 }

@@ -134,5 +134,41 @@
     <View style="@style/Divider"
         android:id="@+id/view4"
         android:layout_below="@+id/textBeacon_StaticRSSIMin" />
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceMedium"
+        android:textAlignment="center"
+        android:id="@+id/textBeacon_title_chart1"
+        android:layout_alignParentStart="true"
+        android:layout_below="@+id/view4"
+        android:text="@string/beaconactivity_title_chart1" />
+
+    <View
+        android:id="@+id/viewBeacon_chart1"
+        android:layout_width="match_parent"
+        android:layout_height="200dp"
+        android:layout_below="@+id/textBeacon_title_chart1" />
+
+    <View style="@style/Divider"
+        android:id="@+id/view5"
+        android:layout_below="@+id/viewBeacon_chart1" />
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceMedium"
+        android:textAlignment="center"
+        android:id="@+id/textBeacon_title_chart2"
+        android:layout_alignParentStart="true"
+        android:layout_below="@+id/view5"
+        android:text="@string/beaconactivity_title_chart1" />
+
+    <View
+        android:id="@+id/viewBeacon_chart2"
+        android:layout_width="match_parent"
+        android:layout_height="200dp"
+        android:layout_below="@+id/textBeacon_title_chart2" />
 </RelativeLayout>
 </ScrollView>
