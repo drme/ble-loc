@@ -28,14 +28,62 @@ public class ChartHelper {
 
     public ChartHelper(){}
 
-    public void setDashboardContent(Activity activity, Beacon beacon, int id)
+    public void setFullChart(Activity activity, Beacon beacon, int id)
     {
-        View view = Chart(activity, beacon);
+        View view = fullChart(activity, beacon);
         replaceView(activity, id, view);
         view.setId(id);
     }
 
-    protected lt.monarch.chart.android.AndroidChart Chart(Context context, Beacon beacon) {
+    public void setRangeChart(Activity activity, Beacon beacon, int id)
+    {
+        View view = rangeChart(activity, beacon);
+        replaceView(activity, id, view);
+        view.setId(id);
+    }
+
+    protected lt.monarch.chart.android.AndroidChart fullChart(Context context, Beacon beacon) {
+
+        LabelAxisMapper xMapper = new LabelAxisMapper();
+        ChartDataModel RSSIdata = new ChartDataModel();
+
+        ArrayList<Byte> uniqueRSSIs = beacon.getUniqueRSSIs();
+        ArrayList<Byte> frequnecies = beacon.countRSSIFrequencies();
+
+        for (int i = 0; i < uniqueRSSIs.size(); i++){
+            xMapper.registerKey(uniqueRSSIs.get(i));
+            RSSIdata.add(new Object[]{uniqueRSSIs.get(i), frequnecies.get(i)});
+        }
+
+        MathAxisMapper yMapper = new MathAxisMapper(0d, Collections.max(frequnecies)+1);
+
+        Axis2DX xAxis = new Axis2DX(xMapper);
+        xAxis.setTitle("RSSI");
+        Axis2DY yAxis = new Axis2DY(yMapper);
+        yAxis.setTitle("Pasikartojimų kiekis");
+
+        BarSeries connectedSeries1 = new BarSeries(RSSIdata, xMapper, yMapper);
+
+        connectedSeries1.setName("RSSI");
+
+        connectedSeries1.setStrategy(BarStrategies.BAR_STRATEGY);
+
+        connectedSeries1.getPaintStyle().setForeground(new lt.monarch.chart.android.stubs.java.awt.Color(219, 67, 47));
+        connectedSeries1.getPaintStyle().setStroke(new BasicStroke(2));
+
+        Grid grid = new Grid(new PlaneMapper2D(), null, yMapper);
+
+        Chart2D chart = new Chart2D();
+        chart.setObjects(new ChartObject[] { grid, connectedSeries1});
+        xAxis.setAxisPosition(yAxis, 0);
+        chart.setXAxis(xAxis);
+        chart.setYAxis(yAxis);
+
+        LabeledChart m_chart = new LabeledChart(chart);
+        return new AndroidChart(m_chart, context);
+    }
+
+    protected lt.monarch.chart.android.AndroidChart rangeChart(Context context, Beacon beacon) {
 
         int step = 10;
         ArrayList<Byte> rssiArray;

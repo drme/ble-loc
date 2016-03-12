@@ -4,6 +4,7 @@ import com.example.btmatuoklis.activities.MainActivity;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashSet;
 
 public class Beacon {
@@ -113,6 +114,12 @@ public class Beacon {
         ArrayList<Byte> res = new ArrayList<Byte>();
         unique.addAll(this.rssi);
         res.addAll(unique);
+        Collections.sort(res, new Comparator<Byte>() {
+            @Override
+            public int compare(Byte lhs, Byte rhs) {
+                return rhs.compareTo(lhs);
+            }
+        });
         return res;
     }
 
