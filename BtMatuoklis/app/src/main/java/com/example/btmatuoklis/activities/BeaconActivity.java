@@ -102,6 +102,7 @@ public class BeaconActivity extends Activity {
 
         displayChart(R.id.viewBeacon_chart1, 0);
         displayChart(R.id.viewBeacon_chart2, 1);
+        displayChart(R.id.viewBeacon_chart3, 2);
     }
 
     //RSSI reiksmiu vaizdo keitimas tarp vienos elutes daugelio eiluciu
@@ -187,6 +188,9 @@ public class BeaconActivity extends Activity {
         ChartHelper chart = new ChartHelper();
         switch (type) {
             case 1:
+                chart.setFullSpacedChart(this, currentBeacon, id);
+                break;
+            case 2:
                 chart.setRangeChart(this, currentBeacon, id);
                 break;
             default:

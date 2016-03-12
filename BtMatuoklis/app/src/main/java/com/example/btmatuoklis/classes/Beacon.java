@@ -1,5 +1,7 @@
 package com.example.btmatuoklis.classes;
 
+import android.util.Log;
+
 import com.example.btmatuoklis.activities.MainActivity;
 
 import java.util.ArrayList;
@@ -123,6 +125,17 @@ public class Beacon {
         return res;
     }
 
+    public ArrayList<Byte> getSpacedUniqueRSSIs(){
+        ArrayList<Byte> unique = getUniqueRSSIs();
+        ArrayList<Byte> spaced = new ArrayList<Byte>();
+        Byte minRSSI = Collections.min(unique);
+        Byte maxRSSI = Collections.max(unique);
+        for (byte i = (byte)(maxRSSI+1); i > (minRSSI-2); i-- ){
+            spaced.add(i);
+        }
+        return spaced;
+    }
+
     //Isvedame kiekvienos reiksmes pasikartojimu daznio sarasa
     //Kad tinkamai veiktu, paduoti reiksmiu sarasa be dublikatu
     //Darome prielaida, kad pasikartojanciu reiksmiu nebus daugiau nei 127, todel naudojam Byte tipa
@@ -134,6 +147,23 @@ public class Beacon {
             Byte res = (byte)Collections.frequency(this.rssi, value);
             if (res > 0){
                 frequencies.add(res);
+            }
+        }
+        Log.d("Spaced RSSIs", getSpacedUniqueRSSIs().toString());
+        Log.d("Spaced RSSI freqs", countSpacedRSSIFrequencies().toString());
+        return frequencies;
+    }
+
+    public ArrayList<Byte> countSpacedRSSIFrequencies(){
+        ArrayList<Byte> uniques = getUniqueRSSIs();
+        ArrayList<Byte> spacedUniques = getSpacedUniqueRSSIs();
+        ArrayList<Byte> frequencies = new ArrayList<Byte>();
+        for (int i = 0; i < spacedUniques.size(); i++) {
+            Byte value = spacedUniques.get(i);
+            if (uniques.contains(value)) {
+                frequencies.add((byte)Collections.frequency(this.rssi, value));
+            } else {
+                frequencies.add((byte)0);
             }
         }
         return frequencies;
