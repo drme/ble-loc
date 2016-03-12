@@ -23,4 +23,5 @@ dependencies {
     compile fileTree(include: ['*.jar'], dir: 'libs')
     /*androidTestCompile 'junit:junit:4.12'*/
     compile project(':opencsv-3.7')
+    compile project(':mcharts_a')
 }

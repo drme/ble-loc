@@ -78,5 +78,6 @@
     <orderEntry type="jdk" jdkName="Android API 23 Platform" jdkType="Android SDK" />
     <orderEntry type="sourceFolder" forTests="false" />
     <orderEntry type="module" module-name="opencsv-3.7" exported="" />
+    <orderEntry type="module" module-name="mcharts_a" exported="" />
   </component>
 </module>
