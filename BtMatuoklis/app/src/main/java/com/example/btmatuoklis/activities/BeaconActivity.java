@@ -100,8 +100,8 @@ public class BeaconActivity extends Activity {
         displayRSSIMax.setText(Byte.toString(rssiMax));
         displayRSSIMin.setText(Byte.toString(rssiMin));
 
-        displayChart(R.id.viewBeacon_chart1);
-        //displayChart(R.id.viewBeacon_chart2);
+        displayChart(R.id.viewBeacon_chart1, 0);
+        displayChart(R.id.viewBeacon_chart2, 1);
     }
 
     //RSSI reiksmiu vaizdo keitimas tarp vienos elutes daugelio eiluciu
@@ -183,8 +183,15 @@ public class BeaconActivity extends Activity {
         dialog.showDialog();
     }
 
-    void displayChart(int id){
+    void displayChart(int id, int type){
         ChartHelper chart = new ChartHelper();
-        chart.setDashboardContent(this, currentBeacon, id);
+        switch (type) {
+            case 1:
+                chart.setRangeChart(this, currentBeacon, id);
+                break;
+            default:
+                chart.setFullChart(this, currentBeacon, id);
+                break;
+        }
     }
 }
