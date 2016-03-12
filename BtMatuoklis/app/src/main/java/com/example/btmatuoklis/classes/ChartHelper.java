@@ -81,7 +81,7 @@ public class ChartHelper {
     protected lt.monarch.chart.android.AndroidChart fullSpacedChart(Context context, Beacon beacon) {
         LabelAxisMapper xMapper = new LabelAxisMapper();
         ChartDataModel RSSIdata = new ChartDataModel();
-        ArrayList<Byte> uniqueRSSIs = beacon.getSpacedUniqueRSSIs();
+        ArrayList<Byte> uniqueRSSIs = beacon.getSpacedRSSIs();
         ArrayList<Byte> frequnecies = beacon.countSpacedRSSIFrequencies();
         for (int i = 0; i < uniqueRSSIs.size(); i++){
             xMapper.registerKey(uniqueRSSIs.get(i));

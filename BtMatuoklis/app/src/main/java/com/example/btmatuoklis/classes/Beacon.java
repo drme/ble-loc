@@ -1,7 +1,5 @@
 package com.example.btmatuoklis.classes;
 
-import android.util.Log;
-
 import com.example.btmatuoklis.activities.MainActivity;
 
 import java.util.ArrayList;
@@ -125,11 +123,10 @@ public class Beacon {
         return res;
     }
 
-    public ArrayList<Byte> getSpacedUniqueRSSIs(){
-        ArrayList<Byte> unique = getUniqueRSSIs();
+    public ArrayList<Byte> getSpacedRSSIs(){
         ArrayList<Byte> spaced = new ArrayList<Byte>();
-        Byte minRSSI = Collections.min(unique);
-        Byte maxRSSI = Collections.max(unique);
+        Byte minRSSI = Collections.min(this.rssi);
+        Byte maxRSSI = Collections.max(this.rssi);
         for (byte i = (byte)(maxRSSI+1); i > (minRSSI-2); i-- ){
             spaced.add(i);
         }
@@ -149,14 +146,12 @@ public class Beacon {
                 frequencies.add(res);
             }
         }
-        Log.d("Spaced RSSIs", getSpacedUniqueRSSIs().toString());
-        Log.d("Spaced RSSI freqs", countSpacedRSSIFrequencies().toString());
         return frequencies;
     }
 
     public ArrayList<Byte> countSpacedRSSIFrequencies(){
         ArrayList<Byte> uniques = getUniqueRSSIs();
-        ArrayList<Byte> spacedUniques = getSpacedUniqueRSSIs();
+        ArrayList<Byte> spacedUniques = getSpacedRSSIs();
         ArrayList<Byte> frequencies = new ArrayList<Byte>();
         for (int i = 0; i < spacedUniques.size(); i++) {
             Byte value = spacedUniques.get(i);
