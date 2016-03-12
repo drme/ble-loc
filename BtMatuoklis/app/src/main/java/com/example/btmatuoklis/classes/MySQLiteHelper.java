@@ -26,10 +26,6 @@ public class MySQLiteHelper extends SQLiteOpenHelper {
     private static final String KEY_BEACONID = "beaconid";
     private static final String KEY_RSSI = "rssi";
 
-    private static final String[] ROOMSCOLUMNS = {KEY_ID,KEY_NAME};
-    private static final String[] BEACONSCOLUMNS = {KEY_ID,KEY_NAME,KEY_MAC};
-    private static final String[] CALIBRATIONSCOLUMNS = {KEY_ID,KEY_ROOMID,KEY_BEACONID,KEY_RSSI};
-
     public MySQLiteHelper(Context context) {
         super(context, DATABASE_NAME, null, DATABASE_VERSION);
     }
@@ -109,7 +105,7 @@ public class MySQLiteHelper extends SQLiteOpenHelper {
 
     public ArrayList<Room> getAllRooms() {
         ArrayList<Room> rooms = new ArrayList<Room>();
-        String query = "SELECT * FROM " + TABLE_ROOMS;
+        String query = "SELECT * FROM "+TABLE_ROOMS;
         SQLiteDatabase database = this.getWritableDatabase();
         Cursor cursor = database.rawQuery(query, null);
         if (cursor.moveToFirst()) {
@@ -123,14 +119,13 @@ public class MySQLiteHelper extends SQLiteOpenHelper {
 
     public void loadAllBeacons(ArrayList<Room> rooms){
         SQLiteDatabase database = this.getReadableDatabase();
+        String query = "SELECT "+TABLE_BEACONS+"."+KEY_ID+", "+TABLE_BEACONS+"."+KEY_NAME+
+                ", "+TABLE_BEACONS+"."+KEY_MAC+", "+TABLE_CALIBRATIONS+"."+KEY_RSSI+
+                " FROM "+TABLE_BEACONS+" INNER JOIN "+TABLE_CALIBRATIONS+
+                " ON ("+TABLE_BEACONS+"."+KEY_ID+" = "+TABLE_CALIBRATIONS+"."+KEY_BEACONID+
+                ") WHERE "+TABLE_CALIBRATIONS+"."+KEY_ROOMID+" = ?";
         for (int i = 0; i < rooms.size(); i++) {
             Room room = rooms.get(i);
-            String query = "SELECT "+TABLE_BEACONS+"."+KEY_ID+", "+TABLE_BEACONS+"."+KEY_NAME+
-                    ", "+TABLE_BEACONS+"."+KEY_MAC+", "+TABLE_CALIBRATIONS+"."+KEY_RSSI+
-                    " FROM "+TABLE_CALIBRATIONS+" JOIN "+TABLE_ROOMS+" ON ("+TABLE_CALIBRATIONS+
-                    "."+KEY_ROOMID+" = "+TABLE_ROOMS+"."+KEY_ID+") JOIN "+TABLE_BEACONS+
-                    " ON ("+TABLE_CALIBRATIONS+"."+KEY_BEACONID+" = "+TABLE_BEACONS+
-                    "."+KEY_ID+") WHERE "+KEY_ROOMID+" = ?";
             Cursor cursor = database.rawQuery(query, new String[]{Integer.toString(room.getID())});
             if (cursor.moveToFirst()){
                 do{
@@ -185,19 +180,19 @@ public class MySQLiteHelper extends SQLiteOpenHelper {
 
     public void deleteRoom(int id) {
         SQLiteDatabase database = this.getWritableDatabase();
-        database.delete(TABLE_ROOMS, KEY_ID + " = ?", new String[]{String.valueOf(id)});
+        database.delete(TABLE_ROOMS, KEY_ID+" = ?", new String[]{String.valueOf(id)});
         database.close();
     }
 
     public void deleteBeacon(int id) {
         SQLiteDatabase database = this.getWritableDatabase();
-        database.delete(TABLE_BEACONS, KEY_ID + " = ?", new String[]{String.valueOf(id)});
+        database.delete(TABLE_BEACONS, KEY_ID+" = ?", new String[]{String.valueOf(id)});
         database.close();
     }
 
     public void deleteCalibration(int id) {
         SQLiteDatabase database = this.getWritableDatabase();
-        database.delete(TABLE_CALIBRATIONS, KEY_ID + " = ?", new String[]{String.valueOf(id)});
+        database.delete(TABLE_CALIBRATIONS, KEY_ID+" = ?", new String[]{String.valueOf(id)});
         database.close();
     }
 
