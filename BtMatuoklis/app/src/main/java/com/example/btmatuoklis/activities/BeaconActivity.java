@@ -101,7 +101,7 @@ public class BeaconActivity extends Activity {
         displayRSSIMin.setText(Byte.toString(rssiMin));
 
         displayChart(R.id.viewBeacon_chart1);
-        displayChart(R.id.viewBeacon_chart2);
+        //displayChart(R.id.viewBeacon_chart2);
     }
 
     //RSSI reiksmiu vaizdo keitimas tarp vienos elutes daugelio eiluciu

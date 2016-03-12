@@ -155,7 +155,7 @@
         android:id="@+id/view5"
         android:layout_below="@+id/viewBeacon_chart1" />
 
-    <TextView
+<!--    <TextView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:textAppearance="?android:attr/textAppearanceMedium"
@@ -169,6 +169,6 @@
         android:id="@+id/viewBeacon_chart2"
         android:layout_width="match_parent"
         android:layout_height="200dp"
-        android:layout_below="@+id/textBeacon_title_chart2" />
+        android:layout_below="@+id/textBeacon_title_chart2" />-->
 </RelativeLayout>
 </ScrollView>
