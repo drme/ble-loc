@@ -141,7 +141,7 @@ public class RoomActivity extends Activity {
         boundBeaconsList = new ArrayList<String>();
         listAdapter = new ArrayAdapter<String>(this, R.layout.list_checked, boundBeaconsList);
         displayBeaconsList.setAdapter(listAdapter);
-        displayRoomName.setText(getString(R.string.roomactivity_text_name)+" "+currentRoom.getName());
+        displayRoomName.setText(getString(R.string.roomactivity_text_name) + " " + currentRoom.getName());
     }
 
     //Veiksmai kalibracijai pradeti
@@ -256,7 +256,9 @@ public class RoomActivity extends Activity {
 
     void removeRoom(){
         globalVariable.setScanning(false);
+        database.deleteBeacons(currentRoom.getBeaconsIDs());
         database.deleteRoom(currentRoom.getID());
+        database.deleteCalibrations(currentRoom.getID());
         globalVariable.getRoomsArray().remove(roomID);
         globalVariable.getRoomsList().remove(roomID);
         if (globalVariable.getRoomsArray().isEmpty()){
