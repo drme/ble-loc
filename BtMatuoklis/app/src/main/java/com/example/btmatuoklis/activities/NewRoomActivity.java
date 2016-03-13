@@ -55,7 +55,7 @@ public class NewRoomActivity extends Activity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_new_room);
-        getActionBar().setSubtitle(getString(R.string.subtitle_new_room_beacons)+":");
+        getActionBar().setSubtitle(getString(R.string.subtitle_new_room_beacons));
         displayBeaconsList = (ListView)findViewById(R.id.listNewRoom_BeaconsList);
         buttonAccept = (Button)findViewById(R.id.buttonNewRoom_End);
 

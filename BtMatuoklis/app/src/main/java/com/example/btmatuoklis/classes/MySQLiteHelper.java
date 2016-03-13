@@ -47,8 +47,8 @@ public class MySQLiteHelper extends SQLiteOpenHelper {
     @Override
     public void onUpgrade(SQLiteDatabase database, int oldVersion, int newVersion) {
         database.execSQL("DROP TABLE IF EXISTS "+TABLE_ROOMS);
-        database.execSQL("DROP TABLE IF EXISTS "+TABLE_BEACONS);
-        database.execSQL("DROP TABLE IF EXISTS "+TABLE_CALIBRATIONS);
+        database.execSQL("DROP TABLE IF EXISTS " + TABLE_BEACONS);
+        database.execSQL("DROP TABLE IF EXISTS " + TABLE_CALIBRATIONS);
         this.onCreate(database);
     }
 
@@ -190,9 +190,37 @@ public class MySQLiteHelper extends SQLiteOpenHelper {
         database.close();
     }
 
+    public void deleteBeacons(ArrayList<Integer> ids) {
+        SQLiteDatabase database = this.getWritableDatabase();
+        if (!ids.isEmpty()){
+            for (int i = 0; i < ids.size(); i++){
+                database.delete(TABLE_BEACONS, KEY_ID + " = ?", new String[]{String.valueOf(ids.get(i))});
+            }
+            database.close();
+        }
+        /*String query = "DELETE FROM "+TABLE_BEACONS+" WHERE "+KEY_ID+" IN ";
+        String list = "";
+        if (!ids.isEmpty()){
+            for (int i = 0; i < ids.size(); i++){
+                if (i != 0){ list += ", "+ids.get(i);}
+                else { list += ids.get(i); }
+            }
+            list = "("+list+")";
+            //database.delete(TABLE_BEACONS, KEY_ID+" IN ?", new String[]{list});
+            database.rawQuery(query+list, null);
+            database.close();
+        }*/
+    }
+
     public void deleteCalibration(int id) {
         SQLiteDatabase database = this.getWritableDatabase();
         database.delete(TABLE_CALIBRATIONS, KEY_ID+" = ?", new String[]{String.valueOf(id)});
+        database.close();
+    }
+
+    public void deleteCalibrations(int id) {
+        SQLiteDatabase database = this.getWritableDatabase();
+        database.delete(TABLE_CALIBRATIONS, KEY_ROOMID+" = ?", new String[]{String.valueOf(id)});
         database.close();
     }
 
