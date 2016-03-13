@@ -133,7 +133,12 @@ public class ChartHelper {
             xMapper.registerKey(Key);
             RSSIdata.add(new Object[]{Key, count});
         }
-        int maxFrequency = Collections.max(countArray);
+
+        //Temporary fix
+        int maxFrequency;
+        if (countArray.size() != 0){ maxFrequency = Collections.max(countArray); }
+        else { maxFrequency = 0; }
+
         MathAxisMapper yMapper = new MathAxisMapper(0d, maxFrequency+1);
         Axis2DX xAxis = new Axis2DX(xMapper);
         xAxis.setTitle("RSSI");
