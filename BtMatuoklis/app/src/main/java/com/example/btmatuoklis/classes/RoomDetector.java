@@ -7,19 +7,27 @@ import java.util.Collections;
 
 public class RoomDetector {
 
-    public RoomDetector() {}
+    String locatedIn = "Esate patalpoje: ";
+    String notDetected = "Lokacija nenustatyta!";
+    String noRooms = "Nėra sukurtų kambarių!";
+    ArrayList<Byte> coeff;
+    ArrayList<Integer> indexes;
+    ArrayList<Beacon> scannedBeacons;
+    Beacon scannedBeacon, calibratedBeacon;
+    Settings settings;
+
+    public RoomDetector() {
+        settings = MainActivity.settings;
+    }
 
     public String getRoomName(RoomsArray created, RoomsArray enviroment){
-        String locatedIn = "Esate patalpoje: ";
-        String notDetected = "Lokacija nenustatyta!";
-        String noRooms = "Nėra sukurtų kambarių!";
         if (!created.getArray().isEmpty()) {
-            ArrayList<Byte> coeff = new ArrayList<Byte>();
-            ArrayList<Integer> indexes = new ArrayList<Integer>();
-            ArrayList<Beacon> scannedBeacons = enviroment.getFullBeaconList();
+            coeff = new ArrayList<Byte>();
+            indexes = new ArrayList<Integer>();
+            scannedBeacons = enviroment.getFullBeaconList();
             for (int i = 0; i < scannedBeacons.size(); i++){
-                Beacon scannedBeacon = scannedBeacons.get(i);
-                Beacon calibratedBeacon = created.findBeacon(scannedBeacon.getMAC());
+                scannedBeacon = scannedBeacons.get(i);
+                calibratedBeacon = created.findBeacon(scannedBeacon.getMAC());
                 if (calibratedBeacon != null){
                     byte res = compareCalibrationShadow(calibratedBeacon.getFullRSSI(), scannedBeacon.getFullRSSI());
                     if (res < 0){ coeff.add(res); indexes.add(i); }
@@ -52,7 +60,6 @@ public class RoomDetector {
     }
 
     private byte getAccuracy(){
-        Settings settings = MainActivity.settings;
         return settings.getAccuracy();
     }
 }
