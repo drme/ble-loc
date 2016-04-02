@@ -1,2 +1,2 @@
-include ':opencsv-3.7', ':app', ':mcharts_a'
-startParameter.offline=true
+include ':app', ':mcharts_a'
+startParameter.offline=false

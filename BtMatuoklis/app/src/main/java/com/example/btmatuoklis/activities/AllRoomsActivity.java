@@ -14,10 +14,10 @@ import android.widget.ListView;
 import android.widget.Toast;
 
 import com.example.btmatuoklis.R;
-import com.example.btmatuoklis.classes.AlertDialogBuilder;
+import com.example.btmatuoklis.helpers.DialogBuildHelper;
 import com.example.btmatuoklis.classes.GlobalClass;
-import com.example.btmatuoklis.classes.MySQLiteHelper;
-import com.example.btmatuoklis.classes.Room;
+import com.example.btmatuoklis.helpers.MySQLiteHelper;
+import com.example.btmatuoklis.classes.RoomsArray;
 
 import java.util.ArrayList;
 
@@ -26,10 +26,10 @@ public class AllRoomsActivity extends Activity {
     GlobalClass globalVariable;
     ListView displayRoomsList;
     ArrayAdapter listAdapter;
-    ArrayList<Room> roomsArray;
+    RoomsArray roomsArray;
     ArrayList<String> savedRoomsList;
     String roomName;
-    AlertDialogBuilder entryDialog;
+    DialogBuildHelper entryDialog;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -97,7 +97,7 @@ public class AllRoomsActivity extends Activity {
     }
 
     void roomNameEntryConfirm(){
-        AlertDialogBuilder dialog = new AlertDialogBuilder(AllRoomsActivity.this, getString(R.string.dialog_title_new_room),
+        DialogBuildHelper dialog = new DialogBuildHelper(AllRoomsActivity.this, getString(R.string.dialog_title_new_room),
                 getString(R.string.dialog_new_room_name), android.R.drawable.ic_dialog_info);
         entryDialog = dialog;
         dialog.setInput();
@@ -106,12 +106,12 @@ public class AllRoomsActivity extends Activity {
             public void onClick(DialogInterface dialog, int which) {
                 roomNameEntry(entryDialog); }
         });
-        dialog.setNegatvie(getString(R.string.dialog_button_cancel));
+        dialog.setNegative(getString(R.string.dialog_button_cancel));
         dialog.showDialog();
         dialog.setInputListener();
     }
 
-    void roomNameEntry(AlertDialogBuilder dialog){
+    void roomNameEntry(DialogBuildHelper dialog){
         roomName = dialog.getInputText().trim();
         if (roomName.equals("")) {
             Toast.makeText(getApplicationContext(),
@@ -130,19 +130,19 @@ public class AllRoomsActivity extends Activity {
     }
 
     void removeAllRoomsConfirm() {
-        AlertDialogBuilder dialog = new AlertDialogBuilder(AllRoomsActivity.this, getString(R.string.dialog_title_remove),
+        DialogBuildHelper dialog = new DialogBuildHelper(AllRoomsActivity.this, getString(R.string.dialog_title_remove),
                 getString(R.string.dialog_remove_all_rooms), android.R.drawable.ic_dialog_alert);
         dialog.getBuilder().setPositiveButton(getString(R.string.dialog_button_ok), new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) { removeAllRooms(); }});
-        dialog.setNegatvie(getString(R.string.dialog_button_cancel));
+        dialog.setNegative(getString(R.string.dialog_button_cancel));
         dialog.showDialog();
     }
 
     void removeAllRooms(){
         MySQLiteHelper database = new MySQLiteHelper(this);
         database.clearDB();
-        roomsArray.clear();
+        roomsArray.getArray().clear();
         savedRoomsList.clear();
         listAdapter.notifyDataSetChanged();
         Toast.makeText(getApplicationContext(),

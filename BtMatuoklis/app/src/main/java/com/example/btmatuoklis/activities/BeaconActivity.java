@@ -13,13 +13,14 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.btmatuoklis.R;
-import com.example.btmatuoklis.classes.AlertDialogBuilder;
+import com.example.btmatuoklis.helpers.DialogBuildHelper;
 import com.example.btmatuoklis.classes.Beacon;
 import com.example.btmatuoklis.classes.Calibration;
-import com.example.btmatuoklis.classes.ChartHelper;
+import com.example.btmatuoklis.helpers.ChartHelper;
 import com.example.btmatuoklis.classes.GlobalClass;
-import com.example.btmatuoklis.classes.MySQLiteHelper;
+import com.example.btmatuoklis.helpers.MySQLiteHelper;
 import com.example.btmatuoklis.classes.Room;
+import com.jjoe64.graphview.GraphView;
 
 import java.util.ArrayList;
 
@@ -85,7 +86,7 @@ public class BeaconActivity extends Activity {
         globalVariable = (GlobalClass) getApplicationContext();
         roomID = getIntent().getExtras().getInt("roomID");
         beaconID = getIntent().getExtras().getInt("beaconID");
-        currentRoom = globalVariable.getRoomsArray().get(roomID);
+        currentRoom = globalVariable.getRoomsArray().getArray().get(roomID);
         currentBeacon = currentRoom.getBeacons().get(beaconID);
         database = new MySQLiteHelper(this);
         rssiArray = currentBeacon.getFullRSSI();
@@ -99,10 +100,7 @@ public class BeaconActivity extends Activity {
         displayRSSIAverage.setText(Byte.toString(rssiAverage));
         displayRSSIMax.setText(Byte.toString(rssiMax));
         displayRSSIMin.setText(Byte.toString(rssiMin));
-
-        displayChart(R.id.viewBeacon_chart1, 0);
-        displayChart(R.id.viewBeacon_chart2, 1);
-        displayChart(R.id.viewBeacon_chart3, 2);
+        setChart(R.id.viewBeacon_chart1, currentBeacon);
     }
 
     //RSSI reiksmiu vaizdo keitimas tarp vienos elutes daugelio eiluciu
@@ -140,7 +138,7 @@ public class BeaconActivity extends Activity {
     }
 
     void removeCalibrationConfirm() {
-        AlertDialogBuilder dialog = new AlertDialogBuilder(BeaconActivity.this, getString(R.string.dialog_title_remove),
+        DialogBuildHelper dialog = new DialogBuildHelper(BeaconActivity.this, getString(R.string.dialog_title_remove),
                 getString(R.string.dialog_remove_calibration), android.R.drawable.ic_dialog_alert);
         dialog.getBuilder().setPositiveButton(getString(R.string.dialog_button_ok), new DialogInterface.OnClickListener() {
             @Override
@@ -148,7 +146,7 @@ public class BeaconActivity extends Activity {
                 removeCalibration();
             }
         });
-        dialog.setNegatvie(getString(R.string.dialog_button_cancel));
+        dialog.setNegative(getString(R.string.dialog_button_cancel));
         dialog.showDialog();
     }
 
@@ -159,11 +157,11 @@ public class BeaconActivity extends Activity {
         currentRoom.getBeacons().remove(beaconID);
         if (currentRoom.getBeacons().isEmpty()){
             database.deleteRoom(currentRoom.getID());
-            globalVariable.getRoomsArray().remove(roomID);
+            globalVariable.getRoomsArray().getArray().remove(roomID);
             globalVariable.getRoomsList().remove(roomID);
-            if (globalVariable.getRoomsArray().isEmpty()){
+            if (globalVariable.getRoomsArray().getArray().isEmpty()){
                 database.clearDB();
-                globalVariable.getRoomsArray().clear();
+                globalVariable.getRoomsArray().getArray().clear();
                 globalVariable.getRoomsList().clear();
             }
         }
@@ -172,7 +170,7 @@ public class BeaconActivity extends Activity {
     }
 
     void removeBeaconConfirm() {
-        AlertDialogBuilder dialog = new AlertDialogBuilder(BeaconActivity.this, getString(R.string.dialog_title_remove),
+        DialogBuildHelper dialog = new DialogBuildHelper(BeaconActivity.this, getString(R.string.dialog_title_remove),
                 getString(R.string.dialog_remove_beacon), android.R.drawable.ic_dialog_alert);
         dialog.getBuilder().setPositiveButton(getString(R.string.dialog_button_ok), new DialogInterface.OnClickListener() {
             @Override
@@ -180,22 +178,13 @@ public class BeaconActivity extends Activity {
                 removeBeacon();
             }
         });
-        dialog.setNegatvie(getString(R.string.dialog_button_cancel));
+        dialog.setNegative(getString(R.string.dialog_button_cancel));
         dialog.showDialog();
     }
 
-    void displayChart(int id, int type){
-        ChartHelper chart = new ChartHelper();
-        switch (type) {
-            case 1:
-                chart.setFullSpacedChart(this, currentBeacon, id);
-                break;
-            case 2:
-                chart.setRangeChart(this, currentBeacon, id);
-                break;
-            default:
-                chart.setFullChart(this, currentBeacon, id);
-                break;
-        }
+    void setChart(int chartID, Beacon beacon){
+        ChartHelper charthelper = new ChartHelper();
+        GraphView graph = (GraphView)findViewById(chartID);
+        charthelper.setFullSpacedChart(graph, beacon);
     }
 }

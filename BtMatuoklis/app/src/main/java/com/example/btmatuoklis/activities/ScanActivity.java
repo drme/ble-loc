@@ -6,25 +6,25 @@ import android.bluetooth.BluetoothDevice;
 import android.bluetooth.BluetoothManager;
 import android.content.Context;
 import android.content.Intent;
+import android.os.AsyncTask;
 import android.os.Handler;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.WindowManager;
-import android.widget.ArrayAdapter;
-import android.widget.ListView;
+import android.widget.ExpandableListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.btmatuoklis.R;
+import com.example.btmatuoklis.classes.RoomsArray;
+import com.example.btmatuoklis.adapters.ScanAdapter;
 import com.example.btmatuoklis.classes.GlobalClass;
 import com.example.btmatuoklis.classes.Room;
 import com.example.btmatuoklis.classes.RoomDetector;
 import com.example.btmatuoklis.classes.ScanTools;
 import com.example.btmatuoklis.classes.Settings;
-
-import java.util.ArrayList;
 
 public class ScanActivity extends Activity {
 
@@ -33,27 +33,30 @@ public class ScanActivity extends Activity {
     ScanTools scantools;
     BluetoothAdapter mBluetoothAdapter;
     BluetoothAdapter.LeScanCallback mLeScanCallback;
+    Handler handler;
+    Runnable background;
     Room environment;
+    RoomsArray roomsArray, enviromentArray;
     RoomDetector detector;
-    ArrayList<String> beaconsList, savedBeaconsList;
-    ArrayAdapter<String> listAdapter;
+    ScanAdapter adapter;
     TextView detectedRoom;
-    ListView displayBeaconsList;
+    ExpandableListView displayBeaconsList;
     String roomName;
-    //byte cycles;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_scan);
-        getActionBar().setSubtitle(getString(R.string.subtitle_scan)+":");
+        getActionBar().setSubtitle(getString(R.string.subtitle_scan));
         detectedRoom = (TextView)findViewById(R.id.textScan_DetectedRoom);
-        displayBeaconsList = (ListView)findViewById(R.id.listScan_BeaconsList);
+        displayBeaconsList = (ExpandableListView)findViewById(R.id.listScan_BeaconsList);
 
         setDefaultValues();
         createBT();
+        checkBT();
         createBTLECallBack();
-        continuousScan();
+        createThreads();
+        continuousScan(true);
     }
 
     @Override
@@ -69,7 +72,7 @@ public class ScanActivity extends Activity {
 
     @Override
     public void onBackPressed(){
-        globalVariable.setScanning(false);
+        continuousScan(false);
         this.finish();
     }
 
@@ -89,12 +92,20 @@ public class ScanActivity extends Activity {
         mBluetoothAdapter = bluetoothManager.getAdapter();
     }
 
+    //Patikriname ar Bluetooth telefone yra ijungtas
+    //Jei ne - paprasoma ijungti
+    void checkBT(){
+        if (mBluetoothAdapter == null || !mBluetoothAdapter.isEnabled()) {
+            Intent enableBtIntent = new Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE);
+            startActivityForResult(enableBtIntent, settings.REQUEST_ENABLE_BT);
+        }
+    }
+
     void createBTLECallBack(){
         mLeScanCallback = new BluetoothAdapter.LeScanCallback() {
             @Override
             public void onLeScan(BluetoothDevice device, int rssi, byte[] scanRecord) {
-                //scantools.scanLogic(device, rssi, beaconsArray, savedBeaconsList);
-                scantools.scanLogic(device, rssi, environment);
+                scantools.scanLogic(device, rssi, roomsArray, enviromentArray);
                 mBluetoothAdapter.stopLeScan(this); //Scan stabdomas
             }
         };
@@ -106,64 +117,59 @@ public class ScanActivity extends Activity {
         globalVariable = (GlobalClass) getApplicationContext();
         settings = MainActivity.settings;
         scantools = new ScanTools();
-        savedBeaconsList = new ArrayList<String>();
-        beaconsList = new ArrayList<String>();
-        listAdapter = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, beaconsList);
-        displayBeaconsList.setAdapter(listAdapter);
-
         environment = new Room();
+        roomsArray = new RoomsArray(globalVariable.getRoomsArray().getArray());
+        enviromentArray = new RoomsArray();
+        enviromentArray.getArray().add(new Room("Nepriskirti įrenginiai"));
         detector = new RoomDetector();
-        //cycles = 0;
+        adapter = new ScanAdapter(this, R.layout.list_scan_item, enviromentArray.getArray());
+        displayBeaconsList.setAdapter(adapter);
+    }
+
+    void createThreads(){
+        handler = new Handler();
+        //Background Runnable:
+        //nustatytu intervalu vykdo scan
+        background = new Runnable() {
+            @Override
+            public void run() {
+                if (globalVariable.isScanning()) {
+                    new ScanTask().execute();
+                    handler.postDelayed(this, settings.getFrequency());
+                }
+                else { Thread.currentThread().interrupt(); }
+            }
+        };
     }
 
     //Nuolatos pradedamas ir stabdomas scan
-    void continuousScan(){
-        final Handler handler = new Handler();
-        globalVariable.setScanning(true);
-        //Main Thread Runnable:
-        //pranesa, kad reikia atnaujinti irenginiu sarasa
-        final Runnable uiRunnable = new Runnable(){
-            @Override
-            public void run() {
-                if (globalVariable.isScanning()) {
-                    beaconsList.clear();
-                    beaconsList.addAll(savedBeaconsList);
-                    listAdapter.notifyDataSetChanged();
-                    detectedRoom.setText(roomName);
-                }
-            }
-        };
-        //Background Runnable:
-        //nustatytais intervalais daro scan ir paleidzia Main Thread Runnable
-        Runnable backgroundRunnable = new Runnable(){
-            @Override
-            public void run() {
-                if (globalVariable.isScanning()) {
-                    /*if (settings.getTimeout() < cycles){
-                        environment.getBeacons().clear();
-                        cycles = 0;
-                    }*/
-                    startBTLEScan();
-                    //cycles++;
-                    handler.postDelayed(this, settings.getFrequency());
-                    handler.postDelayed(uiRunnable, settings.getFrequency()+1);
-                }
-            }
-        };
-        new Thread(backgroundRunnable).start();
+    void continuousScan(boolean enable){
+        globalVariable.setScanning(enable);
+        if (enable){ new Thread(background).start(); }
     }
 
-    //Jeigu randamas BTLE irenginys, gaunama jo RSSI reiksme
-    void startBTLEScan(){
-        if (!settings.isGeneratorEnabled()){
-            mBluetoothAdapter.stopLeScan(mLeScanCallback);
-            mBluetoothAdapter.startLeScan(mLeScanCallback);
+    private class ScanTask extends AsyncTask<Void, Void, Boolean> {
+        @Override
+        protected Boolean doInBackground(Void... params) {
+            if (!settings.isGeneratorEnabled()){
+                /*mBluetoothAdapter.startLeScan(mLeScanCallback);
+                //Duodamos 100ms laiko aptikti bet kurio beacono signalui
+                try { Thread.sleep(100); } catch (InterruptedException e) { e.printStackTrace(); }
+                mBluetoothAdapter.stopLeScan(mLeScanCallback);*/
+                mBluetoothAdapter.stopLeScan(mLeScanCallback);
+                mBluetoothAdapter.startLeScan(mLeScanCallback);
+            }
+            else {
+                scantools.fakeScanLogic(settings.getDebugBeacons(), settings.getDebugRSSIMin(),
+                        settings.getDebugRSSIMax(), roomsArray, enviromentArray);
+            }
+            roomName = detector.getRoomName(roomsArray, enviromentArray);
+            return true;
         }
-        else {
-            scantools.fakeScanLogic(settings.getDebugBeacons(), settings.getDebugRSSIMin(),
-                    settings.getDebugRSSIMax(), environment);
+        @Override
+        protected void onPostExecute(Boolean aBoolean) {
+            adapter.notifyDataSetChanged();
+            detectedRoom.setText(roomName);
         }
-        savedBeaconsList = environment.getCurrentInfoList();
-        roomName = detector.getRoomName(globalVariable.getRoomsArray(), environment);
     }
 }

@@ -77,6 +77,8 @@ public class SettingsActivity extends PreferenceActivity implements SharedPrefer
         toogleDebugSettings(settings.isGeneratorEnabled());
 
         editTimeout.setEnabled(false);
+        sliderTXPower.setEnabled(false);
+        sliderAccuracy.setEnabled(false);
     }
 
     void toogleDebugSettings(boolean toggle){

@@ -7,6 +7,7 @@ import android.bluetooth.BluetoothManager;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.os.AsyncTask;
 import android.os.Handler;
 import android.os.Bundle;
 import android.view.Menu;
@@ -22,11 +23,11 @@ import android.widget.ListView;
 import android.widget.Toast;
 
 import com.example.btmatuoklis.R;
-import com.example.btmatuoklis.classes.AlertDialogBuilder;
+import com.example.btmatuoklis.helpers.DialogBuildHelper;
 import com.example.btmatuoklis.classes.Beacon;
 import com.example.btmatuoklis.classes.Calibration;
 import com.example.btmatuoklis.classes.GlobalClass;
-import com.example.btmatuoklis.classes.MySQLiteHelper;
+import com.example.btmatuoklis.helpers.MySQLiteHelper;
 import com.example.btmatuoklis.classes.Room;
 import com.example.btmatuoklis.classes.ScanTools;
 import com.example.btmatuoklis.classes.Settings;
@@ -43,9 +44,10 @@ public class NewRoomActivity extends Activity {
     MySQLiteHelper database;
     BluetoothAdapter mBluetoothAdapter;
     BluetoothAdapter.LeScanCallback mLeScanCallback;
+    Handler handler;
+    Runnable background;
     String roomName;
     ListView displayBeaconsList;
-    ArrayList<String> savedBeaconsList;
     ArrayList<String> beaconsList;
     ArrayAdapter<String> listAdapter;
     ArrayList<Integer> selectedBeacons;
@@ -62,8 +64,10 @@ public class NewRoomActivity extends Activity {
         setDefaultValues();
         setListListener();
         createBT();
+        checkBT();
         createBTLECallBack();
-        continuousScan();
+        createThread();
+        continuousScan(true);
     }
 
     @Override
@@ -96,7 +100,7 @@ public class NewRoomActivity extends Activity {
     }
 
     public void onAcceptButtonClick(View view){
-        globalVariable.setScanning(false);
+        continuousScan(false);
         createRoom();
         saveSelectedBeacons();
         NewRoomActivity.this.finish();
@@ -110,7 +114,6 @@ public class NewRoomActivity extends Activity {
         scantools = new ScanTools();
         environment = new Room();
         database = new MySQLiteHelper(this);
-        savedBeaconsList = new ArrayList<String>();
         beaconsList = new ArrayList<String>();
         listAdapter = new ArrayAdapter<String>(this, R.layout.list_multiple_choice, beaconsList);
         selectedBeacons = new ArrayList<Integer>();
@@ -123,10 +126,13 @@ public class NewRoomActivity extends Activity {
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 CheckedTextView checkedTextView = ((CheckedTextView) view);
                 checkedTextView.setChecked(!checkedTextView.isChecked());
-                if (checkedTextView.isChecked()) { selectedBeacons.add(position); }
-                else {
+                if (checkedTextView.isChecked()) {
+                    selectedBeacons.add(position);
+                } else {
                     int checkIndex = selectedBeacons.indexOf(position);
-                    if (!(checkIndex == -1)){ selectedBeacons.remove(checkIndex); }
+                    if (!(checkIndex == -1)) {
+                        selectedBeacons.remove(checkIndex);
+                    }
                 }
                 enableFinishButton();
             }
@@ -139,7 +145,7 @@ public class NewRoomActivity extends Activity {
     }
 
     void cancelCreation(){
-        globalVariable.setScanning(false);
+        continuousScan(false);
         Toast.makeText(getApplicationContext(),
                 getString(R.string.toast_info_cancelled), Toast.LENGTH_SHORT).show();
         NewRoomActivity.this.finish();
@@ -147,7 +153,7 @@ public class NewRoomActivity extends Activity {
     }
 
     void cancelCreationConfirm(){
-        AlertDialogBuilder dialog = new AlertDialogBuilder(NewRoomActivity.this, getString(R.string.dialog_title_cancel),
+        DialogBuildHelper dialog = new DialogBuildHelper(NewRoomActivity.this, getString(R.string.dialog_title_cancel),
                 getString(R.string.dialog_cancel_room_creation), android.R.drawable.ic_dialog_alert);
         dialog.getBuilder().setPositiveButton(getString(R.string.dialog_button_ok), new DialogInterface.OnClickListener() {
             @Override
@@ -155,15 +161,15 @@ public class NewRoomActivity extends Activity {
                 cancelCreation();
             }
         });
-        dialog.setNegatvie(getString(R.string.dialog_button_cancel));
+        dialog.setNegative(getString(R.string.dialog_button_cancel));
         dialog.showDialog();
     }
 
     void createRoom(){
-        globalVariable.getRoomsArray().add(new Room(roomName));
+        globalVariable.getRoomsArray().getArray().add(new Room(roomName));
         globalVariable.getRoomsList().add(roomName);
-        roomID = globalVariable.getRoomsArray().size() - 1;
-        currentRoom = globalVariable.getRoomsArray().get(roomID);
+        roomID = globalVariable.getRoomsArray().getArray().size() - 1;
+        currentRoom = globalVariable.getRoomsArray().getArray().get(roomID);
     }
 
     void saveSelectedBeacons(){
@@ -204,58 +210,65 @@ public class NewRoomActivity extends Activity {
         mBluetoothAdapter = bluetoothManager.getAdapter();
     }
 
+    //Patikriname ar Bluetooth telefone yra ijungtas
+    //Jei ne - paprasoma ijungti
+    void checkBT(){
+        if (mBluetoothAdapter == null || !mBluetoothAdapter.isEnabled()) {
+            Intent enableBtIntent = new Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE);
+            startActivityForResult(enableBtIntent, settings.REQUEST_ENABLE_BT);
+        }
+    }
+
     void createBTLECallBack(){
         mLeScanCallback = new BluetoothAdapter.LeScanCallback() {
             @Override
             public void onLeScan(BluetoothDevice device, int rssi, byte[] scanRecord) {
-                //scantools.scanLogic(device, rssi, beaconsArray, savedBeaconsList);
-                scantools.scanLogic(device, rssi, environment);
+                scantools.assignLogic(device, rssi, environment);
                 mBluetoothAdapter.stopLeScan(this); //Scan stabdomas
             }
         };
     }
 
-    //Nuolatos pradedamas ir stabdomas scan
-    void continuousScan(){
-        final Handler handler2 = new Handler();
-        globalVariable.setScanning(true);
-        //Main Thread Runnable:
-        //pranesa, kad reikia atnaujinti irenginiu sarasa
-        final Runnable uiRunnable2 = new Runnable(){
-            @Override
-            public void run() {
-                if (globalVariable.isScanning()) {
-                    beaconsList.clear();
-                    beaconsList.addAll(savedBeaconsList);
-                    listAdapter.notifyDataSetChanged();
-                }
-            }
-        };
+    void createThread(){
+        handler = new Handler();
         //Background Runnable:
-        //nustatytais intervalais daro scan ir paleidzia Main Thread Runnable
-        Runnable backgroundRunnable2 = new Runnable(){
+        //nustatytu intervalu vykdo scan
+        background = new Runnable() {
             @Override
             public void run() {
                 if (globalVariable.isScanning()) {
-                    startBTLEScan();
-                    handler2.postDelayed(this, settings.getFrequency());
-                    handler2.postDelayed(uiRunnable2, settings.getFrequency()+1);
+                    new ScanTask().execute();
+                    handler.postDelayed(this, settings.getFrequency());
                 }
+                else { Thread.currentThread().interrupt(); }
             }
         };
-        new Thread(backgroundRunnable2).start();
     }
 
-    //Jeigu randamas BTLE irenginys, gaunama jo RSSI reiksme
-    void startBTLEScan(){
-        if (!settings.isGeneratorEnabled()) {
-            mBluetoothAdapter.stopLeScan(mLeScanCallback);
-            mBluetoothAdapter.startLeScan(mLeScanCallback);
+    //Nuolatos pradedamas ir stabdomas scan
+    void continuousScan(boolean enable){
+        globalVariable.setScanning(enable);
+        if (enable){ new Thread(background).start(); }
+    }
+
+    private class ScanTask extends AsyncTask<Void, Void, Boolean> {
+        @Override
+        protected Boolean doInBackground(Void... params) {
+            if (!settings.isGeneratorEnabled()) {
+                mBluetoothAdapter.stopLeScan(mLeScanCallback);
+                mBluetoothAdapter.startLeScan(mLeScanCallback);
+            }
+            else{
+                scantools.fakeAssignLogic(settings.getDebugBeacons(), settings.getDebugRSSIMin(),
+                        settings.getDebugRSSIMax(), environment);
+            }
+            return true;
         }
-        else{
-            scantools.fakeScanLogic(settings.getDebugBeacons(), settings.getDebugRSSIMin(),
-                    settings.getDebugRSSIMax(), environment);
+        @Override
+        protected void onPostExecute(Boolean aBoolean) {
+            beaconsList.clear();
+            beaconsList.addAll(environment.getCurrentInfoList());
+            listAdapter.notifyDataSetChanged();
         }
-        savedBeaconsList = environment.getCurrentInfoList();
     }
 }

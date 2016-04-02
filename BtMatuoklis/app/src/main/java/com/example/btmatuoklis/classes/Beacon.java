@@ -13,7 +13,7 @@ public class Beacon {
     private ArrayList<Byte> rssi;
     private int id;
 
-    private RangeCalculator calculator = new RangeCalculator();
+    //private RangeCalculator calculator = new RangeCalculator();
 
     public Beacon(){
         this.rssi = new ArrayList<Byte>();
@@ -23,6 +23,13 @@ public class Beacon {
         this.name = name;
         this.mac = mac;
         this.rssi = new ArrayList<Byte>();
+    }
+
+    public Beacon(String name, String mac, byte rssi){
+        this.name = name;
+        this.mac = mac;
+        this.rssi = new ArrayList<Byte>();
+        this.rssi.add(rssi);
     }
 
     public Beacon(String name, String mac, ArrayList<Byte> rssi){
@@ -36,6 +43,14 @@ public class Beacon {
         this.name = name;
         this.mac = mac;
         this.rssi = rssi;
+    }
+
+    public Beacon(int id, String name, String mac, byte rssi){
+        this.id = id;
+        this.name = name;
+        this.mac = mac;
+        this.rssi = new ArrayList<Byte>();
+        this.rssi.add(rssi);
     }
 
     private byte getShadow(){
@@ -80,7 +95,7 @@ public class Beacon {
         switch (choice) {
             case "current":
                 info += "\nRSSI: " + getPreviousRSSI() + " Last: " + getCurrentRSSI();
-                info += "\n" + calculator.getRange(getTXPower(), getCurrentRSSI());
+                //info += "\n" + calculator.getRange(getTXPower(), getCurrentRSSI());
                 break;
             case "calibration":
                 info += "\nKalibracijos RSSI reikšmių: " + this.rssi.size();
@@ -127,7 +142,7 @@ public class Beacon {
         ArrayList<Byte> spaced = new ArrayList<Byte>();
         Byte minRSSI = Collections.min(this.rssi);
         Byte maxRSSI = Collections.max(this.rssi);
-        for (byte i = (byte)(maxRSSI+1); i > (minRSSI-2); i-- ){
+        for (byte i = maxRSSI; i > (minRSSI-1); i--){
             spaced.add(i);
         }
         return spaced;
@@ -142,9 +157,7 @@ public class Beacon {
         for (int i = 0; i < uniques.size(); i++){
             Byte value = uniques.get(i);
             Byte res = (byte)Collections.frequency(this.rssi, value);
-            if (res > 0){
-                frequencies.add(res);
-            }
+            frequencies.add(res);
         }
         return frequencies;
     }

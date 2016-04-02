@@ -1,9 +1,11 @@
-package com.example.btmatuoklis.classes;
+package com.example.btmatuoklis.helpers;
 
 import android.content.Context;
 import android.os.Environment;
 
 import com.example.btmatuoklis.R;
+import com.example.btmatuoklis.classes.Beacon;
+import com.example.btmatuoklis.classes.Room;
 import com.opencsv.CSVWriter;
 
 import java.io.File;
@@ -11,12 +13,12 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.util.ArrayList;
 
-public class ExportCSVHelper {
+public class CSVExportHelper {
 
     Context context;
     String[] columns = new String[3];
 
-    public ExportCSVHelper(Context context){
+    public CSVExportHelper(Context context){
         this.context = context;
         columns[0] = context.getString(R.string.exportcsv_column_beacon);
         columns[1] = context.getString(R.string.exportcsv_column_mac);

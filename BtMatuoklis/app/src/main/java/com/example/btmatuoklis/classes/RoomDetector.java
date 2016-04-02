@@ -9,41 +9,46 @@ public class RoomDetector {
 
     public RoomDetector() {}
 
-    public String getRoomName(ArrayList<Room> rooms, Room enviroment){
-        if (!rooms.isEmpty()) {
-            int roomID = -1;
-            short max = -1;
-            for (int i = 0; i < rooms.size(); i++) {
-                Room room = rooms.get(i);
-                ArrayList<Beacon> beacons = room.getBeacons();
-                for (int j = 0; j < beacons.size(); j++) {
-                    ArrayList<Beacon> scannedBeacons = enviroment.getBeacons();
-                    for (int k = 0; k < scannedBeacons.size(); k++) {
-                        if (room.getMACList().contains(scannedBeacons.get(k).getMAC()) && room.isCalibrated()) {
-                            short res = compareCalibrationShadow(beacons.get(j).getFullRSSI(), scannedBeacons.get(k).getFullRSSI());
-                            if (res >= max){
-                                roomID = rooms.indexOf(room);
-                                max = res;
-                            }
-                        }
-                    }
+    public String getRoomName(RoomsArray created, RoomsArray enviroment){
+        String locatedIn = "Esate patalpoje: ";
+        String notDetected = "Lokacija nenustatyta!";
+        String noRooms = "Nėra sukurtų kambarių!";
+        if (!created.getArray().isEmpty()) {
+            ArrayList<Byte> coeff = new ArrayList<Byte>();
+            ArrayList<Integer> indexes = new ArrayList<Integer>();
+            ArrayList<Beacon> scannedBeacons = enviroment.getFullBeaconList();
+            for (int i = 0; i < scannedBeacons.size(); i++){
+                Beacon scannedBeacon = scannedBeacons.get(i);
+                Beacon calibratedBeacon = created.findBeacon(scannedBeacon.getMAC());
+                if (calibratedBeacon != null){
+                    byte res = compareCalibrationShadow(calibratedBeacon.getFullRSSI(), scannedBeacon.getFullRSSI());
+                    if (res < 0){ coeff.add(res); indexes.add(i); }
                 }
             }
-            if (max >= getAccuracy() && roomID > -1) { return "Esate patalpoje: "+rooms.get(roomID).getName(); }
-            return "Lokacija nenustatyta!";
+            if (!coeff.isEmpty()){
+                Byte minCoeff = Collections.min(coeff);
+                int coeffIndex = coeff.indexOf(minCoeff);
+                int minIndex = indexes.get(coeffIndex);
+                //ateiciai - prideti if'a kuris patikrintu ar beaconas vis dar yra aptinkamas
+                //jeigu ne - imti sekancia maziausia koeficiento reiksme
+                String minMAC = scannedBeacons.get(minIndex).getMAC();
+                int roomIndex = created.findRoomIndex(minMAC);
+                return locatedIn+created.getArray().get(roomIndex).getName();
+            }
+            return notDetected;
         }
-        return "Nėra sukurtų kambarių!";
+        return noRooms;
     }
 
-    private short compareCalibrationShadow(ArrayList<Byte> calibrations, ArrayList<Byte> rssis){
+    private byte compareCalibrationShadow(ArrayList<Byte> calibrations, ArrayList<Byte> rssis){
         long res = 0;
         byte min = Collections.min(calibrations);
         int size = rssis.size();
-        for (short i = 0; i < size; i++){
+        for (int i = 0; i < size; i++){
             byte rssi = rssis.get(i);
-            if (rssi >= min){ res += 100; }
+            if (rssi >= min){ res += min - rssi; }
         }
-        return (short)(res/size);
+        return (byte)(res/size);
     }
 
     private byte getAccuracy(){

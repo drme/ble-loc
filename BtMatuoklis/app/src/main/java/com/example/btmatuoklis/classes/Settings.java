@@ -11,7 +11,7 @@ public class Settings implements SharedPreferences.OnSharedPreferenceChangeListe
     private SharedPreferences preferences;
     public static byte REQUEST_ENABLE_BT = 1;
 
-    //Maksimalus teorinis BLE aptikimo atstumas metrais
+    //Maksimalus teorinis BTLE aptikimo atstumas metrais
     public static byte maxRange;
 
     //Kas kiek laiko kartosis scan

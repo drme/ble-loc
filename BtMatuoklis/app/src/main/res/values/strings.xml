@@ -108,9 +108,7 @@
     <string name="beaconactivity_text_rssi_average">RSSI reikšmių vidurkis:\u0020</string>
     <string name="beaconactivity_text_rssi_max">RSSI Max:\u0020</string>
     <string name="beaconactivity_text_rssi_min">RSSI Min:\u0020</string>
-    <string name="beaconactivity_title_chart1">RSSI reikšmių pasikartojimo dažnumo diagrama</string>
-    <string name="beaconactivity_title_chart2">RSSI reikšmių pasikartojimo dažnumo diagrama(su tarpais)</string>
-    <string name="beaconactivity_title_chart3">RSSI reikšmių kiekių rėžiuose diagrama</string>
+    <string name="beaconactivity_title_chart">RSSI reikšmių histograma</string>
 
     <!--exportCSVHelper klases tekstai-->
     <string name="exportcsv_name_calibrate">kalibracija</string>

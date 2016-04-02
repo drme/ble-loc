@@ -87,6 +87,15 @@ public class Room {
         return this.beacons;
     }
 
+    public int findBeaconIndex(String mac){
+        int index = -1;
+        ArrayList<String> macs = this.getMACList();
+        if (!macs.isEmpty() & macs.contains(mac)){
+            index = macs.indexOf(mac);
+        }
+        return index;
+    }
+
     //Grazina false, jeigu bent vienas irenginys neturi
     //nei vienos RSSI reiksmes kalibravimo masyve
     public boolean isCalibrated(){

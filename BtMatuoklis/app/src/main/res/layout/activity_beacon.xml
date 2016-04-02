@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".activities.BeaconActivity">
@@ -143,52 +144,14 @@
         android:id="@+id/textBeacon_title_chart1"
         android:layout_alignParentStart="true"
         android:layout_below="@+id/view4"
-        android:text="@string/beaconactivity_title_chart1" />
+        android:text="@string/beaconactivity_title_chart" />
 
-    <View
+    <com.jjoe64.graphview.helper.GraphViewXML
         android:id="@+id/viewBeacon_chart1"
         android:layout_width="match_parent"
         android:layout_height="@dimen/activity_chart_height"
+        app:seriesData="0=0"
         android:layout_below="@+id/textBeacon_title_chart1" />
 
-    <View style="@style/Divider"
-        android:id="@+id/view5"
-        android:layout_below="@+id/viewBeacon_chart1" />
-
-   <TextView
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:textAppearance="?android:attr/textAppearanceMedium"
-        android:textAlignment="center"
-        android:id="@+id/textBeacon_title_chart2"
-        android:layout_alignParentStart="true"
-        android:layout_below="@+id/view5"
-        android:text="@string/beaconactivity_title_chart2" />
-
-    <View
-        android:id="@+id/viewBeacon_chart2"
-        android:layout_width="match_parent"
-        android:layout_height="@dimen/activity_chart_height"
-        android:layout_below="@+id/textBeacon_title_chart2" />
-
-    <View style="@style/Divider"
-        android:id="@+id/view6"
-        android:layout_below="@+id/viewBeacon_chart2" />
-
-    <TextView
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:textAppearance="?android:attr/textAppearanceMedium"
-        android:textAlignment="center"
-        android:id="@+id/textBeacon_title_chart3"
-        android:layout_alignParentStart="true"
-        android:layout_below="@+id/view6"
-        android:text="@string/beaconactivity_title_chart3" />
-
-    <View
-        android:id="@+id/viewBeacon_chart3"
-        android:layout_width="match_parent"
-        android:layout_height="@dimen/activity_chart_height"
-        android:layout_below="@+id/textBeacon_title_chart3" />
 </RelativeLayout>
 </ScrollView>

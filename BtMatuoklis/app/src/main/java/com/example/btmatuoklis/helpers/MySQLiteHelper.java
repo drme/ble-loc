@@ -1,10 +1,14 @@
-package com.example.btmatuoklis.classes;
+package com.example.btmatuoklis.helpers;
 
 import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
+
+import com.example.btmatuoklis.classes.Beacon;
+import com.example.btmatuoklis.classes.Calibration;
+import com.example.btmatuoklis.classes.Room;
 
 import java.util.ArrayList;
 

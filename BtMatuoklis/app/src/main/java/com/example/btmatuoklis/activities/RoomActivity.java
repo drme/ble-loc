@@ -7,6 +7,7 @@ import android.bluetooth.BluetoothManager;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.os.AsyncTask;
 import android.os.Handler;
 import android.os.Bundle;
 import android.view.ActionMode;
@@ -24,11 +25,11 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.btmatuoklis.R;
-import com.example.btmatuoklis.classes.AlertDialogBuilder;
+import com.example.btmatuoklis.helpers.DialogBuildHelper;
 import com.example.btmatuoklis.classes.Calibration;
-import com.example.btmatuoklis.classes.ExportCSVHelper;
+import com.example.btmatuoklis.helpers.CSVExportHelper;
 import com.example.btmatuoklis.classes.GlobalClass;
-import com.example.btmatuoklis.classes.MySQLiteHelper;
+import com.example.btmatuoklis.helpers.MySQLiteHelper;
 import com.example.btmatuoklis.classes.Room;
 import com.example.btmatuoklis.classes.ScanTools;
 import com.example.btmatuoklis.classes.Settings;
@@ -43,9 +44,11 @@ public class RoomActivity extends Activity {
     ScanTools scantools;
     Room currentRoom;
     MySQLiteHelper database;
-    ExportCSVHelper exportCSV;
+    CSVExportHelper exportCSV;
     BluetoothAdapter mBluetoothAdapter;
     BluetoothAdapter.LeScanCallback mLeScanCallback;
+    Handler handler;
+    Runnable background;
     MenuItem exportItem;
     ArrayList<String> boundBeaconsList;
     ArrayAdapter<String> listAdapter;
@@ -67,7 +70,9 @@ public class RoomActivity extends Activity {
         setChoiceListener();
         checkCompleted();
         createBT();
+        checkBT();
         createBTLECallBack();
+        createThread();
     }
 
     @Override
@@ -100,7 +105,7 @@ public class RoomActivity extends Activity {
 
     @Override
     public void onBackPressed(){
-        globalVariable.setScanning(false);
+        continuousScan(false);
         displayBeaconsList.setMultiChoiceModeListener(null);
         this.finish();
     }
@@ -135,9 +140,9 @@ public class RoomActivity extends Activity {
         roomID = getIntent().getExtras().getInt("roomID");
         settings = MainActivity.settings;
         scantools = new ScanTools();
-        currentRoom = globalVariable.getRoomsArray().get(roomID);
+        currentRoom = globalVariable.getRoomsArray().getArray().get(roomID);
         database = new MySQLiteHelper(this);
-        exportCSV = new ExportCSVHelper(this);
+        exportCSV = new CSVExportHelper(this);
         boundBeaconsList = new ArrayList<String>();
         listAdapter = new ArrayAdapter<String>(this, R.layout.list_checked, boundBeaconsList);
         displayBeaconsList.setAdapter(listAdapter);
@@ -146,19 +151,17 @@ public class RoomActivity extends Activity {
 
     //Veiksmai kalibracijai pradeti
     void startCalibration(){
-        globalVariable.setScanning(true);
         getActionBar().getCustomView().setVisibility(View.VISIBLE);
         getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
         displayBeaconsList.setOnItemClickListener(null);
         buttonCalibrate.setText(getString(R.string.roomactivity_button_finish_calib));
         buttonCalibrate.setEnabled(false);
         enableMenuItem(exportItem, false);
-        continuousScan();
+        continuousScan(true);
     }
 
     //Veiksmai veiksmai kalibracijai baigti
     void finishCalibration(){
-        globalVariable.setScanning(false);
         getActionBar().getCustomView().setVisibility(View.INVISIBLE);
         getWindow().clearFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
         buttonCalibrate.setText(getString(R.string.roomactivity_button_resume_calib));
@@ -166,6 +169,7 @@ public class RoomActivity extends Activity {
         setListListener();
         saveRSSIInDatabase();
         enableMenuItem(exportItem, true);
+        continuousScan(false);
     }
 
     void saveRSSIInDatabase(){
@@ -190,22 +194,20 @@ public class RoomActivity extends Activity {
 
     //Veiksmai pradinei mygtuko isvaizdai atstayti, kai nera kalibraciniu reiksmiu
     void restoreCalibrateButton(){
-        globalVariable.setScanning(false);
+        continuousScan(false);
         buttonCalibrate.setText(getString(R.string.roomactivity_button_calibrate));
         buttonCalibrate.setEnabled(true);
         displayBeaconsList.setOnItemClickListener(null);
         enableMenuItem(exportItem, false);
-        //Grizus i Activity arba rotate screen - reiktu vel atstatyti CSV export menu item
     }
 
     //Veiksmai mygtuko isvaizdai nustatyti, kai yra kalibraciniu reiksmiu
     void resumeCalibrateButton(){
-        globalVariable.setScanning(false);
+        continuousScan(false);
         buttonCalibrate.setText(getString(R.string.roomactivity_button_resume_calib));
         buttonCalibrate.setEnabled(true);
         setListListener();
         enableMenuItem(exportItem, true);
-        //Grizus i Activity arba rotate screen - reiktu vel atstatyti CSV export menu item
     }
 
     void enableMenuItem(MenuItem item, boolean enabled){
@@ -255,15 +257,15 @@ public class RoomActivity extends Activity {
     }
 
     void removeRoom(){
-        globalVariable.setScanning(false);
+        continuousScan(false);
         database.deleteBeacons(currentRoom.getBeaconsIDs());
         database.deleteRoom(currentRoom.getID());
         database.deleteCalibrations(currentRoom.getID());
-        globalVariable.getRoomsArray().remove(roomID);
+        globalVariable.getRoomsArray().getArray().remove(roomID);
         globalVariable.getRoomsList().remove(roomID);
-        if (globalVariable.getRoomsArray().isEmpty()){
+        if (globalVariable.getRoomsArray().getArray().isEmpty()){
             database.clearDB();
-            globalVariable.getRoomsArray().clear();
+            globalVariable.getRoomsArray().getArray().clear();
             globalVariable.getRoomsList().clear();
         }
         Toast.makeText(getApplicationContext(),
@@ -272,7 +274,7 @@ public class RoomActivity extends Activity {
     }
 
     void removeRoomConfirm() {
-        AlertDialogBuilder dialog = new AlertDialogBuilder(RoomActivity.this, getString(R.string.dialog_title_remove),
+        DialogBuildHelper dialog = new DialogBuildHelper(RoomActivity.this, getString(R.string.dialog_title_remove),
                 getString(R.string.dialog_remove_room), android.R.drawable.ic_dialog_alert);
         dialog.getBuilder().setPositiveButton(getString(R.string.dialog_button_ok), new DialogInterface.OnClickListener() {
             @Override
@@ -280,17 +282,17 @@ public class RoomActivity extends Activity {
                 removeRoom();
             }
         });
-        dialog.setNegatvie(getString(R.string.dialog_button_cancel));
+        dialog.setNegative(getString(R.string.dialog_button_cancel));
         dialog.showDialog();
     }
 
     void ExportRoomCSVConfirm() {
-        AlertDialogBuilder dialog = new AlertDialogBuilder(RoomActivity.this, getString(R.string.dialog_title_export),
+        DialogBuildHelper dialog = new DialogBuildHelper(RoomActivity.this, getString(R.string.dialog_title_export),
                 getString(R.string.dialog_export_room_csv), android.R.drawable.ic_dialog_info);
         dialog.getBuilder().setPositiveButton(getString(R.string.dialog_button_ok), new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) { exportRoomCSV(); }});
-        dialog.setNegatvie(getString(R.string.dialog_button_cancel));
+        dialog.setNegative(getString(R.string.dialog_button_cancel));
         dialog.showDialog();
     }
 
@@ -299,6 +301,15 @@ public class RoomActivity extends Activity {
         BluetoothManager bluetoothManager =
                 (BluetoothManager)getSystemService(Context.BLUETOOTH_SERVICE);
         mBluetoothAdapter = bluetoothManager.getAdapter();
+    }
+
+    //Patikriname ar Bluetooth telefone yra ijungtas
+    //Jei ne - paprasoma ijungti
+    void checkBT(){
+        if (mBluetoothAdapter == null || !mBluetoothAdapter.isEnabled()) {
+            Intent enableBtIntent = new Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE);
+            startActivityForResult(enableBtIntent, settings.REQUEST_ENABLE_BT);
+        }
     }
 
     void createBTLECallBack(){
@@ -330,45 +341,45 @@ public class RoomActivity extends Activity {
         }
     }
 
-    //Nuolatos pradedamas ir stabdomas scan
-    void continuousScan(){
-        final Handler handler3 = new Handler();
-        globalVariable.setScanning(true);
-        //Main Thread Runnable:
-        //pranesa, kad reikia atnaujinti irenginiu sarasa
-        final Runnable uiRunnable3 = new Runnable(){
+    void createThread(){
+        handler = new Handler();
+        //nustatytu intervalu vykdo scan
+        background = new Runnable() {
             @Override
             public void run() {
                 if (globalVariable.isScanning()) {
-                    reloadBoundDevices();
-                    checkCalibratedDevices();
-                    if (currentRoom.isCalibrated()) { buttonCalibrate.setEnabled(true); }
+                    new ScanTask().execute();
+                    handler.postDelayed(this, settings.getFrequency());
                 }
+                else { Thread.currentThread().interrupt(); }
             }
         };
-        //Background Runnable:
-        //nustatytais intervalais daro scan ir paleidzia Main Thread Runnable
-        Runnable backgroundRunnable3 = new Runnable(){
-            @Override
-            public void run() {
-                if (globalVariable.isScanning()) {
-                    startBTLEScan();
-                    handler3.postDelayed(this, settings.getFrequency());
-                    handler3.postDelayed(uiRunnable3, settings.getFrequency()+1);
-                }
-            }
-        };
-        new Thread(backgroundRunnable3).start();
     }
 
-    void startBTLEScan(){
-        if (!settings.isGeneratorEnabled()) {
-            mBluetoothAdapter.stopLeScan(mLeScanCallback);
-            mBluetoothAdapter.startLeScan(mLeScanCallback);
+    //Nuolatos pradedamas ir stabdomas scan
+    void continuousScan(boolean enable){
+        globalVariable.setScanning(enable);
+        if (enable){ new Thread(background).start(); }
+    }
+
+    private class ScanTask extends AsyncTask<Void, Void, Boolean>{
+        @Override
+        protected Boolean doInBackground(Void... params) {
+            if (!settings.isGeneratorEnabled()) {
+                mBluetoothAdapter.stopLeScan(mLeScanCallback);
+                mBluetoothAdapter.startLeScan(mLeScanCallback);
+            }
+            else {
+                scantools.fakeCalibrateLogic(settings.getDebugBeacons(),
+                        settings.getDebugRSSIMin(), settings.getDebugRSSIMax(), currentRoom);
+            }
+            return true;
         }
-        else {
-            scantools.fakeCalibrateLogic(settings.getDebugBeacons(),
-                    settings.getDebugRSSIMin(), settings.getDebugRSSIMax(), currentRoom);
+        @Override
+        protected void onPostExecute(Boolean aBoolean) {
+            reloadBoundDevices();
+            checkCalibratedDevices();
+            if (currentRoom.isCalibrated()) { buttonCalibrate.setEnabled(true); }
         }
     }
 }

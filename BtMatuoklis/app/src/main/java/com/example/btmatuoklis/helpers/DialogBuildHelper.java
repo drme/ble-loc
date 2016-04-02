@@ -1,4 +1,4 @@
-package com.example.btmatuoklis.classes;
+package com.example.btmatuoklis.helpers;
 
 import android.app.AlertDialog;
 import android.content.Context;
@@ -10,7 +10,7 @@ import android.text.TextUtils;
 import android.text.TextWatcher;
 import android.widget.EditText;
 
-public class AlertDialogBuilder {
+public class DialogBuildHelper {
     AlertDialog.Builder builder;
     AlertDialog dialog;
     Context context;
@@ -19,7 +19,7 @@ public class AlertDialogBuilder {
     int inputType = InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_FLAG_CAP_SENTENCES;
     int color = Color.WHITE;
 
-    public AlertDialogBuilder(Context context, String title, String message, int icon) {
+    public DialogBuildHelper(Context context, String title, String message, int icon) {
         this.context = context;
         builder = new AlertDialog.Builder(this.context, theme);
         builder.setTitle(title);
@@ -38,7 +38,7 @@ public class AlertDialogBuilder {
         return this.builder;
     }
 
-    public void setNegatvie(String cancel){
+    public void setNegative(String cancel){
         builder.setNegativeButton(cancel, new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
