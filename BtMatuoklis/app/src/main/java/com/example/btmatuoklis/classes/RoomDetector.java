@@ -28,7 +28,7 @@ public class RoomDetector {
             for (int i = 0; i < scannedBeacons.size(); i++){
                 scannedBeacon = scannedBeacons.get(i);
                 calibratedBeacon = created.findBeacon(scannedBeacon.getMAC());
-                if (calibratedBeacon != null){
+                if (calibratedBeacon != null && !calibratedBeacon.getFullRSSI().isEmpty()){
                     byte res = compareCalibrationShadow(calibratedBeacon.getFullRSSI(), scannedBeacon.getFullRSSI());
                     if (res < 0){ coeff.add(res); indexes.add(i); }
                 }

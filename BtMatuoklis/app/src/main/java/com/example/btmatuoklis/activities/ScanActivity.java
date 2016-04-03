@@ -122,7 +122,7 @@ public class ScanActivity extends Activity {
         enviromentArray = new RoomsArray();
         enviromentArray.getArray().add(new Room("Nepriskirti įrenginiai"));
         detector = new RoomDetector();
-        adapter = new ScanAdapter(this, R.layout.list_scan_item, enviromentArray.getArray());
+        adapter = new ScanAdapter(this, roomsArray, enviromentArray);
         displayBeaconsList.setAdapter(adapter);
     }
 
