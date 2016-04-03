@@ -21,7 +21,6 @@ android {
 
 dependencies {
     compile fileTree(include: ['*.jar'], dir: 'libs')
-    compile project(':mcharts_a')
     androidTestCompile 'junit:junit:4.12'
     compile 'com.opencsv:opencsv:3.7'
     compile 'com.jjoe64:graphview:4.0.1'

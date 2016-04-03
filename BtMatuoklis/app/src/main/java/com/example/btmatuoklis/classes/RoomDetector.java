@@ -20,7 +20,6 @@ public class RoomDetector {
         settings = MainActivity.settings;
     }
 
-    
     public String getRoomName(RoomsArray created, RoomsArray enviroment){
         if (!created.getArray().isEmpty()) {
             coeff = new ArrayList<Byte>();

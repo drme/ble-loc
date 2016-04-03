@@ -1,2 +1,2 @@
-include ':app', ':mcharts_a'
+include ':app'
 startParameter.offline=false
