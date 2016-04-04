@@ -12,6 +12,7 @@ import com.example.btmatuoklis.classes.RoomsArray;
 //List adapter for assignment of beacons to room
 public class AssignAdapter extends BaseExpandableListAdapter {
 
+    //Test
     private int groupLayout;
     private int itemLayout;
     private LayoutInflater inflater;
