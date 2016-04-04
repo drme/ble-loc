@@ -17,10 +17,8 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.WindowManager;
 import android.widget.AbsListView;
-import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.ExpandableListView;
-import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -45,9 +43,7 @@ public class RoomActivity extends Activity {
     Settings settings;
     ScanTools scantools;
     Room currentRoom;
-
     RoomsArray roomArray;
-
     MySQLiteHelper database;
     CSVExportHelper exportCSV;
     BluetoothAdapter mBluetoothAdapter;
@@ -55,8 +51,6 @@ public class RoomActivity extends Activity {
     Handler handler;
     Runnable background;
     MenuItem exportItem;
-    ArrayList<String> boundBeaconsList;
-    //ArrayAdapter<String> listAdapter;
     LinkAdapter listAdapter;
     ExpandableListView displayBeaconsList;
     TextView displayRoomName;
@@ -106,7 +100,6 @@ public class RoomActivity extends Activity {
         super.onResume();
         invalidateOptionsMenu();
         reloadBoundDevices();
-        checkCalibratedDevices();
     }
 
     @Override
@@ -146,18 +139,12 @@ public class RoomActivity extends Activity {
         roomID = getIntent().getExtras().getInt("roomID");
         settings = MainActivity.settings;
         scantools = new ScanTools();
-        currentRoom = globalVariable.getRoomsArray().getArray().get(roomID);
-
         roomArray = new RoomsArray();
+        currentRoom = globalVariable.getRoomsArray().getArray().get(roomID);
         roomArray.getArray().add(new Room("Priskirti švyturėliai", currentRoom.getBeacons()));
-
         database = new MySQLiteHelper(this);
         exportCSV = new CSVExportHelper(this);
-        boundBeaconsList = new ArrayList<String>();
-        //listAdapter = new ArrayAdapter<String>(this, R.layout.list_checked, boundBeaconsList);
         listAdapter = new LinkAdapter(this, roomArray);
-        //displayBeaconsList.setChoiceMode(AbsListView.CHOICE_MODE_MULTIPLE);
-        displayBeaconsList.setChoiceMode(AbsListView.CHOICE_MODE_MULTIPLE_MODAL);
         displayBeaconsList.setAdapter(listAdapter);
         displayRoomName.setText(getString(R.string.roomactivity_text_name) + " " + currentRoom.getName());
     }
@@ -166,7 +153,7 @@ public class RoomActivity extends Activity {
     void startCalibration(){
         getActionBar().getCustomView().setVisibility(View.VISIBLE);
         getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
-        displayBeaconsList.setOnItemClickListener(null);
+        displayBeaconsList.setOnChildClickListener(null);
         buttonCalibrate.setText(getString(R.string.roomactivity_button_finish_calib));
         buttonCalibrate.setEnabled(false);
         enableMenuItem(exportItem, false);
@@ -191,7 +178,6 @@ public class RoomActivity extends Activity {
         ArrayList<Boolean> calibratedDevices = currentRoom.getCalibratedBeacons();
         String rssi;
         for (int i = 0; i < calibratedDevices.size(); i++){
-            displayBeaconsList.setItemChecked(i, calibratedDevices.get(i));
             rssi = currentRoom.getBeacons().get(i).getFullRSSI().toString();
             beaconID = currentRoom.getBeacons().get(i).getID();
             database.updateCalibration(new Calibration(roomdID, beaconID, rssi));
@@ -210,7 +196,7 @@ public class RoomActivity extends Activity {
         continuousScan(false);
         buttonCalibrate.setText(getString(R.string.roomactivity_button_calibrate));
         buttonCalibrate.setEnabled(true);
-        displayBeaconsList.setOnItemClickListener(null);
+        displayBeaconsList.setOnChildClickListener(null);
         enableMenuItem(exportItem, false);
     }
 
@@ -230,13 +216,14 @@ public class RoomActivity extends Activity {
     }
 
     void setListListener(){
-        displayBeaconsList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+        displayBeaconsList.setOnChildClickListener(new ExpandableListView.OnChildClickListener() {
             @Override
-            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+            public boolean onChildClick(ExpandableListView parent, View v, int groupPosition, int childPosition, long id) {
                 Intent intent = new Intent(getBaseContext(), BeaconActivity.class);
                 intent.putExtra("roomID", roomID);
-                intent.putExtra("beaconID", position);
+                intent.putExtra("beaconID", childPosition);
                 startActivity(intent);
+                return true;
             }
         });
     }
@@ -245,8 +232,7 @@ public class RoomActivity extends Activity {
     void setChoiceListener(){
         displayBeaconsList.setMultiChoiceModeListener(new AbsListView.MultiChoiceModeListener() {
             @Override
-            public void onItemCheckedStateChanged(ActionMode mode, int position, long id, boolean checked) {
-            }
+            public void onItemCheckedStateChanged(ActionMode mode, int position, long id, boolean checked) { }
 
             @Override
             public boolean onCreateActionMode(ActionMode mode, Menu menu) {
@@ -264,8 +250,7 @@ public class RoomActivity extends Activity {
             }
 
             @Override
-            public void onDestroyActionMode(ActionMode mode) {
-            }
+            public void onDestroyActionMode(ActionMode mode) { }
         });
     }
 
@@ -334,22 +319,11 @@ public class RoomActivity extends Activity {
     }
 
     void reloadBoundDevices(){
-        boundBeaconsList.clear();
-        boundBeaconsList.addAll(currentRoom.getBeaconsCalibrationCounts());
-    }
-
-    void checkCalibratedDevices(){
-        ArrayList<Boolean> calibratedDevices = currentRoom.getCalibratedBeacons();
-        for (int i = 0; i < calibratedDevices.size(); i++){
-            displayBeaconsList.setItemChecked(i, calibratedDevices.get(i));
-        }
+        listAdapter.notifyDataSetChanged();
     }
 
     void checkCompleted(){
-        if (currentRoom.isCalibrated()){
-            checkCalibratedDevices();
-            setListListener();
-        }
+        if (currentRoom.isCalibrated()){ setListListener(); }
     }
 
     void createThread(){
@@ -389,7 +363,6 @@ public class RoomActivity extends Activity {
         @Override
         protected void onPostExecute(Boolean aBoolean) {
             reloadBoundDevices();
-            checkCalibratedDevices();
             if (currentRoom.isCalibrated()) { buttonCalibrate.setEnabled(true); }
         }
     }
