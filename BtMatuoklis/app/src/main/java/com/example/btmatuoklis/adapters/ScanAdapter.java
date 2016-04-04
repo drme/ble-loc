@@ -9,25 +9,24 @@ import android.widget.TextView;
 
 import com.example.btmatuoklis.R;
 import com.example.btmatuoklis.classes.Beacon;
-import com.example.btmatuoklis.classes.GlobalClass;
-import com.example.btmatuoklis.classes.Room;
 import com.example.btmatuoklis.classes.RoomsArray;
 import com.example.btmatuoklis.helpers.ChartHelper;
 import com.jjoe64.graphview.GraphView;
 
-import java.util.ArrayList;
 import java.util.Collections;
 
 //List adapter for scan/room detection mode
 public class ScanAdapter extends BaseExpandableListAdapter {
 
-    private int layout;
+    private int groupLayout;
+    private int itemLayout;
     private LayoutInflater inflater;
     private RoomsArray rooms, enviroment;
     private ChartHelper charthelper;
 
     public ScanAdapter(Context context, RoomsArray rooms, RoomsArray enviroment) {
-        this.layout = R.layout.list_scan_item;
+        this.groupLayout = R.layout.list_scan_group;
+        this.itemLayout = R.layout.list_scan_item;
         this.rooms = rooms;
         this.enviroment = enviroment;
         this.charthelper = new ChartHelper();
@@ -71,7 +70,7 @@ public class ScanAdapter extends BaseExpandableListAdapter {
     public View getGroupView(int groupPosition, boolean isExpanded, View convertView, ViewGroup parent) {
         String title = this.enviroment.getArray().get(groupPosition).getName();
         title += " ("+this.enviroment.getArray().get(groupPosition).getBeacons().size()+")";
-        if (convertView == null){ convertView = inflater.inflate(R.layout.list_scan_category, null); }
+        if (convertView == null){ convertView = inflater.inflate(this.groupLayout, null); }
         TextView text = (TextView)convertView.findViewById(R.id.text1);
         text.setText(title);
         return convertView;
@@ -83,7 +82,7 @@ public class ScanAdapter extends BaseExpandableListAdapter {
         Beacon beacon = this.enviroment.getArray().get(groupPosition).getBeacons().get(childPosition);
         Beacon temp = rooms.findBeacon(beacon.getMAC());
         if (temp != null && !temp.getFullRSSI().isEmpty()){ rssiMin = Collections.min(temp.getFullRSSI()); }
-        convertView = this.inflater.inflate(this.layout, parent, false);
+        convertView = this.inflater.inflate(this.itemLayout, parent, false);
         TextView text = (TextView)convertView.findViewById(R.id.text1);
         GraphView chart = (GraphView)convertView.findViewById(R.id.chart1);
         text.setText(beacon.getInfo("current"));

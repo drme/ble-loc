@@ -262,11 +262,9 @@ public class RoomActivity extends Activity {
         database.deleteRoom(currentRoom.getID());
         database.deleteCalibrations(currentRoom.getID());
         globalVariable.getRoomsArray().getArray().remove(roomID);
-        globalVariable.getRoomsList().remove(roomID);
         if (globalVariable.getRoomsArray().getArray().isEmpty()){
             database.clearDB();
             globalVariable.getRoomsArray().getArray().clear();
-            globalVariable.getRoomsList().clear();
         }
         Toast.makeText(getApplicationContext(),
                 getString(R.string.toast_info_removed), Toast.LENGTH_SHORT).show();

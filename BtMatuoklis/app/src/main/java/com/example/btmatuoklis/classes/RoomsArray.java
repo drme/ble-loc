@@ -12,6 +12,14 @@ public class RoomsArray {
 
     public ArrayList<Room> getArray() { return this.rooms; }
 
+    public ArrayList<String> getNameList(){
+        ArrayList<String> res = new ArrayList<String>();
+        for (int i = 0; i < this.rooms.size(); i++){
+            res.add(this.rooms.get(i).getName());
+        }
+        return res;
+    }
+
     public ArrayList<String> getFullMACList(){
         ArrayList<String> res = new ArrayList<String>();
         for (int i = 0; i < this.rooms.size(); i++){

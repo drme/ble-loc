@@ -167,7 +167,6 @@ public class NewRoomActivity extends Activity {
 
     void createRoom(){
         globalVariable.getRoomsArray().getArray().add(new Room(roomName));
-        globalVariable.getRoomsList().add(roomName);
         roomID = globalVariable.getRoomsArray().getArray().size() - 1;
         currentRoom = globalVariable.getRoomsArray().getArray().get(roomID);
     }
