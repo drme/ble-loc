@@ -53,8 +53,7 @@ public class RoomActivity extends Activity {
     ExpandableListView displayBeaconsList;
     TextView displayRoomName;
     Button buttonCalibrate;
-
-    //Test
+    
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
