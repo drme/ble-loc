@@ -54,6 +54,7 @@ public class RoomActivity extends Activity {
     TextView displayRoomName;
     Button buttonCalibrate;
 
+    //Test
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
