@@ -18,13 +18,15 @@ import android.view.View;
 import android.view.WindowManager;
 import android.widget.AbsListView;
 import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.ExpandableListView;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.btmatuoklis.R;
+import com.example.btmatuoklis.adapters.LinkAdapter;
+import com.example.btmatuoklis.classes.RoomsArray;
 import com.example.btmatuoklis.helpers.DialogBuildHelper;
 import com.example.btmatuoklis.classes.Calibration;
 import com.example.btmatuoklis.helpers.CSVExportHelper;
@@ -43,6 +45,9 @@ public class RoomActivity extends Activity {
     Settings settings;
     ScanTools scantools;
     Room currentRoom;
+
+    RoomsArray roomArray;
+
     MySQLiteHelper database;
     CSVExportHelper exportCSV;
     BluetoothAdapter mBluetoothAdapter;
@@ -51,8 +56,9 @@ public class RoomActivity extends Activity {
     Runnable background;
     MenuItem exportItem;
     ArrayList<String> boundBeaconsList;
-    ArrayAdapter<String> listAdapter;
-    ListView displayBeaconsList;
+    //ArrayAdapter<String> listAdapter;
+    LinkAdapter listAdapter;
+    ExpandableListView displayBeaconsList;
     TextView displayRoomName;
     Button buttonCalibrate;
 
@@ -62,7 +68,7 @@ public class RoomActivity extends Activity {
         setContentView(R.layout.activity_room);
         getActionBar().setSubtitle(getString(R.string.subtitle_existing_room));
         displayRoomName = (TextView)findViewById(R.id.textSingleRoom_Name);
-        displayBeaconsList = (ListView)findViewById(R.id.listSingleRoom_BeaconsList);
+        displayBeaconsList = (ExpandableListView)findViewById(R.id.listSingleRoom_BeaconsList);
         buttonCalibrate = (Button)findViewById(R.id.buttonSingleRoom_Calibrate);
 
         setDefaultValues();
@@ -141,10 +147,17 @@ public class RoomActivity extends Activity {
         settings = MainActivity.settings;
         scantools = new ScanTools();
         currentRoom = globalVariable.getRoomsArray().getArray().get(roomID);
+
+        roomArray = new RoomsArray();
+        roomArray.getArray().add(new Room("Priskirti švyturėliai", currentRoom.getBeacons()));
+
         database = new MySQLiteHelper(this);
         exportCSV = new CSVExportHelper(this);
         boundBeaconsList = new ArrayList<String>();
-        listAdapter = new ArrayAdapter<String>(this, R.layout.list_checked, boundBeaconsList);
+        //listAdapter = new ArrayAdapter<String>(this, R.layout.list_checked, boundBeaconsList);
+        listAdapter = new LinkAdapter(this, roomArray);
+        //displayBeaconsList.setChoiceMode(AbsListView.CHOICE_MODE_MULTIPLE);
+        displayBeaconsList.setChoiceMode(AbsListView.CHOICE_MODE_MULTIPLE_MODAL);
         displayBeaconsList.setAdapter(listAdapter);
         displayRoomName.setText(getString(R.string.roomactivity_text_name) + " " + currentRoom.getName());
     }
@@ -322,7 +335,7 @@ public class RoomActivity extends Activity {
 
     void reloadBoundDevices(){
         boundBeaconsList.clear();
-        boundBeaconsList.addAll(currentRoom.getBeaconsCalibrationCount());
+        boundBeaconsList.addAll(currentRoom.getBeaconsCalibrationCounts());
     }
 
     void checkCalibratedDevices(){
