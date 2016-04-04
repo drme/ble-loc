@@ -25,7 +25,7 @@ public class ScanAdapter extends BaseExpandableListAdapter {
     private ChartHelper charthelper;
 
     public ScanAdapter(Context context, RoomsArray rooms, RoomsArray enviroment) {
-        this.groupLayout = R.layout.list_scan_group;
+        this.groupLayout = R.layout.list_group;
         this.itemLayout = R.layout.list_scan_item;
         this.rooms = rooms;
         this.enviroment = enviroment;

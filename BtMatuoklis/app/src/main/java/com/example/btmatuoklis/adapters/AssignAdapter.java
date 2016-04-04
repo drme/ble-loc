@@ -18,7 +18,7 @@ public class AssignAdapter extends BaseExpandableListAdapter {
     private RoomsArray enviroment;
 
     public AssignAdapter(Context context, RoomsArray enviroment){
-        this.groupLayout = R.layout.list_scan_group;
+        this.groupLayout = R.layout.list_group;
         this.itemLayout = R.layout.list_multiple_choice;
         this.enviroment = enviroment;
         this.inflater = (LayoutInflater)context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);

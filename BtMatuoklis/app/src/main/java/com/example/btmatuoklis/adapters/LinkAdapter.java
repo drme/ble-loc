@@ -21,7 +21,7 @@ public class LinkAdapter extends BaseExpandableListAdapter {
     private RoomsArray enviroment;
 
     public LinkAdapter(Context context, RoomsArray enviroment){
-        this.groupLayout = R.layout.list_scan_group;
+        this.groupLayout = R.layout.list_group;
         this.itemLayout = R.layout.list_checked;
         this.enviroment = enviroment;
         this.inflater = (LayoutInflater)context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
@@ -76,7 +76,6 @@ public class LinkAdapter extends BaseExpandableListAdapter {
         convertView = this.inflater.inflate(this.itemLayout, parent, false);
         CheckedTextView check = (CheckedTextView)convertView.findViewById(R.id.text1);
         check.setText(beacon.getInfo("calibration"));
-        //setChecked not working
         check.setChecked(beacon.getFullRSSI().size() > 0);
         return convertView;
     }
