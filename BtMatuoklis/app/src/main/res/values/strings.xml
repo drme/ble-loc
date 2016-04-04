@@ -96,7 +96,6 @@
 
     <!--RoomActivity elementu tekstai-->
     <string name="roomactivity_text_name">Pavadinimas:</string>
-    <string name="roomactivity_text_bound_devices">Susieti įrenginiai:</string>
     <string name="roomactivity_button_calibrate">Kalibruoti įrenginius</string>
     <string name="roomactivity_button_finish_calib">Baigti kalibraciją</string>
     <string name="roomactivity_button_resume_calib">Tęsti kalibraciją</string>

@@ -11,19 +11,24 @@ public class Room {
         this.beacons = new ArrayList<Beacon>();
     }
 
-    public Room(String nm){
-        this.name = nm;
+    public Room(String name){
+        this.name = name;
         this.beacons = new ArrayList<Beacon>();
     }
 
-    public Room(int id, String nm){
+    public Room(String name, ArrayList<Beacon> beacons){
+        this.name = name;
+        this.beacons = beacons;
+    }
+
+    public Room(int id, String name){
         this.id = id;
-        this.name = nm;
+        this.name = name;
         this.beacons = new ArrayList<Beacon>();
     }
 
-    public void setName(String nm){
-        this.name = nm;
+    public void setName(String name){
+        this.name = name;
     }
 
     public String getName(){
@@ -54,7 +59,7 @@ public class Room {
         return res;
     }
 
-    public ArrayList<String> getBeaconsCalibrationCount(){
+    public ArrayList<String> getBeaconsCalibrationCounts(){
         ArrayList<String> res = new ArrayList<String>();
         for (int i = 0; i < this.beacons.size(); i++){
             res.add(this.beacons.get(i).getInfo("calibration"));

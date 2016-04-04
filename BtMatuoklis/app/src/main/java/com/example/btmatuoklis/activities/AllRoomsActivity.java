@@ -25,7 +25,7 @@ public class AllRoomsActivity extends Activity {
 
     GlobalClass globalVariable;
     ListView displayRoomsList;
-    ArrayAdapter listAdapter;
+    ArrayAdapter<String> listAdapter;
     RoomsArray roomsArray;
     ArrayList<String> savedRoomsList;
     String roomName;
@@ -53,6 +53,8 @@ public class AllRoomsActivity extends Activity {
     @Override
     protected void onResume() {
         super.onResume();
+        savedRoomsList.clear();
+        savedRoomsList.addAll(roomsArray.getNameList());
         listAdapter.notifyDataSetChanged();
     }
 
@@ -89,10 +91,9 @@ public class AllRoomsActivity extends Activity {
 
     void setDefaultValues(){
         globalVariable = (GlobalClass) getApplicationContext();
-        savedRoomsList = new ArrayList<String>();
         roomsArray = globalVariable.getRoomsArray();
-        savedRoomsList = globalVariable.getRoomsList();
-        listAdapter = new ArrayAdapter(this, android.R.layout.simple_list_item_1, savedRoomsList);
+        savedRoomsList = roomsArray.getNameList();
+        listAdapter = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, savedRoomsList);
         displayRoomsList.setAdapter(listAdapter);
     }
 

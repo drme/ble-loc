@@ -75,7 +75,6 @@ public class MainActivity extends Activity {
         ArrayList<Room> rooms = database.getAllRooms();
         for (int i = 0; i < rooms.size(); i++){
             globalVariable.getRoomsArray().getArray().add(rooms.get(i));
-            globalVariable.getRoomsList().add(rooms.get(i).getName());
         }
     }
 
@@ -86,7 +85,6 @@ public class MainActivity extends Activity {
 
     public void loadDatabase(MenuItem item){
         globalVariable.getRoomsArray().getArray().clear();
-        globalVariable.getRoomsList().clear();
         loadRooms();
         loadBeacons();
         Toast.makeText(getApplicationContext(), "Duombazė užkrauta.", Toast.LENGTH_SHORT).show();
@@ -96,7 +94,6 @@ public class MainActivity extends Activity {
         MySQLiteHelper database = new MySQLiteHelper(this);
         database.clearDB();
         globalVariable.getRoomsArray().getArray().clear();
-        globalVariable.getRoomsList().clear();
         Toast.makeText(getApplicationContext(), "Duombazė išvalyta", Toast.LENGTH_SHORT).show();
     }
 
