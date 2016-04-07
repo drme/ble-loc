@@ -15,6 +15,7 @@ public class SettingsActivity extends PreferenceActivity implements SharedPrefer
     Settings settings;
     EditTextPreference editFrequency, editTimeout, editShadow, editAverage;
     SeekBarPreference sliderAccuracy, sliderTXPower;
+    SwitchPreference switchNullDevices;
     SwitchPreference switchGenerator;
     EditTextPreference debugBeacons, debugRSSIMin, debugRSSIMax;
 
@@ -28,6 +29,7 @@ public class SettingsActivity extends PreferenceActivity implements SharedPrefer
         editShadow = (EditTextPreference)findPreference("savedShadow");
         sliderAccuracy = (SeekBarPreference)findPreference("savedAccuracy");
         sliderTXPower = (SeekBarPreference)findPreference("savedTXPower");
+        switchNullDevices = (SwitchPreference)findPreference("nullDevices");
         editAverage = (EditTextPreference)findPreference("savedAverage");
         switchGenerator = (SwitchPreference)findPreference("debugGenerator");
         debugBeacons = (EditTextPreference)findPreference("debugBeacons");

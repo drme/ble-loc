@@ -28,8 +28,11 @@ public class Settings implements SharedPreferences.OnSharedPreferenceChangeListe
     //Kiek RSSI turi pakliuti i kalibravimo intervala
     private byte accuracy, defaultAccuracy;
 
-    //"Default" BTLE irenginio stiprumas, reiksme [1-100] intervale
+    //BTLE irenginio stiprumas, reiksme [1-100] intervale
     private byte txPower, defaultTXPower;
+
+    //Nustatymas, kuris reguliuoja ar sarasuose bus rodomi BTLE irenginiai, kurie neturi pavadinimu
+    private boolean showNull, defaultShowNull;
 
     //Matavimu kiekis, vieno beacon'o vidutinei RSSI reiksmei surasti
     private byte average, defaultAverage;
@@ -59,6 +62,7 @@ public class Settings implements SharedPreferences.OnSharedPreferenceChangeListe
         defaultShadow = (byte)context.getResources().getInteger(R.integer.default_shadow);
         defaultAccuracy = (byte)context.getResources().getInteger(R.integer.default_accuracy);
         defaultTXPower = (byte)context.getResources().getInteger(R.integer.default_txpower);
+        defaultShowNull = context.getResources().getBoolean(R.bool.default_show_null);
         defaultAverage = (byte)context.getResources().getInteger(R.integer.default_average);
         defaultGenerator = context.getResources().getBoolean(R.bool.debug_default_generator);
         defaultGeneratedBeacons = (byte)context.getResources().getInteger(R.integer.debug_default_beacons);
@@ -73,6 +77,7 @@ public class Settings implements SharedPreferences.OnSharedPreferenceChangeListe
         shadow = Byte.parseByte(preferences.getString("savedShadow", Byte.toString(defaultShadow)));
         accuracy = (byte)preferences.getInt("savedAccuracy", defaultAccuracy);
         txPower = (byte)preferences.getInt("savedTXPower", defaultTXPower);
+        showNull = preferences.getBoolean("showNull", defaultShowNull);
         average = Byte.parseByte(preferences.getString("savedAverage", Byte.toString(defaultAverage)));
         generator = preferences.getBoolean("debugGenerator", defaultGenerator);
         generatedBeacons = Byte.parseByte(preferences.getString("debugBeacons", Byte.toString(defaultGeneratedBeacons)));
@@ -91,6 +96,8 @@ public class Settings implements SharedPreferences.OnSharedPreferenceChangeListe
     public byte getAccuracy(){ return this.accuracy; }
 
     public byte getTXPower(){ return this.txPower; }
+
+    public boolean showNullDevices() { return this.showNull; }
 
     public byte getAverage(){ return this.average; }
 

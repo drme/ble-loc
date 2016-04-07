@@ -15,6 +15,7 @@ import com.example.btmatuoklis.classes.RoomsArray;
 //List adapter for display of beacons which are linked(bound) to to room
 public class LinkAdapter extends BaseExpandableListAdapter {
 
+    private static int checkItem = R.id.text1;
     private int groupLayout;
     private int itemLayout;
     private LayoutInflater inflater;
@@ -73,15 +74,27 @@ public class LinkAdapter extends BaseExpandableListAdapter {
     @Override
     public View getChildView(int groupPosition, int childPosition, boolean isLastChild, View convertView, ViewGroup parent) {
         Beacon beacon = this.enviroment.getArray().get(groupPosition).getBeacons().get(childPosition);
-        convertView = this.inflater.inflate(this.itemLayout, parent, false);
-        CheckedTextView check = (CheckedTextView)convertView.findViewById(R.id.text1);
-        check.setText(beacon.getInfo("calibration"));
-        check.setChecked(beacon.getFullRSSI().size() > 0);
-        return convertView;
+        View view = convertView;
+        CheckHolder checkHolder;
+        if (convertView == null){
+            view = this.inflater.inflate(this.itemLayout, parent, false);
+            checkHolder = new CheckHolder(view);
+            view.setTag(checkHolder);
+        } else { checkHolder = (CheckHolder)view.getTag(); }
+        checkHolder.checkedView.setText(beacon.getInfo("calibration"));
+        checkHolder.checkedView.setChecked(beacon.getFullRSSI().size() > 0);
+        return view;
     }
 
     @Override
     public boolean isChildSelectable(int groupPosition, int childPosition) {
         return true;
+    }
+
+    class CheckHolder {
+        public CheckedTextView checkedView;
+        public CheckHolder(View view){
+            checkedView = (CheckedTextView)view.findViewById(LinkAdapter.checkItem);
+        }
     }
 }

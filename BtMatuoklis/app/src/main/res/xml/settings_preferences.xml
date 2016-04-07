@@ -47,6 +47,12 @@
             android:title="@string/settingsactivity_text_txpower"
             android:summary="@string/generic_value"
             android:dialogMessage="@string/settingsactivity_hint_txpower" />
+        <SwitchPreference
+            android:id="@+id/preferences_Show_Null"
+            android:key="showNull"
+            android:defaultValue="@bool/default_show_null"
+            android:title="@string/settingsactivity_text_show_null"
+            android:summary="@string/settingsactivity_hint_show_null" />
         <EditTextPreference
             android:id="@+id/preferences_Average"
             android:key="savedAverage"

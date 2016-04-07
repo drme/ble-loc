@@ -105,7 +105,9 @@ public class ScanActivity extends Activity {
         mLeScanCallback = new BluetoothAdapter.LeScanCallback() {
             @Override
             public void onLeScan(BluetoothDevice device, int rssi, byte[] scanRecord) {
-                scantools.scanLogic(device, rssi, roomsArray, enviromentArray);
+                if (settings.showNullDevices() | device.getName() != null){
+                    scantools.scanLogic(device, rssi, roomsArray, enviromentArray);
+                }
                 mBluetoothAdapter.stopLeScan(this); //Scan stabdomas
             }
         };

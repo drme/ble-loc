@@ -286,7 +286,9 @@ public class RoomActivity extends Activity {
         mLeScanCallback = new BluetoothAdapter.LeScanCallback() {
             @Override
             public void onLeScan(BluetoothDevice device, int rssi, byte[] scanRecord) {
-                scantools.calibrateLogic(device, rssi, currentRoom);
+                if (settings.showNullDevices() | device.getName() != null){
+                    scantools.calibrateLogic(device, rssi, currentRoom);
+                }
                 mBluetoothAdapter.stopLeScan(this); //Scan stabdomas
             }
         };

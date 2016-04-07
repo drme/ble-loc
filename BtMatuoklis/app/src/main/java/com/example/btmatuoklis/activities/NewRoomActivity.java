@@ -128,7 +128,7 @@ public class NewRoomActivity extends Activity {
         displayBeaconsList.setOnChildClickListener(new ExpandableListView.OnChildClickListener() {
             @Override
             public boolean onChildClick(ExpandableListView parent, View view, int groupPosition, int childPosition, long id) {
-                if (groupPosition > 0){
+                if (groupPosition > 0) {
                     CheckedTextView checkedTextView = ((CheckedTextView) view);
                     checkedTextView.setChecked(!checkedTextView.isChecked());
                     if (checkedTextView.isChecked()) {
@@ -224,7 +224,9 @@ public class NewRoomActivity extends Activity {
         mLeScanCallback = new BluetoothAdapter.LeScanCallback() {
             @Override
             public void onLeScan(BluetoothDevice device, int rssi, byte[] scanRecord) {
-                scantools.assignLogic(device, rssi, allMACs, enviromentArray);
+                if (settings.showNullDevices() | device.getName() != null){
+                    scantools.assignLogic(device, rssi, allMACs, enviromentArray);
+                }
                 mBluetoothAdapter.stopLeScan(this); //Scan stabdomas
             }
         };
