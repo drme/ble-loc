@@ -15,14 +15,14 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.WindowManager;
-import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.CheckedTextView;
-import android.widget.ListView;
+import android.widget.ExpandableListView;
 import android.widget.Toast;
 
 import com.example.btmatuoklis.R;
+import com.example.btmatuoklis.adapters.AssignAdapter;
+import com.example.btmatuoklis.classes.RoomsArray;
 import com.example.btmatuoklis.helpers.DialogBuildHelper;
 import com.example.btmatuoklis.classes.Beacon;
 import com.example.btmatuoklis.classes.Calibration;
@@ -41,15 +41,16 @@ public class NewRoomActivity extends Activity {
     Settings settings;
     ScanTools scantools;
     Room environment, currentRoom;
+    ArrayList<String> allMACs;
+    RoomsArray enviromentArray;
     MySQLiteHelper database;
     BluetoothAdapter mBluetoothAdapter;
     BluetoothAdapter.LeScanCallback mLeScanCallback;
     Handler handler;
     Runnable background;
     String roomName;
-    ListView displayBeaconsList;
-    ArrayList<String> beaconsList;
-    ArrayAdapter<String> listAdapter;
+    ExpandableListView displayBeaconsList;
+    AssignAdapter adapter;
     ArrayList<Integer> selectedBeacons;
     Button buttonAccept;
 
@@ -58,7 +59,7 @@ public class NewRoomActivity extends Activity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_new_room);
         getActionBar().setSubtitle(getString(R.string.subtitle_new_room_beacons));
-        displayBeaconsList = (ListView)findViewById(R.id.listNewRoom_BeaconsList);
+        displayBeaconsList = (ExpandableListView)findViewById(R.id.listNewRoom_BeaconsList);
         buttonAccept = (Button)findViewById(R.id.buttonNewRoom_End);
 
         setDefaultValues();
@@ -112,36 +113,37 @@ public class NewRoomActivity extends Activity {
         roomName = getIntent().getExtras().getString("roomName");
         settings = MainActivity.settings;
         scantools = new ScanTools();
+        allMACs = globalVariable.getRoomsArray().getFullMACList();
+        enviromentArray = new RoomsArray();
+        enviromentArray.getArray().add(new Room("Kitų patalpų švyturėliai"));
+        enviromentArray.getArray().add(new Room("Nepriskirti švyturėliai"));
         environment = new Room();
         database = new MySQLiteHelper(this);
-        beaconsList = new ArrayList<String>();
-        listAdapter = new ArrayAdapter<String>(this, R.layout.list_multiple_choice, beaconsList);
         selectedBeacons = new ArrayList<Integer>();
-        displayBeaconsList.setAdapter(listAdapter);
+        adapter = new AssignAdapter(this, enviromentArray, selectedBeacons);
+        displayBeaconsList.setAdapter(adapter);
     }
 
     void setListListener(){
-        displayBeaconsList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+        displayBeaconsList.setOnChildClickListener(new ExpandableListView.OnChildClickListener() {
             @Override
-            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                CheckedTextView checkedTextView = ((CheckedTextView) view);
-                checkedTextView.setChecked(!checkedTextView.isChecked());
-                if (checkedTextView.isChecked()) {
-                    selectedBeacons.add(position);
-                } else {
-                    int checkIndex = selectedBeacons.indexOf(position);
-                    if (!(checkIndex == -1)) {
-                        selectedBeacons.remove(checkIndex);
+            public boolean onChildClick(ExpandableListView parent, View view, int groupPosition, int childPosition, long id) {
+                if (groupPosition > 0){
+                    CheckedTextView checkedTextView = ((CheckedTextView) view);
+                    checkedTextView.setChecked(!checkedTextView.isChecked());
+                    if (checkedTextView.isChecked()) {
+                        selectedBeacons.add(childPosition);
+                    } else {
+                        int checkIndex = selectedBeacons.indexOf(childPosition);
+                        if (!(checkIndex == -1)) {
+                            selectedBeacons.remove(checkIndex);
+                        }
                     }
+                    buttonAccept.setEnabled(!selectedBeacons.isEmpty());
                 }
-                enableFinishButton();
+                return true;
             }
         });
-    }
-
-    void enableFinishButton(){
-        if (selectedBeacons.size() > 0){ buttonAccept.setEnabled(true); }
-        else { buttonAccept.setEnabled(false); }
     }
 
     void cancelCreation(){
@@ -174,7 +176,7 @@ public class NewRoomActivity extends Activity {
     void saveSelectedBeacons(){
         createRoomInDatabase();
         for (int i = 0; i < selectedBeacons.size(); i++){
-            Beacon beacon = environment.getBeacons().get(selectedBeacons.get(i));
+            Beacon beacon = enviromentArray.getArray().get(1).getBeacons().get(selectedBeacons.get(i));
             currentRoom.getBeacons().add(new Beacon(beacon.getName(), beacon.getMAC()));
             saveBeaconsInDatabase(currentRoom.getBeacons().get(i));
         }
@@ -222,7 +224,7 @@ public class NewRoomActivity extends Activity {
         mLeScanCallback = new BluetoothAdapter.LeScanCallback() {
             @Override
             public void onLeScan(BluetoothDevice device, int rssi, byte[] scanRecord) {
-                scantools.assignLogic(device, rssi, environment);
+                scantools.assignLogic(device, rssi, allMACs, enviromentArray);
                 mBluetoothAdapter.stopLeScan(this); //Scan stabdomas
             }
         };
@@ -259,15 +261,13 @@ public class NewRoomActivity extends Activity {
             }
             else{
                 scantools.fakeAssignLogic(settings.getDebugBeacons(), settings.getDebugRSSIMin(),
-                        settings.getDebugRSSIMax(), environment);
+                        settings.getDebugRSSIMax(), allMACs, enviromentArray);
             }
             return true;
         }
         @Override
         protected void onPostExecute(Boolean aBoolean) {
-            beaconsList.clear();
-            beaconsList.addAll(environment.getCurrentInfoList());
-            listAdapter.notifyDataSetChanged();
+            adapter.notifyDataSetChanged();
         }
     }
 }

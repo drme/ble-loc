@@ -5,23 +5,33 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseExpandableListAdapter;
+import android.widget.CheckedTextView;
+import android.widget.TextView;
 
 import com.example.btmatuoklis.R;
+import com.example.btmatuoklis.classes.Beacon;
 import com.example.btmatuoklis.classes.RoomsArray;
+
+import java.util.ArrayList;
 
 //List adapter for assignment of beacons to room
 public class AssignAdapter extends BaseExpandableListAdapter {
 
-    //Test
+    private static int checkItem = R.id.text1;
+    private static int simpleItem = android.R.id.text1;
     private int groupLayout;
-    private int itemLayout;
+    private int checkItemLayout;
+    private int simpleItemLayout;
     private LayoutInflater inflater;
     private RoomsArray enviroment;
+    private ArrayList<Integer> selected;
 
-    public AssignAdapter(Context context, RoomsArray enviroment){
+    public AssignAdapter(Context context, RoomsArray enviroment, ArrayList<Integer> selected){
         this.groupLayout = R.layout.list_group;
-        this.itemLayout = R.layout.list_multiple_choice;
+        this.checkItemLayout = R.layout.list_multiple_choice;
+        this.simpleItemLayout = android.R.layout.simple_list_item_1;
         this.enviroment = enviroment;
+        this.selected = selected;
         this.inflater = (LayoutInflater)context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
     }
 
@@ -45,31 +55,73 @@ public class AssignAdapter extends BaseExpandableListAdapter {
 
     @Override
     public long getGroupId(int groupPosition) {
-        return groupPosition;
+        return this.enviroment.getArray().get(groupPosition).getName().hashCode();
     }
 
     @Override
     public long getChildId(int groupPosition, int childPosition) {
-        return childPosition;
+        return this.enviroment.getArray().get(groupPosition).getBeacons().get(childPosition).getMAC().hashCode();
     }
 
     @Override
     public boolean hasStableIds() {
-        return false;
+        return true;
     }
 
     @Override
     public View getGroupView(int groupPosition, boolean isExpanded, View convertView, ViewGroup parent) {
-        return null;
+        String title = this.enviroment.getArray().get(groupPosition).getName();
+        title += " ("+this.enviroment.getArray().get(groupPosition).getBeacons().size()+")";
+        if (convertView == null){ convertView = inflater.inflate(this.groupLayout, null); }
+        TextView text = (TextView)convertView.findViewById(R.id.text1);
+        text.setText(title);
+        return convertView;
     }
 
     @Override
     public View getChildView(int groupPosition, int childPosition, boolean isLastChild, View convertView, ViewGroup parent) {
-        return null;
+        Beacon beacon = this.enviroment.getArray().get(groupPosition).getBeacons().get(childPosition);
+        String info = beacon.getInfo("current");
+        View view = convertView;
+        if (groupPosition > 0){
+            CheckHolder checkHolder;
+            if (convertView == null || !(convertView.getTag() instanceof CheckHolder)){
+                view = this.inflater.inflate(this.checkItemLayout, parent, false);
+                checkHolder = new CheckHolder(view);
+                view.setTag(checkHolder);
+            } else { checkHolder = (CheckHolder)view.getTag(); }
+            checkHolder.checkedView.setText(info);
+            checkHolder.checkedView.setChecked(selected.contains(childPosition));
+        }
+        else {
+            SimpleHolder simpleHolder;
+            if (convertView == null || !(convertView.getTag() instanceof SimpleHolder)){
+                view = this.inflater.inflate(this.simpleItemLayout, parent, false);
+                simpleHolder = new SimpleHolder(view);
+                view.setTag(simpleHolder);
+            } else { simpleHolder = (SimpleHolder)view.getTag(); }
+            simpleHolder.simpleView.setText(info);
+            simpleHolder.simpleView.setEnabled(false);
+        }
+        return view;
     }
 
     @Override
     public boolean isChildSelectable(int groupPosition, int childPosition) {
         return true;
+    }
+
+    class CheckHolder {
+        public CheckedTextView checkedView;
+        public CheckHolder(View view){
+            checkedView = (CheckedTextView)view.findViewById(AssignAdapter.checkItem);
+        }
+    }
+
+    class SimpleHolder {
+        public TextView simpleView;
+        public SimpleHolder(View view){
+            simpleView = (TextView)view.findViewById(AssignAdapter.simpleItem);
+        }
     }
 }

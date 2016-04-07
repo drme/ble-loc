@@ -118,7 +118,7 @@ public class ScanActivity extends Activity {
         settings = MainActivity.settings;
         scantools = new ScanTools();
         environment = new Room();
-        roomsArray = new RoomsArray(globalVariable.getRoomsArray().getArray());
+        roomsArray = globalVariable.getRoomsArray();
         enviromentArray = new RoomsArray();
         enviromentArray.getArray().add(new Room("Nepriskirti įrenginiai"));
         detector = new RoomDetector();

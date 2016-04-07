@@ -15,7 +15,7 @@
         android:onClick="onAcceptButtonClick"
         android:enabled="false" />
 
-    <ListView
+    <ExpandableListView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:id="@+id/listNewRoom_BeaconsList"
@@ -23,5 +23,5 @@
         android:layout_alignParentEnd="true"
         android:layout_alignParentTop="true"
         android:layout_above="@+id/buttonNewRoom_End"
-        tools:listitem="@android:layout/simple_list_item_multiple_choice" />
+        tools:listitem="@layout/list_group" />
 </RelativeLayout>
