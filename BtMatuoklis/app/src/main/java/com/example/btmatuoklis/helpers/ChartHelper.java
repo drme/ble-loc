@@ -81,19 +81,30 @@ public class ChartHelper {
         graph.addSeries(series);
     }
 
+    public void resetScanChart(GraphView graph, Byte rssiMin){
+        LineGraphSeries<DataPoint> series = new LineGraphSeries<DataPoint>( new DataPoint[]{
+                new DataPoint(0, 0),
+                new DataPoint(rssiMin, 0)
+        });
+        series.setThickness(10);
+        graph.getSeries().set(0, series);
+    }
+
     public void updateScanChart(GraphView graph, Byte rssiMin, Beacon beacon){
         BarGraphSeries<DataPoint> series = new BarGraphSeries<DataPoint>( new DataPoint[]{
                 new DataPoint(beacon.getRSSIAverage(), 1)
         });
         series.setSpacing(100);
         if (beacon.getRSSIAverage() < rssiMin){
-            series.setValueDependentColor(new ValueDependentColor<DataPoint>() {
-                @Override
-                public int get(DataPoint data) {
-                    return Color.rgb(255, 0, 0);
-                }
-            });
+            series.setValueDependentColor(getCursorColor());
         }
-        graph.getSeries().set(0, series);
+        graph.getSeries().set(1, series);
+    }
+
+    private ValueDependentColor<DataPoint> getCursorColor(){
+        ValueDependentColor<DataPoint> cursor = new ValueDependentColor<DataPoint>() {
+            @Override
+            public int get(DataPoint data) { return Color.rgb(255, 0, 0); }};
+        return cursor;
     }
 }

@@ -11,6 +11,7 @@ import android.widget.TextView;
 import com.example.btmatuoklis.R;
 import com.example.btmatuoklis.classes.Beacon;
 import com.example.btmatuoklis.classes.RoomsArray;
+import com.example.btmatuoklis.helpers.BeaconInfoHelper;
 
 import java.util.ArrayList;
 
@@ -25,6 +26,7 @@ public class AssignAdapter extends BaseExpandableListAdapter {
     private LayoutInflater inflater;
     private RoomsArray enviroment;
     private ArrayList<Integer> selected;
+    private BeaconInfoHelper infohelper;
 
     public AssignAdapter(Context context, RoomsArray enviroment, ArrayList<Integer> selected){
         this.groupLayout = R.layout.list_group;
@@ -32,6 +34,7 @@ public class AssignAdapter extends BaseExpandableListAdapter {
         this.simpleItemLayout = android.R.layout.simple_list_item_1;
         this.enviroment = enviroment;
         this.selected = selected;
+        this.infohelper = new BeaconInfoHelper(context);
         this.inflater = (LayoutInflater)context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
     }
 
@@ -81,7 +84,7 @@ public class AssignAdapter extends BaseExpandableListAdapter {
     @Override
     public View getChildView(int groupPosition, int childPosition, boolean isLastChild, View convertView, ViewGroup parent) {
         Beacon beacon = this.enviroment.getArray().get(groupPosition).getBeacons().get(childPosition);
-        String info = beacon.getInfo("current");
+        String info = infohelper.getCurrentInfo(beacon);
         View view = convertView;
         if (groupPosition > 0){
             CheckHolder checkHolder;

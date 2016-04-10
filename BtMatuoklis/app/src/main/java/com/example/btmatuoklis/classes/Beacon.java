@@ -58,11 +58,6 @@ public class Beacon {
         return settings.getShadow();
     }
 
-    private byte getTXPower(){
-        Settings settings = MainActivity.settings;
-        return settings.getTXPower();
-    }
-
     public void setRSSI(byte rssi) {
         if (this.rssi.size() == getShadow()+1){
             this.rssi.remove(0);
@@ -87,24 +82,6 @@ public class Beacon {
     }
 
     public ArrayList<Byte> getFullRSSI(){ return this.rssi; }
-
-    //BT irenginio informacija (List formavimui)
-    public String getInfo(String choice) {
-        String info = "Pavadinimas: " + this.name;
-        info += "\nMAC: " + this.mac;
-        switch (choice) {
-            case "current":
-                info += "\nRSSI: " + getPreviousRSSI() + " Last: " + getCurrentRSSI();
-                //info += "\n" + calculator.getRange(getTXPower(), getCurrentRSSI());
-                break;
-            case "calibration":
-                info += "\nKalibracijos RSSI reikšmių: " + this.rssi.size();
-                break;
-            default:
-                break;
-        }
-        return info;
-    }
 
     public byte getRSSIMin(){ return Collections.min(this.rssi); }
 

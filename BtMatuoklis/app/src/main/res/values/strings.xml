@@ -53,11 +53,12 @@
     <string name="toast_info_created_room3">Priskirta įrenginių:</string>
 
     <!--Beacon informacijos tekstai-->
-    <!--Siuo metu niekur nepanaudoti-->
-    <string name="beacon_name">Name:\u0020</string>
-    <string name="beacon_mac">MAC:\u0020</string>
-    <string name="beacon_rssi">RSSI:\u0020</string>
-    <string name="beacon_range">Apytikslis atstumas:\u0020</string>
+    <string name="beacon_name">Pavadinimas:</string>
+    <string name="beacon_mac">MAC:</string>
+    <string name="beacon_rssi">RSSI:</string>
+    <string name="beacon_rssi_current">Last:</string>
+    <string name="beacon_calibration_number">Kalibracijos RSSI reikšmių:</string>
+    <string name="beacon_range">Apytikslis atstumas:</string>
 
     <!--Bendrai naudojami tekstai-->
     <string name="generic_hint">Hint</string>

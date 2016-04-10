@@ -6,7 +6,7 @@
 
         <EditTextPreference
             android:id="@+id/preferences_Frequency"
-            android:key="savedDelay"
+            android:key="@string/key_delay"
             android:defaultValue="@integer/default_frequency"
             android:title="@string/settingsactivity_text_frequency"
             android:summary="@string/generic_value"
@@ -15,7 +15,7 @@
             android:maxLength="4" />
         <EditTextPreference
             android:id="@+id/preferences_Timeout"
-            android:key="savedTimeout"
+            android:key="@string/key_timeout"
             android:defaultValue="@integer/default_timeout"
             android:title="@string/settingsactivity_text_timeout"
             android:summary="@string/generic_value"
@@ -24,7 +24,7 @@
             android:maxLength="2" />
         <EditTextPreference
             android:id="@+id/preferences_Shadow"
-            android:key="savedShadow"
+            android:key="@string/key_shadow"
             android:defaultValue="@integer/default_shadow"
             android:title="@string/settingsactivity_text_shadow"
             android:summary="@string/generic_value"
@@ -33,7 +33,7 @@
             android:maxLength="1" />
         <com.example.btmatuoklis.classes.SeekBarPreference
             android:id="@+id/preferences_Accuracy"
-            android:key="savedAccuracy"
+            android:key="@string/key_accuracy"
             android:defaultValue="@integer/default_accuracy"
             android:max="@integer/default_accuracy_max"
             android:title="@string/settingsactivity_text_accuracy"
@@ -41,7 +41,7 @@
             android:dialogMessage="@string/settingsactivity_hint_accuracy" />
         <com.example.btmatuoklis.classes.SeekBarPreference
             android:id="@+id/preferences_TxPower"
-            android:key="savedTXPower"
+            android:key="@string/key_txpower"
             android:defaultValue="@integer/default_txpower"
             android:max="@integer/default_txpower_max"
             android:title="@string/settingsactivity_text_txpower"
@@ -49,13 +49,13 @@
             android:dialogMessage="@string/settingsactivity_hint_txpower" />
         <SwitchPreference
             android:id="@+id/preferences_Show_Null"
-            android:key="showNull"
+            android:key="@string/key_shownull"
             android:defaultValue="@bool/default_show_null"
             android:title="@string/settingsactivity_text_show_null"
             android:summary="@string/settingsactivity_hint_show_null" />
         <EditTextPreference
             android:id="@+id/preferences_Average"
-            android:key="savedAverage"
+            android:key="@string/key_average"
             android:defaultValue="@integer/default_average"
             android:title="@string/settingsactivity_text_average"
             android:summary="@string/generic_value"
@@ -70,13 +70,13 @@
 
         <SwitchPreference
             android:id="@+id/preferences_Debug_Generator"
-            android:key="debugGenerator"
+            android:key="@string/debug_generator"
             android:defaultValue="@bool/debug_default_generator"
             android:title="@string/settingsactivity_debug_slider_generator"
             android:summary="@string/settingsactivity_debug_hint_generator" />
         <EditTextPreference
             android:id="@+id/preferences_Debug_Beacons_Number"
-            android:key="debugBeacons"
+            android:key="@string/debug_beacons"
             android:defaultValue="@integer/debug_default_beacons"
             android:title="@string/settingsactivity_debug_beacons"
             android:summary="@string/generic_value"
@@ -86,7 +86,7 @@
             android:maxLength="2" />
         <EditTextPreference
             android:id="@+id/preferences_Debug_RSSI_Min"
-            android:key="debugRSSIMin"
+            android:key="@string/debug_rssi_min"
             android:defaultValue="@integer/debug_default_rssi_min"
             android:title="@string/settingsactivity_debug_rssi_min"
             android:summary="@string/generic_value"
@@ -96,7 +96,7 @@
             android:maxLength="3" />
         <EditTextPreference
             android:id="@+id/preferences_Debug_RSSI_Max"
-            android:key="debugRSSIMax"
+            android:key="@string/debug_rssi_max"
             android:defaultValue="@integer/debug_default_rssi_max"
             android:title="@string/settingsactivity_debug_rssi_max"
             android:summary="@string/generic_value"

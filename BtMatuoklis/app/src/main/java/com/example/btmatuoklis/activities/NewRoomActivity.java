@@ -225,7 +225,7 @@ public class NewRoomActivity extends Activity {
             @Override
             public void onLeScan(BluetoothDevice device, int rssi, byte[] scanRecord) {
                 if (settings.showNullDevices() | device.getName() != null){
-                    scantools.assignLogic(device, rssi, allMACs, enviromentArray);
+                    scantools.assign(device, rssi, allMACs, enviromentArray);
                 }
                 mBluetoothAdapter.stopLeScan(this); //Scan stabdomas
             }
@@ -262,7 +262,7 @@ public class NewRoomActivity extends Activity {
                 mBluetoothAdapter.startLeScan(mLeScanCallback);
             }
             else{
-                scantools.fakeAssignLogic(settings.getDebugBeacons(), settings.getDebugRSSIMin(),
+                scantools.fakeAssign(settings.getDebugBeacons(), settings.getDebugRSSIMin(),
                         settings.getDebugRSSIMax(), allMACs, enviromentArray);
             }
             return true;

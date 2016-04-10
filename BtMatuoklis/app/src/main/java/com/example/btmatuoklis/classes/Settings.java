@@ -11,6 +11,9 @@ public class Settings implements SharedPreferences.OnSharedPreferenceChangeListe
     private SharedPreferences preferences;
     public static byte REQUEST_ENABLE_BT = 1;
 
+    private String key_delay, key_timeout, key_shadow, key_accuracy, key_txpower, key_shownull, key_average;
+    private String debug_generator, debug_beacons, debug_rssi_min, debug_rssi_max;
+
     //Maksimalus teorinis BTLE aptikimo atstumas metrais
     public static byte maxRange;
 
@@ -45,15 +48,30 @@ public class Settings implements SharedPreferences.OnSharedPreferenceChangeListe
 
     public Settings(Context context){
         this.context = context;
-        this.preferences = PreferenceManager.getDefaultSharedPreferences(context);
+        this.preferences = PreferenceManager.getDefaultSharedPreferences(this.context);
+        this.initKeys(this.context);
+        this.setDefaultValues();
         this.preferences.registerOnSharedPreferenceChangeListener(this);
-        setDefaultValues();
-        refreshValues();
+        this.refreshValues();
     }
 
     @Override
     public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String key) {
-        refreshValues();
+        this.refreshValues();
+    }
+
+    private void initKeys(Context context){
+        key_delay = context.getString(R.string.key_delay);
+        key_timeout = context.getString(R.string.key_timeout);
+        key_shadow = context.getString(R.string.key_shadow);
+        key_accuracy = context.getString(R.string.key_accuracy);
+        key_txpower = context.getString(R.string.key_txpower);
+        key_shownull = context.getString(R.string.key_shownull);
+        key_average = context.getString(R.string.key_average);
+        debug_generator = context.getString(R.string.debug_generator);
+        debug_beacons = context.getString(R.string.debug_beacons);
+        debug_rssi_min = context.getString(R.string.debug_rssi_min);
+        debug_rssi_max = context.getString(R.string.debug_rssi_max);
     }
 
     public void setDefaultValues(){
@@ -72,20 +90,20 @@ public class Settings implements SharedPreferences.OnSharedPreferenceChangeListe
     }
 
     public void refreshValues(){
-        frequency = Short.parseShort(preferences.getString("savedDelay", Short.toString(defaultFrequency)));
-        timeout = Byte.parseByte(preferences.getString("savedTimeout", Byte.toString(defaultTimeout)));
-        shadow = Byte.parseByte(preferences.getString("savedShadow", Byte.toString(defaultShadow)));
-        accuracy = (byte)preferences.getInt("savedAccuracy", defaultAccuracy);
-        txPower = (byte)preferences.getInt("savedTXPower", defaultTXPower);
-        showNull = preferences.getBoolean("showNull", defaultShowNull);
-        average = Byte.parseByte(preferences.getString("savedAverage", Byte.toString(defaultAverage)));
-        generator = preferences.getBoolean("debugGenerator", defaultGenerator);
-        generatedBeacons = Byte.parseByte(preferences.getString("debugBeacons", Byte.toString(defaultGeneratedBeacons)));
-        generatedRSSIMin = Byte.parseByte(preferences.getString("debugRSSIMin", Byte.toString(defaultGeneratedRSSIMin)));
-        generatedRSSIMax = Byte.parseByte(preferences.getString("debugRSSIMax", Byte.toString(defaultGeneratedRSSIMax)));
+        frequency = Short.parseShort(preferences.getString(key_delay, Short.toString(defaultFrequency)));
+        timeout = Byte.parseByte(preferences.getString(key_timeout, Byte.toString(defaultTimeout)));
+        shadow = Byte.parseByte(preferences.getString(key_shadow, Byte.toString(defaultShadow)));
+        accuracy = (byte)preferences.getInt(key_accuracy, defaultAccuracy);
+        txPower = (byte)preferences.getInt(key_txpower, defaultTXPower);
+        showNull = preferences.getBoolean(key_shownull, defaultShowNull);
+        average = Byte.parseByte(preferences.getString(key_average, Byte.toString(defaultAverage)));
+        generator = preferences.getBoolean(debug_generator, defaultGenerator);
+        generatedBeacons = Byte.parseByte(preferences.getString(debug_beacons, Byte.toString(defaultGeneratedBeacons)));
+        generatedRSSIMin = Byte.parseByte(preferences.getString(debug_rssi_min, Byte.toString(defaultGeneratedRSSIMin)));
+        generatedRSSIMax = Byte.parseByte(preferences.getString(debug_rssi_max, Byte.toString(defaultGeneratedRSSIMax)));
     }
 
-    public byte getMaxRange(){ return this.maxRange; }
+    public byte getMaxRange(){ return maxRange; }
 
     public short getFrequency(){ return this.frequency; }
 

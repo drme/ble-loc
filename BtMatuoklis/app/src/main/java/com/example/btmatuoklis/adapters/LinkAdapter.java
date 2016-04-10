@@ -11,6 +11,7 @@ import android.widget.TextView;
 import com.example.btmatuoklis.R;
 import com.example.btmatuoklis.classes.Beacon;
 import com.example.btmatuoklis.classes.RoomsArray;
+import com.example.btmatuoklis.helpers.BeaconInfoHelper;
 
 //List adapter for display of beacons which are linked(bound) to to room
 public class LinkAdapter extends BaseExpandableListAdapter {
@@ -20,11 +21,13 @@ public class LinkAdapter extends BaseExpandableListAdapter {
     private int itemLayout;
     private LayoutInflater inflater;
     private RoomsArray enviroment;
+    private BeaconInfoHelper infohelper;
 
     public LinkAdapter(Context context, RoomsArray enviroment){
         this.groupLayout = R.layout.list_group;
         this.itemLayout = R.layout.list_checked;
         this.enviroment = enviroment;
+        this.infohelper = new BeaconInfoHelper(context);
         this.inflater = (LayoutInflater)context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
     }
 
@@ -74,6 +77,7 @@ public class LinkAdapter extends BaseExpandableListAdapter {
     @Override
     public View getChildView(int groupPosition, int childPosition, boolean isLastChild, View convertView, ViewGroup parent) {
         Beacon beacon = this.enviroment.getArray().get(groupPosition).getBeacons().get(childPosition);
+        String info = this.infohelper.getCalibrationInfo(beacon);
         View view = convertView;
         CheckHolder checkHolder;
         if (convertView == null){
@@ -81,7 +85,7 @@ public class LinkAdapter extends BaseExpandableListAdapter {
             checkHolder = new CheckHolder(view);
             view.setTag(checkHolder);
         } else { checkHolder = (CheckHolder)view.getTag(); }
-        checkHolder.checkedView.setText(beacon.getInfo("calibration"));
+        checkHolder.checkedView.setText(info);
         checkHolder.checkedView.setChecked(beacon.getFullRSSI().size() > 0);
         return view;
     }

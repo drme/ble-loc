@@ -59,14 +59,6 @@ public class Room {
         return res;
     }
 
-    public ArrayList<String> getBeaconsCalibrationCounts(){
-        ArrayList<String> res = new ArrayList<String>();
-        for (int i = 0; i < this.beacons.size(); i++){
-            res.add(this.beacons.get(i).getInfo("calibration"));
-        }
-        return res;
-    }
-
     public ArrayList<Boolean> getCalibratedBeacons(){
         ArrayList<Boolean> res = new ArrayList<Boolean>();
         for (int i = 0; i < this.beacons.size(); i++){
@@ -76,14 +68,6 @@ public class Room {
             else {
                 res.add(i, true);
             }
-        }
-        return res;
-    }
-
-    public ArrayList<String> getCurrentInfoList(){
-        ArrayList<String> res = new ArrayList<String>();
-        for (int i = 0; i < this.beacons.size(); i++){
-            res.add(this.beacons.get(i).getInfo("current"));
         }
         return res;
     }

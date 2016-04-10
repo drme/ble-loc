@@ -9,127 +9,100 @@ public class ScanTools{
 
     public ScanTools(){}
 
-    public void assignLogic(BluetoothDevice device, int rssi, ArrayList<String> macs, RoomsArray enviroment){
-        String currentName = device.getName();
-        String currentMAC = device.getAddress();
-        byte currentRSSI = (byte)rssi;
+    private void assignLogic(String name, String mac, byte rssi, ArrayList<String> macs, RoomsArray enviroment){
         int index;
-        if (macs.contains(currentMAC)){
-            if (enviroment.getArray().get(0).getMACList().contains(currentMAC)){
-                index = enviroment.getArray().get(0).getMACList().indexOf(currentMAC);
-                enviroment.getArray().get(0).getBeacons().get(index).setRSSI(currentRSSI);
+        if (macs.contains(mac)){
+            if (enviroment.getArray().get(0).getMACList().contains(mac)){
+                index = enviroment.getArray().get(0).getMACList().indexOf(mac);
+                enviroment.getArray().get(0).getBeacons().get(index).setRSSI(rssi);
             }
             else {
-                enviroment.getArray().get(0).getBeacons().add(new Beacon(currentName, currentMAC, currentRSSI));
+                enviroment.getArray().get(0).getBeacons().add(new Beacon(name, mac, rssi));
             }
         }
         else {
-            if (enviroment.getArray().get(1).getMACList().contains(currentMAC)){
-                index = enviroment.getArray().get(1).getMACList().indexOf(currentMAC);
-                enviroment.getArray().get(1).getBeacons().get(index).setRSSI(currentRSSI);
+            if (enviroment.getArray().get(1).getMACList().contains(mac)){
+                index = enviroment.getArray().get(1).getMACList().indexOf(mac);
+                enviroment.getArray().get(1).getBeacons().get(index).setRSSI(rssi);
             }
             else {
-                enviroment.getArray().get(1).getBeacons().add(new Beacon(currentName, currentMAC, currentRSSI));
+                enviroment.getArray().get(1).getBeacons().add(new Beacon(name, mac, rssi));
             }
         }
     }
 
-    public void scanLogic(BluetoothDevice device, int rssi, RoomsArray roomsArray, RoomsArray enviroment){
-        String currentName = device.getName();
-        String currentMAC = device.getAddress();
-        byte currentRSSI = (byte)rssi;
-        int roomIndex = roomsArray.findRoomIndex(currentMAC);
+    private void scanLogic(String name, String mac, byte rssi, RoomsArray rooms, RoomsArray enviroment){
+        int roomIndex = rooms.findRoomIndex(mac);
         if (roomIndex > -1){
-            String roomName = roomsArray.getArray().get(roomIndex).getName();
+            String roomName = rooms.getArray().get(roomIndex).getName();
             int environmentIndex = enviroment.getRoomIndex(roomName);
             if (environmentIndex > -1){
-                int beaconIndex = enviroment.getArray().get(environmentIndex).findBeaconIndex(currentMAC);
-                if (beaconIndex > -1){ enviroment.getArray().get(environmentIndex).getBeacons().get(beaconIndex).setRSSI(currentRSSI); }
-                else { enviroment.getArray().get(environmentIndex).getBeacons().add(new Beacon(environmentIndex, currentName, currentMAC, currentRSSI)); }
+                int beaconIndex = enviroment.getArray().get(environmentIndex).findBeaconIndex(mac);
+                if (beaconIndex > -1){ enviroment.getArray().get(environmentIndex).getBeacons().get(beaconIndex).setRSSI(rssi); }
+                else { enviroment.getArray().get(environmentIndex).getBeacons().add(new Beacon(environmentIndex, name, mac, rssi)); }
             } else {
                 enviroment.getArray().add(new Room(roomName));
                 int newIndex = enviroment.getArray().size() - 1;
-                enviroment.getArray().get(newIndex).getBeacons().add(new Beacon(currentName, currentMAC, currentRSSI));
+                enviroment.getArray().get(newIndex).getBeacons().add(new Beacon(name, mac, rssi));
             }
         } else {
-            int beaconIndex = enviroment.getArray().get(0).findBeaconIndex(currentMAC);
-            if (beaconIndex > -1){ enviroment.getArray().get(0).getBeacons().get(beaconIndex).setRSSI(currentRSSI); }
-            else { enviroment.getArray().get(0).getBeacons().add(new Beacon(beaconIndex, currentName, currentMAC, currentRSSI)); }
+            int beaconIndex = enviroment.getArray().get(0).findBeaconIndex(mac);
+            if (beaconIndex > -1){ enviroment.getArray().get(0).getBeacons().get(beaconIndex).setRSSI(rssi); }
+            else { enviroment.getArray().get(0).getBeacons().add(new Beacon(beaconIndex, name, mac, rssi)); }
         }
     }
 
-    public void calibrateLogic(BluetoothDevice device, int rssi, Room room){
+    private void calibrateLogic(String mac, byte rssi, Room room){
         ArrayList<String> macs = room.getMACList();
+        if (macs.contains(mac)){
+            int index = macs.indexOf(mac);
+            room.getBeacons().get(index).getFullRSSI().add(rssi);
+        }
+    }
+
+    public void assign(BluetoothDevice device, int rssi, ArrayList<String> macs, RoomsArray enviroment){
+        String currentName = device.getName();
         String currentMAC = device.getAddress();
         byte currentRSSI = (byte)rssi;
-        if (macs.contains(currentMAC)){
-            int index = macs.indexOf(currentMAC);
-            room.getBeacons().get(index).getFullRSSI().add(currentRSSI);
-        }
+        this.assignLogic(currentName, currentMAC, currentRSSI, macs, enviroment);
+    }
+
+    public void scan(BluetoothDevice device, int rssi, RoomsArray roomsArray, RoomsArray enviroment){
+        String currentName = device.getName();
+        String currentMAC = device.getAddress();
+        byte currentRSSI = (byte)rssi;
+        this.scanLogic(currentName, currentMAC, currentRSSI, roomsArray, enviroment);
+    }
+
+    public void calibrate(BluetoothDevice device, int rssi, Room room){
+        String currentMAC = device.getAddress();
+        byte currentRSSI = (byte)rssi;
+        this.calibrateLogic(currentMAC, currentRSSI, room);
     }
 
     //------------Debug------------
 
-    public void fakeAssignLogic(int generatedBeacons, int generatedRSSIMin, int generatedRSSIMax, ArrayList<String> macs, RoomsArray enviroment){
+    public void fakeAssign(int generatedBeacons, int generatedRSSIMin, int generatedRSSIMax, ArrayList<String> macs, RoomsArray enviroment){
         int beaconNumber = inetegerGenerator(1, generatedBeacons);
         String currentName = "Beacon" + beaconNumber;
         String currentMAC = "MAC" + beaconNumber;
         byte currentRSSI = (byte)inetegerGenerator(generatedRSSIMin, generatedRSSIMax);
-        int index;
-        if (macs.contains(currentMAC)){
-            if (enviroment.getArray().get(0).getMACList().contains(currentMAC)){
-                index = enviroment.getArray().get(0).getMACList().indexOf(currentMAC);
-                enviroment.getArray().get(0).getBeacons().get(index).setRSSI(currentRSSI);
-            }
-            else {
-                enviroment.getArray().get(0).getBeacons().add(new Beacon(currentName, currentMAC, currentRSSI));
-            }
-        }
-        else {
-            if (enviroment.getArray().get(1).getMACList().contains(currentMAC)){
-                index = enviroment.getArray().get(1).getMACList().indexOf(currentMAC);
-                enviroment.getArray().get(1).getBeacons().get(index).setRSSI(currentRSSI);
-            }
-            else {
-                enviroment.getArray().get(1).getBeacons().add(new Beacon(currentName, currentMAC, currentRSSI));
-            }
-        }
+        this.assignLogic(currentName, currentMAC, currentRSSI, macs, enviroment);
     }
 
-    public void fakeScanLogic(int generatedBeacons, int generatedRSSIMin, int generatedRSSIMax, RoomsArray roomsArray, RoomsArray enviroment){
+    public void fakeScan(int generatedBeacons, int generatedRSSIMin, int generatedRSSIMax, RoomsArray roomsArray, RoomsArray enviroment){
         int beaconNumber = inetegerGenerator(1, generatedBeacons);
         String currentName = "Beacon" + beaconNumber;
         String currentMAC = "MAC" + beaconNumber;
         byte currentRSSI = (byte)inetegerGenerator(generatedRSSIMin, generatedRSSIMax);
-        int roomIndex = roomsArray.findRoomIndex(currentMAC);
-        if (roomIndex > -1){
-            String roomName = roomsArray.getArray().get(roomIndex).getName();
-            int environmentIndex = enviroment.getRoomIndex(roomName);
-            if (environmentIndex > -1){
-                int beaconIndex = enviroment.getArray().get(environmentIndex).findBeaconIndex(currentMAC);
-                if (beaconIndex > -1){ enviroment.getArray().get(environmentIndex).getBeacons().get(beaconIndex).setRSSI(currentRSSI); }
-                else { enviroment.getArray().get(environmentIndex).getBeacons().add(new Beacon(environmentIndex, currentName, currentMAC, currentRSSI)); }
-            } else {
-                enviroment.getArray().add(new Room(roomName));
-                int newIndex = enviroment.getArray().size() - 1;
-                enviroment.getArray().get(newIndex).getBeacons().add(new Beacon(currentName, currentMAC, currentRSSI));
-            }
-        } else {
-            int beaconIndex = enviroment.getArray().get(0).findBeaconIndex(currentMAC);
-            if (beaconIndex > -1){ enviroment.getArray().get(0).getBeacons().get(beaconIndex).setRSSI(currentRSSI); }
-            else { enviroment.getArray().get(0).getBeacons().add(new Beacon(beaconIndex, currentName, currentMAC, currentRSSI)); }
-        }
+        this.scanLogic(currentName, currentMAC, currentRSSI, roomsArray, enviroment);
     }
 
-    public void fakeCalibrateLogic(int generatedBeacons, int generatedRSSIMin, int generatedRSSIMax, Room room){
+    public void fakeCalibrate(int generatedBeacons, int generatedRSSIMin, int generatedRSSIMax, Room room){
         int beaconNumber = inetegerGenerator(1, generatedBeacons);
         String currentMAC = "MAC" + beaconNumber;
         byte currentRSSI = (byte)inetegerGenerator(generatedRSSIMin, generatedRSSIMax);
-        ArrayList<String> macs = room.getMACList();
-        if (macs.contains(currentMAC)){
-            int index = macs.indexOf(currentMAC);
-            room.getBeacons().get(index).getFullRSSI().add(currentRSSI);
-        }
+        this.calibrateLogic(currentMAC, currentRSSI, room);
     }
 
     int inetegerGenerator(int min, int max){

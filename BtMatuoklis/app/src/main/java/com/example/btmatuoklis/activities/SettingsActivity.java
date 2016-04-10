@@ -24,17 +24,17 @@ public class SettingsActivity extends PreferenceActivity implements SharedPrefer
         super.onCreate(savedInstanceState);
         getActionBar().setSubtitle(getString(R.string.subtitle_settings));
         addPreferencesFromResource(R.xml.settings_preferences);
-        editFrequency = (EditTextPreference)findPreference("savedDelay");
-        editTimeout = (EditTextPreference)findPreference("savedTimeout");
-        editShadow = (EditTextPreference)findPreference("savedShadow");
-        sliderAccuracy = (SeekBarPreference)findPreference("savedAccuracy");
-        sliderTXPower = (SeekBarPreference)findPreference("savedTXPower");
-        switchNullDevices = (SwitchPreference)findPreference("nullDevices");
-        editAverage = (EditTextPreference)findPreference("savedAverage");
-        switchGenerator = (SwitchPreference)findPreference("debugGenerator");
-        debugBeacons = (EditTextPreference)findPreference("debugBeacons");
-        debugRSSIMin = (EditTextPreference)findPreference("debugRSSIMin");
-        debugRSSIMax = (EditTextPreference)findPreference("debugRSSIMax");
+        editFrequency = (EditTextPreference)findPreference(this.getString(R.string.key_delay));
+        editTimeout = (EditTextPreference)findPreference(this.getString(R.string.key_timeout));
+        editShadow = (EditTextPreference)findPreference(this.getString(R.string.key_shadow));
+        sliderAccuracy = (SeekBarPreference)findPreference(this.getString(R.string.key_accuracy));
+        sliderTXPower = (SeekBarPreference)findPreference(this.getString(R.string.key_txpower));
+        switchNullDevices = (SwitchPreference)findPreference(this.getString(R.string.key_shownull));
+        editAverage = (EditTextPreference)findPreference(this.getString(R.string.key_average));
+        switchGenerator = (SwitchPreference)findPreference(this.getString(R.string.debug_generator));
+        debugBeacons = (EditTextPreference)findPreference(this.getString(R.string.debug_beacons));
+        debugRSSIMin = (EditTextPreference)findPreference(this.getString(R.string.debug_rssi_min));
+        debugRSSIMax = (EditTextPreference)findPreference(this.getString(R.string.debug_rssi_max));
 
         setDefaultValues();
     }

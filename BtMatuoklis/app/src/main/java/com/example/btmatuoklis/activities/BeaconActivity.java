@@ -13,6 +13,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.btmatuoklis.R;
+import com.example.btmatuoklis.helpers.BeaconInfoHelper;
 import com.example.btmatuoklis.helpers.DialogBuildHelper;
 import com.example.btmatuoklis.classes.Beacon;
 import com.example.btmatuoklis.classes.Calibration;
@@ -32,6 +33,7 @@ public class BeaconActivity extends Activity {
     Beacon currentBeacon;
     MySQLiteHelper database;
     ArrayList<Byte> rssiArray;
+    BeaconInfoHelper infohelper;
     byte rssiMax, rssiMin, rssiAverage;
     TextView displayRoomName, displayBeacon, displayRSSIList;
     TextView displayRSSINum, displayRSSIAverage, displayRSSIMax, displayRSSIMin;
@@ -89,12 +91,13 @@ public class BeaconActivity extends Activity {
         currentRoom = globalVariable.getRoomsArray().getArray().get(roomID);
         currentBeacon = currentRoom.getBeacons().get(beaconID);
         database = new MySQLiteHelper(this);
+        infohelper = new BeaconInfoHelper(this);
         rssiArray = currentBeacon.getFullRSSI();
         rssiMax = currentBeacon.getRSSIMax();
         rssiMin = currentBeacon.getRSSIMin();
         rssiAverage = currentBeacon.getRSSIAverage();
         displayRoomName.setText(currentRoom.getName());
-        displayBeacon.setText(currentBeacon.getInfo(""));
+        displayBeacon.setText(infohelper.getInfo(currentBeacon));
         displayRSSIList.setText(currentBeacon.getFullRSSI().toString());
         displayRSSINum.setText(Integer.toString(rssiArray.size()));
         displayRSSIAverage.setText(Byte.toString(rssiAverage));
