@@ -1,6 +1,7 @@
 package com.example.btmatuoklis.adapters;
 
 import android.content.Context;
+import android.os.Build;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -9,14 +10,11 @@ import android.widget.TextView;
 
 import com.example.btmatuoklis.R;
 import com.example.btmatuoklis.classes.Beacon;
-import com.example.btmatuoklis.classes.GlobalClass;
-import com.example.btmatuoklis.classes.Room;
 import com.example.btmatuoklis.classes.RoomsArray;
 import com.example.btmatuoklis.helpers.BeaconInfoHelper;
 import com.example.btmatuoklis.helpers.ChartHelper;
 import com.jjoe64.graphview.GraphView;
 
-import java.util.ArrayList;
 import java.util.Collections;
 
 //List adapter for scan/room detection mode
@@ -24,8 +22,8 @@ public class ScanAdapter extends BaseExpandableListAdapter {
 
     private static int textItem = R.id.text1;
     private static int chartItem = R.id.chart1;
-    private int groupLayout;
-    private int itemLayout;
+    private int groupLayout, itemLayout;
+    private int verAPI, kitkatAPI;
     private LayoutInflater inflater;
     private RoomsArray rooms, enviroment;
     private BeaconInfoHelper infohelper;
@@ -38,6 +36,8 @@ public class ScanAdapter extends BaseExpandableListAdapter {
         this.enviroment = enviroment;
         this.infohelper = new BeaconInfoHelper(context);
         this.charthelper = new ChartHelper();
+        this.verAPI = Build.VERSION.SDK_INT;
+        this.kitkatAPI = Build.VERSION_CODES.KITKAT;
         this.inflater = (LayoutInflater)context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
     }
 
@@ -100,8 +100,8 @@ public class ScanAdapter extends BaseExpandableListAdapter {
             charthelper.setScanChart(chartholder.chartView, rssiMin);
         } else { chartholder = (ChartHolder)view.getTag(); }
         chartholder.textView.setText(info);
-        charthelper.resetScanChart(chartholder.chartView, rssiMin);
-        charthelper.updateScanChart(chartholder.chartView, rssiMin, beacon);
+        if (this.verAPI <= this.kitkatAPI){ charthelper.updateScanChart(chartholder.chartView, rssiMin, beacon); }
+        else{ charthelper.updateScanChart_Lollipop(chartholder.chartView, rssiMin, beacon); }
         return view;
     }
 

@@ -73,32 +73,39 @@ public class ChartHelper {
         graph.getViewport().setMaxX(0);
         graph.getViewport().setMinY(0);
         graph.getViewport().setMaxY(1);
-        LineGraphSeries<DataPoint> series = new LineGraphSeries<DataPoint>( new DataPoint[]{
-                new DataPoint(0, 0),
-                new DataPoint(rssiMin, 0)
-        });
-        series.setThickness(10);
-        graph.addSeries(series);
-    }
-
-    public void resetScanChart(GraphView graph, Byte rssiMin){
-        LineGraphSeries<DataPoint> series = new LineGraphSeries<DataPoint>( new DataPoint[]{
-                new DataPoint(0, 0),
-                new DataPoint(rssiMin, 0)
-        });
-        series.setThickness(10);
-        graph.getSeries().set(0, series);
     }
 
     public void updateScanChart(GraphView graph, Byte rssiMin, Beacon beacon){
-        BarGraphSeries<DataPoint> series = new BarGraphSeries<DataPoint>( new DataPoint[]{
+        LineGraphSeries<DataPoint> series1 = new LineGraphSeries<DataPoint>( new DataPoint[]{
+                new DataPoint(0, 0),
+                new DataPoint(rssiMin, 0)
+        });
+        BarGraphSeries<DataPoint> series2 = new BarGraphSeries<DataPoint>( new DataPoint[]{
                 new DataPoint(beacon.getRSSIAverage(), 1)
         });
-        series.setSpacing(100);
-        if (beacon.getRSSIAverage() < rssiMin){
-            series.setValueDependentColor(getCursorColor());
-        }
-        graph.getSeries().set(1, series);
+        series1.setThickness(10);
+        series2.setSpacing(100);
+        if (beacon.getRSSIAverage() < rssiMin){ series2.setValueDependentColor(getCursorColor()); }
+        if (!graph.getSeries().isEmpty()){ graph.getSeries().set(0, series1); }
+        else { graph.addSeries(series1); }
+        if (graph.getSeries().size() > 1){ graph.getSeries().set(1, series2); }
+        else { graph.addSeries(series2); }
+    }
+
+    public void updateScanChart_Lollipop(GraphView graph, Byte rssiMin, Beacon beacon){
+        graph.removeAllSeries();
+        LineGraphSeries<DataPoint> series1 = new LineGraphSeries<DataPoint>( new DataPoint[]{
+                new DataPoint(0, 0),
+                new DataPoint(rssiMin, 0)
+        });
+        BarGraphSeries<DataPoint> series2 = new BarGraphSeries<DataPoint>( new DataPoint[]{
+                new DataPoint(beacon.getRSSIAverage(), 1)
+        });
+        series1.setThickness(10);
+        series2.setSpacing(100);
+        if (beacon.getRSSIAverage() < rssiMin){ series2.setValueDependentColor(getCursorColor()); }
+        graph.addSeries(series1);
+        graph.addSeries(series2);
     }
 
     private ValueDependentColor<DataPoint> getCursorColor(){

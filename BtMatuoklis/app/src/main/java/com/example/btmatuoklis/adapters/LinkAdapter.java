@@ -17,8 +17,7 @@ import com.example.btmatuoklis.helpers.BeaconInfoHelper;
 public class LinkAdapter extends BaseExpandableListAdapter {
 
     private static int checkItem = R.id.text1;
-    private int groupLayout;
-    private int itemLayout;
+    private int groupLayout, itemLayout;
     private LayoutInflater inflater;
     private RoomsArray enviroment;
     private BeaconInfoHelper infohelper;

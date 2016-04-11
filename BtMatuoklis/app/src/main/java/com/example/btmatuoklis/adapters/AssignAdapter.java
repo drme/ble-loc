@@ -20,9 +20,7 @@ public class AssignAdapter extends BaseExpandableListAdapter {
 
     private static int checkItem = R.id.text1;
     private static int simpleItem = android.R.id.text1;
-    private int groupLayout;
-    private int checkItemLayout;
-    private int simpleItemLayout;
+    private int groupLayout, simpleItemLayout, checkItemLayout;
     private LayoutInflater inflater;
     private RoomsArray enviroment;
     private ArrayList<Integer> selected;
@@ -30,8 +28,8 @@ public class AssignAdapter extends BaseExpandableListAdapter {
 
     public AssignAdapter(Context context, RoomsArray enviroment, ArrayList<Integer> selected){
         this.groupLayout = R.layout.list_group;
-        this.checkItemLayout = R.layout.list_multiple_choice;
         this.simpleItemLayout = android.R.layout.simple_list_item_1;
+        this.checkItemLayout = R.layout.list_multiple_choice;
         this.enviroment = enviroment;
         this.selected = selected;
         this.infohelper = new BeaconInfoHelper(context);
