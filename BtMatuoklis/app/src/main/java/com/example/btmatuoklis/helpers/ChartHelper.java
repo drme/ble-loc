@@ -16,7 +16,12 @@ import java.util.Collections;
 
 public class ChartHelper {
 
-    public ChartHelper(){}
+    ValueDependentColor<DataPoint> outsideCursor, insideCursor;
+
+    public ChartHelper(){
+        this.setOutsideCursorColor();
+        this.setInsideCursorColor();
+    }
 
     public void setFullChart(GraphView graph, Beacon beacon){
         ArrayList<Byte> uniqueRSSIs = beacon.getUniqueRSSIs();
@@ -85,7 +90,7 @@ public class ChartHelper {
         });
         series1.setThickness(10);
         series2.setSpacing(100);
-        if (beacon.getRSSIAverage() < rssiMin){ series2.setValueDependentColor(getCursorColor()); }
+        if (beacon.getRSSIAverage() < rssiMin){ series2.setValueDependentColor(getOutsideCursor()); }
         if (!graph.getSeries().isEmpty()){ graph.getSeries().set(0, series1); }
         else { graph.addSeries(series1); }
         if (graph.getSeries().size() > 1){ graph.getSeries().set(1, series2); }
@@ -103,15 +108,24 @@ public class ChartHelper {
         });
         series1.setThickness(10);
         series2.setSpacing(100);
-        if (beacon.getRSSIAverage() < rssiMin){ series2.setValueDependentColor(getCursorColor()); }
+        if (beacon.getRSSIAverage() < rssiMin){ series2.setValueDependentColor(getOutsideCursor()); }
         graph.addSeries(series1);
         graph.addSeries(series2);
     }
 
-    private ValueDependentColor<DataPoint> getCursorColor(){
-        ValueDependentColor<DataPoint> cursor = new ValueDependentColor<DataPoint>() {
+    private void setOutsideCursorColor(){
+         this.outsideCursor = new ValueDependentColor<DataPoint>() {
             @Override
             public int get(DataPoint data) { return Color.rgb(255, 0, 0); }};
-        return cursor;
     }
+
+    private void setInsideCursorColor(){
+        this.insideCursor = new ValueDependentColor<DataPoint>() {
+            @Override
+            public int get(DataPoint data) { return Color.rgb(0, 0, 255); }};
+    }
+
+    private ValueDependentColor<DataPoint> getOutsideCursor(){ return this.outsideCursor; }
+
+    private ValueDependentColor<DataPoint> getInsideCursor() { return this.insideCursor; }
 }

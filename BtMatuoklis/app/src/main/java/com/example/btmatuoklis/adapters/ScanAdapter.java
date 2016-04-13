@@ -106,9 +106,7 @@ public class ScanAdapter extends BaseExpandableListAdapter {
     }
 
     @Override
-    public boolean isChildSelectable(int groupPosition, int childPosition) {
-        return false;
-    }
+    public boolean isChildSelectable(int groupPosition, int childPosition) { return true; }
 
     class ChartHolder {
         public TextView textView;

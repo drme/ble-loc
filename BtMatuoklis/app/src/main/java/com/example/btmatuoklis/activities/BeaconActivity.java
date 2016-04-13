@@ -1,9 +1,18 @@
 package com.example.btmatuoklis.activities;
 
 import android.app.Activity;
+import android.bluetooth.BluetoothAdapter;
+import android.bluetooth.BluetoothDevice;
+import android.bluetooth.BluetoothGatt;
+import android.bluetooth.BluetoothGattCallback;
+import android.bluetooth.BluetoothGattCharacteristic;
+import android.bluetooth.BluetoothManager;
+import android.bluetooth.BluetoothProfile;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -13,6 +22,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.btmatuoklis.R;
+import com.example.btmatuoklis.classes.Settings;
 import com.example.btmatuoklis.helpers.BeaconInfoHelper;
 import com.example.btmatuoklis.helpers.DialogBuildHelper;
 import com.example.btmatuoklis.classes.Beacon;
@@ -24,10 +34,13 @@ import com.example.btmatuoklis.classes.Room;
 import com.jjoe64.graphview.GraphView;
 
 import java.util.ArrayList;
+import java.util.UUID;
 
 public class BeaconActivity extends Activity {
 
     GlobalClass globalVariable;
+    Settings settings;
+    BluetoothAdapter mBluetoothAdapter;
     int roomID, beaconID;
     Room currentRoom;
     Beacon currentBeacon;
@@ -39,6 +52,14 @@ public class BeaconActivity extends Activity {
     TextView displayRSSINum, displayRSSIAverage, displayRSSIMax, displayRSSIMin;
     View displayArrayFrame;
     ImageView displayArrayArrow;
+
+    boolean toogle = true;
+    BluetoothGattCallback mGattCallback;
+    UUID customServices = UUID.fromString("a739aa00-f6cd-1692-994a-d66d9e0ce048");
+    UUID ledCharacteristic = UUID.fromString("a739fffd-f6cd-1692-994a-d66d9e0ce048");
+    byte[] ledEnable = new byte[]{0x00, 0x01};
+    byte[] ledDisable = new byte[]{0x00, 0x00};
+    byte[] command;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -57,11 +78,13 @@ public class BeaconActivity extends Activity {
 
         setDefaultValues();
         setRSSIArrayListener();
+        createBT();
+        checkBT();
+        createGattCallbak();
     }
 
     @Override
-    public boolean onCreateOptionsMenu(Menu menu)
-    {
+    public boolean onCreateOptionsMenu(Menu menu) {
         MenuInflater inflater = getMenuInflater();
         inflater.inflate(R.menu.actionbar_beacon, menu);
         return true;
@@ -72,12 +95,13 @@ public class BeaconActivity extends Activity {
         this.finish();
     }
 
-    public void onRemoveActionClick(MenuItem item){
+    public void onRemoveActionClick(MenuItem item) {
         removeBeaconConfirm();
     }
 
     public void onHelpActionClick(MenuItem item){
-        Toast.makeText(getApplicationContext(), "Not implemented.", Toast.LENGTH_SHORT).show();
+        //Toast.makeText(getApplicationContext(), "Not implemented.", Toast.LENGTH_SHORT).show();
+        toggleLED();
     }
 
     public void onSettingsActionClick(MenuItem item){
@@ -131,6 +155,69 @@ public class BeaconActivity extends Activity {
                 return false;
             }
         });
+    }
+
+    public void createBT(){
+        BluetoothManager bluetoothManager =
+                (BluetoothManager)getSystemService(Context.BLUETOOTH_SERVICE);
+        mBluetoothAdapter = bluetoothManager.getAdapter();
+    }
+
+    void checkBT(){
+        if (mBluetoothAdapter == null || !mBluetoothAdapter.isEnabled()) {
+            Intent enableBtIntent = new Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE);
+            startActivityForResult(enableBtIntent, settings.REQUEST_ENABLE_BT);
+        }
+    }
+
+    void createGattCallbak(){
+        mGattCallback = new BluetoothGattCallback() {
+            @Override
+            public void onConnectionStateChange(BluetoothGatt gatt, int status, int newState) {
+                if (status == BluetoothGatt.GATT_SUCCESS && newState == BluetoothProfile.STATE_CONNECTED) {
+                    gatt.discoverServices();
+                } else if (status == BluetoothGatt.GATT_SUCCESS && newState == BluetoothProfile.STATE_DISCONNECTED) {
+                    gatt.close();
+                }
+            }
+
+            @Override
+            public void onServicesDiscovered(BluetoothGatt gatt, int status) {
+                BluetoothGattCharacteristic characteristic = gatt.getService(customServices).getCharacteristic(ledCharacteristic);
+                if (characteristic != null){
+                    characteristic.setValue(command);
+                    boolean res = gatt.writeCharacteristic(characteristic);
+                    if (res) { Log.d("GATT Characteristic", "write Success"); }
+                    else { Log.d("GATT Characteristic", "write FAILED!"); }
+                }
+                else {
+                    Log.d("GATT Characteristic", "Not Found!");
+                    gatt.disconnect();
+                }
+            }
+
+            @Override
+            public void onCharacteristicWrite(BluetoothGatt gatt, BluetoothGattCharacteristic characteristic, int status) {
+                gatt.disconnect();
+            }
+        };
+    }
+
+    void toggleLED(){
+        BluetoothDevice device = mBluetoothAdapter.getRemoteDevice(currentBeacon.getMAC());
+        if (device != null){
+            if (toogle){
+                command = ledEnable;
+                Toast.makeText(getApplicationContext(), "LED ON", Toast.LENGTH_SHORT).show();
+            }
+            else {
+                command = ledDisable;
+                Toast.makeText(getApplicationContext(), "LED OFF", Toast.LENGTH_SHORT).show();
+            }
+            this.toogle = !toogle;
+            device.connectGatt(this, false, mGattCallback);
+        }
+        else { Log.d("GATT Connect", "FAILED!"); }
     }
 
     void removeCalibration(){
