@@ -3,12 +3,8 @@
 
     <!--Settings key values-->
     <string name="key_delay">savedDelay</string>
-    <string name="key_timeout">savedTimeout</string>
     <string name="key_shadow">savedShadow</string>
-    <string name="key_accuracy">savedAccuracy</string>
-    <string name="key_txpower">savedTXPower</string>
     <string name="key_shownull">showNull</string>
-    <string name="key_average">savedAverage</string>
     <string name="debug_generator">debugGenerator</string>
     <string name="debug_beacons">debugBeacons</string>
     <string name="debug_rssi_min">debugRSSIMin</string>
@@ -16,14 +12,8 @@
 
     <!--Default values-->
     <integer name="default_frequency">1000</integer>
-    <integer name="default_timeout">10</integer>
     <integer name="default_shadow">1</integer>
-    <integer name="default_accuracy">50</integer>
-    <integer name="default_accuracy_max">100</integer>
-    <integer name="default_txpower">50</integer>
-    <integer name="default_txpower_max">100</integer>
     <bool name="default_show_null">true</bool>
-    <integer name="default_average">1</integer>
     <integer name="default_max_range">100</integer>
     <bool name="debug_default_generator">false</bool>
     <integer name="debug_default_beacons">2</integer>

@@ -72,17 +72,10 @@
     <string name="settingsactivity_category_main_settings">Pagrindiniai Nustatymai</string>
     <string name="settingsactivity_category_debug_settings">Debug Nustatymai</string>
     <string name="settingsactivity_text_frequency">Matavimų Dažnis</string>
-    <string name="settingsactivity_text_timeout">Įrenginių Sąrašo Valymo Dažnis</string>
     <string name="settingsactivity_text_shadow">Reikšmių Vektoriaus Dydis</string>
-    <string name="settingsactivity_text_accuracy">Kambario aptikimo tikslumo koeficientas</string>
-    <string name="settingsactivity_text_txpower">Įrenginių Signalo Galingumas</string>
     <string name="settingsactivity_text_show_null">\u0022null\u0022 rodymas</string>
-    <string name="settingsactivity_text_average">Vidurkio Reikšmių Kiekis</string>
     <string name="settingsactivity_hint_frequency">Rekomenduotinos reikšmės intervale: [250; 5000], default -\u0020</string>
-    <string name="settingsactivity_hint_timeout">Ši reikšmė nurodo kas kiek ciklų bus išvalomas aptiktų įrenginių sąrašas.\nIšvalymo dažnis * Matavimų Dažnis = x ms</string>
     <string name="settingsactivity_hint_shadow">Ši reikšmė nurodo kiek RSSI reikšmių saugoti aktyvaus Scan rėžimo metu</string>
-    <string name="settingsactivity_hint_accuracy">Koks procentas visų aptikto įrenginio reikšmių turi pakliūti į sukalibruotą intervalą</string>
-    <string name="settingsactivity_hint_txpower">Dabartinis aptinkamų įrenginių signalo galingumas:</string>
     <string name="settingsactivity_hint_show_null">Rodyti įrenginius be pavadinimų</string>
     <string name="settingsactivity_subtext_value">Dabartinis:</string>
     <string name="settingsactivity_debug_slider_generator">Generatorius</string>

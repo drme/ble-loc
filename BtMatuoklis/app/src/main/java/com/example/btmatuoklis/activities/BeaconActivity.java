@@ -26,7 +26,6 @@ import com.example.btmatuoklis.classes.Settings;
 import com.example.btmatuoklis.helpers.BeaconInfoHelper;
 import com.example.btmatuoklis.helpers.DialogBuildHelper;
 import com.example.btmatuoklis.classes.Beacon;
-import com.example.btmatuoklis.classes.Calibration;
 import com.example.btmatuoklis.helpers.ChartHelper;
 import com.example.btmatuoklis.classes.GlobalClass;
 import com.example.btmatuoklis.helpers.MySQLiteHelper;
@@ -130,7 +129,7 @@ public class BeaconActivity extends Activity {
         setChart(R.id.viewBeacon_chart1, currentBeacon);
     }
 
-    //RSSI reiksmiu vaizdo keitimas tarp vienos elutes daugelio eiluciu
+    //RSSI reiksmiu vaizdo keitimas tarp vienos elutes ir daugelio eiluciu
     void setRSSIArrayListener(){
         displayArrayFrame.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -221,7 +220,7 @@ public class BeaconActivity extends Activity {
     }
 
     void removeCalibration(){
-        database.updateCalibration(new Calibration(currentRoom.getID(), currentBeacon.getID(), null));
+        database.updateCalibration(currentRoom.getID(), currentBeacon.getID(), null);
         currentBeacon.getFullRSSI().clear();
         Toast.makeText(getApplicationContext(), getString(R.string.toast_info_removed), Toast.LENGTH_SHORT).show();
         BeaconActivity.this.finish();
@@ -241,7 +240,7 @@ public class BeaconActivity extends Activity {
     }
 
     void removeBeacon(){
-        int id = database.getCalibrationID(new Calibration(currentRoom.getID(), currentBeacon.getID()));
+        int id = database.getCalibrationID(currentRoom.getID(), currentBeacon.getID());
         database.deleteCalibration(id);
         database.deleteBeacon(currentBeacon.getID());
         currentRoom.getBeacons().remove(beaconID);

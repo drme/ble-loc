@@ -58,8 +58,4 @@ public class RoomDetector {
         }
         return (byte)(res/size);
     }
-
-    private byte getAccuracy(){
-        return settings.getAccuracy();
-    }
 }

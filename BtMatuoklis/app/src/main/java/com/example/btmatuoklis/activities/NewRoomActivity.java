@@ -25,7 +25,6 @@ import com.example.btmatuoklis.adapters.AssignAdapter;
 import com.example.btmatuoklis.classes.RoomsArray;
 import com.example.btmatuoklis.helpers.DialogBuildHelper;
 import com.example.btmatuoklis.classes.Beacon;
-import com.example.btmatuoklis.classes.Calibration;
 import com.example.btmatuoklis.classes.GlobalClass;
 import com.example.btmatuoklis.helpers.MySQLiteHelper;
 import com.example.btmatuoklis.classes.Room;
@@ -194,7 +193,7 @@ public class NewRoomActivity extends Activity {
         database.addBeacon(beacon);
         int id = database.getLastBeaconID();
         beacon.setID(id);
-        database.addCalibration(new Calibration(currentRoom.getID(), id, null));
+        database.addCalibration(currentRoom.getID(), id, null);
     }
 
     void notifyCreatedRoomAndBeacons(){

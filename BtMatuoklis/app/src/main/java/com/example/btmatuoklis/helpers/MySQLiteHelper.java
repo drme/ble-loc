@@ -7,7 +7,6 @@ import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 
 import com.example.btmatuoklis.classes.Beacon;
-import com.example.btmatuoklis.classes.Calibration;
 import com.example.btmatuoklis.classes.Room;
 
 import java.util.ArrayList;
@@ -97,12 +96,12 @@ public class MySQLiteHelper extends SQLiteOpenHelper {
         return id;
     }
 
-    public void addCalibration(Calibration calibration){
+    public void addCalibration(int roomID, int beaconID, String rssi){
         SQLiteDatabase database = this.getWritableDatabase();
         ContentValues values = new ContentValues();
-        values.put(KEY_ROOMID, calibration.getRoomID());
-        values.put(KEY_BEACONID, calibration.getBeaconID());
-        values.put(KEY_RSSI, calibration.getRSSI());
+        values.put(KEY_ROOMID, roomID);
+        values.put(KEY_BEACONID, beaconID);
+        values.put(KEY_RSSI, rssi);
         database.insert(TABLE_CALIBRATIONS, null, values);
         database.close();
     }
@@ -155,13 +154,13 @@ public class MySQLiteHelper extends SQLiteOpenHelper {
         return arrays;
     }
 
-    public int getCalibrationID(Calibration calibration){
+    public int getCalibrationID(int roomID, int beaconID){
         SQLiteDatabase database = this.getReadableDatabase();
         String query = "SELECT "+KEY_ID+" FROM "+TABLE_CALIBRATIONS+
                 " WHERE "+KEY_ROOMID+" = ? AND "+KEY_BEACONID+" = ?";
         Cursor cursor = database.rawQuery(query,
-                new String[]{String.valueOf(calibration.getRoomID()),
-                        String.valueOf(calibration.getBeaconID())});
+                new String[]{String.valueOf(roomID),
+                        String.valueOf(beaconID)});
         int id = -1;
         if (cursor.moveToFirst()) {
             id = cursor.getInt(0);
@@ -171,11 +170,11 @@ public class MySQLiteHelper extends SQLiteOpenHelper {
         return id;
     }
 
-    public int updateCalibration(Calibration calibration){
-        int id = getCalibrationID(calibration);
+    public int updateCalibration(int roomID, int beaconID, String rssi){
+        int id = getCalibrationID(roomID, beaconID);
         SQLiteDatabase database = this.getWritableDatabase();
         ContentValues values = new ContentValues();
-        values.put(KEY_RSSI, calibration.getRSSI());
+        values.put(KEY_RSSI, rssi);
         int i = database.update(TABLE_CALIBRATIONS, values, KEY_ID+" = ?",
                 new String[] { String.valueOf(id)});
         database.close();

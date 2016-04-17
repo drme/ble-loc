@@ -24,7 +24,6 @@ import com.example.btmatuoklis.R;
 import com.example.btmatuoklis.adapters.LinkAdapter;
 import com.example.btmatuoklis.classes.RoomsArray;
 import com.example.btmatuoklis.helpers.DialogBuildHelper;
-import com.example.btmatuoklis.classes.Calibration;
 import com.example.btmatuoklis.helpers.CSVExportHelper;
 import com.example.btmatuoklis.classes.GlobalClass;
 import com.example.btmatuoklis.helpers.MySQLiteHelper;
@@ -175,7 +174,7 @@ public class RoomActivity extends Activity {
         for (int i = 0; i < calibratedDevices.size(); i++){
             rssi = currentRoom.getBeacons().get(i).getFullRSSI().toString();
             beaconID = currentRoom.getBeacons().get(i).getID();
-            database.updateCalibration(new Calibration(roomdID, beaconID, rssi));
+            database.updateCalibration(roomdID, beaconID, rssi);
         }
     }
 
