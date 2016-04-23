@@ -23,7 +23,7 @@ public class ScanAdapter extends BaseExpandableListAdapter {
     private static int textItem = R.id.text1;
     private static int chartItem = R.id.chart1;
     private int groupLayout, itemLayout;
-    private int verAPI, kitkatAPI;
+    private int verAPI, lollipopAPI;
     private LayoutInflater inflater;
     private RoomsArray rooms, enviroment;
     private BeaconInfoHelper infohelper;
@@ -37,7 +37,7 @@ public class ScanAdapter extends BaseExpandableListAdapter {
         this.infohelper = new BeaconInfoHelper(context);
         this.charthelper = new ChartHelper();
         this.verAPI = Build.VERSION.SDK_INT;
-        this.kitkatAPI = Build.VERSION_CODES.KITKAT;
+        this.lollipopAPI = Build.VERSION_CODES.LOLLIPOP;
         this.inflater = (LayoutInflater)context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
     }
 
@@ -97,10 +97,10 @@ public class ScanAdapter extends BaseExpandableListAdapter {
             view = this.inflater.inflate(this.itemLayout, parent, false);
             chartholder = new ChartHolder(view);
             view.setTag(chartholder);
-            charthelper.setScanChart(chartholder.chartView, rssiMin);
+            charthelper.setScanChart(chartholder.chartView);
         } else { chartholder = (ChartHolder)view.getTag(); }
         chartholder.textView.setText(info);
-        if (this.verAPI <= this.kitkatAPI){ charthelper.updateScanChart(chartholder.chartView, rssiMin, beacon); }
+        if (this.verAPI < this.lollipopAPI){ charthelper.updateScanChart(chartholder.chartView, rssiMin, beacon); }
         else{ charthelper.updateScanChart_Lollipop(chartholder.chartView, rssiMin, beacon); }
         return view;
     }

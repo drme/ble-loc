@@ -65,16 +65,16 @@ public class ChartHelper {
         graph.addSeries(series);
     }
 
-    public void setScanChart(GraphView graph, Byte rssiMin){
+    public void setScanChart(GraphView graph){
         NumberFormat nf = NumberFormat.getInstance();
         nf.setMaximumFractionDigits(0);
         graph.getGridLabelRenderer().setLabelFormatter(new DefaultLabelFormatter(nf, nf));
         graph.getGridLabelRenderer().setVerticalLabelsVisible(false);
         graph.getGridLabelRenderer().setNumVerticalLabels(2);
-        graph.getGridLabelRenderer().setNumHorizontalLabels(10);
+        graph.getGridLabelRenderer().setNumHorizontalLabels(11);
         graph.getViewport().setXAxisBoundsManual(true);
         graph.getViewport().setYAxisBoundsManual(true);
-        graph.getViewport().setMinX(-90);
+        graph.getViewport().setMinX(-100);
         graph.getViewport().setMaxX(0);
         graph.getViewport().setMinY(0);
         graph.getViewport().setMaxY(1);

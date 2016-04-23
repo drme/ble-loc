@@ -10,27 +10,17 @@
     android:layout_height="wrap_content">
 
     <TextView
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:textAppearance="?android:attr/textAppearanceLarge"
-        android:id="@+id/textBeacon_StaticName"
+        android:text="@string/beaconactivity_text_name"
+        android:id="@+id/textBeacon_Name"
         android:layout_alignParentTop="true"
-        android:layout_alignParentStart="true"
-        android:text="@string/beaconactivity_text_name" />
-
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:textAppearance="?android:attr/textAppearanceLarge"
-        android:text="@string/generic_value"
-        android:id="@+id/textBeacon_ActiveName"
-        android:layout_alignParentTop="true"
-        android:layout_alignParentEnd="true"
-        android:layout_toEndOf="@+id/textBeacon_StaticName" />
+        android:layout_alignParentStart="true" />
 
     <View style="@style/Divider"
-        android:id="@+id/lineCategory"
-        android:layout_below="@+id/textBeacon_StaticName" />
+        android:id="@+id/view1"
+        android:layout_below="@+id/textBeacon_Name" />
 
     <TextView
         android:layout_width="wrap_content"
@@ -38,7 +28,7 @@
         android:textAppearance="?android:attr/textAppearanceMedium"
         android:text="@string/generic_value"
         android:id="@+id/textBeacon_Info"
-        android:layout_below="@+id/lineCategory"
+        android:layout_below="@+id/view1"
         android:layout_alignParentStart="true"
         android:layout_alignParentEnd="true" />
 
@@ -60,81 +50,45 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:textAppearance="?android:attr/textAppearanceMedium"
-        android:id="@+id/textBeacon_StaticRSSINum"
+        android:text="@string/beaconactivity_text_rssi_num"
+        android:id="@+id/textBeacon_RSSINum"
         android:layout_below="@+id/view3"
         android:layout_alignParentStart="true"
-        android:text="@string/beaconactivity_text_rssi_num" />
+        android:layout_alignParentEnd="true" />
 
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:textAppearance="?android:attr/textAppearanceMedium"
-        android:text="@string/generic_value"
-        android:id="@+id/textBeacon_ActiveRSSINum"
-        android:layout_alignParentEnd="true"
-        android:layout_alignTop="@+id/textBeacon_StaticRSSINum"
-        android:layout_toEndOf="@+id/textBeacon_StaticRSSINum" />
-
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:textAppearance="?android:attr/textAppearanceMedium"
-        android:id="@+id/textBeacon_StaticAverage"
-        android:layout_below="@+id/textBeacon_StaticRSSINum"
+        android:text="@string/beaconactivity_text_rssi_average"
+        android:id="@+id/textBeacon_Average"
+        android:layout_below="@+id/textBeacon_RSSINum"
         android:layout_alignParentStart="true"
-        android:text="@string/beaconactivity_text_rssi_average" />
+        android:layout_alignParentEnd="true" />
 
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:textAppearance="?android:attr/textAppearanceMedium"
-        android:text="@string/generic_value"
-        android:id="@+id/textBeacon_ActiveAverage"
-        android:layout_alignParentEnd="true"
-        android:layout_toEndOf="@+id/textBeacon_StaticAverage"
-        android:layout_alignTop="@+id/textBeacon_StaticAverage" />
-
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:textAppearance="?android:attr/textAppearanceMedium"
-        android:id="@+id/textBeacon_StaticRSSIMax"
-        android:layout_below="@+id/textBeacon_StaticAverage"
+        android:text="@string/beaconactivity_text_rssi_max"
+        android:id="@+id/textBeacon_RSSIMax"
+        android:layout_below="@+id/textBeacon_Average"
         android:layout_alignParentStart="true"
-        android:text="@string/beaconactivity_text_rssi_max" />
+        android:layout_alignParentEnd="true" />
 
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:textAppearance="?android:attr/textAppearanceMedium"
-        android:text="@string/generic_value"
-        android:id="@+id/textBeacon_ActiveRSSIMax"
-        android:layout_alignParentEnd="true"
-        android:layout_toEndOf="@+id/textBeacon_StaticRSSIMax"
-        android:layout_alignTop="@+id/textBeacon_StaticRSSIMax" />
-
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:textAppearance="?android:attr/textAppearanceMedium"
-        android:id="@+id/textBeacon_StaticRSSIMin"
+        android:text="@string/beaconactivity_text_rssi_min"
+        android:id="@+id/textBeacon_RSSIMin"
+        android:layout_below="@+id/textBeacon_RSSIMax"
         android:layout_alignParentStart="true"
-        android:layout_below="@+id/textBeacon_StaticRSSIMax"
-        android:text="@string/beaconactivity_text_rssi_min" />
-
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:textAppearance="?android:attr/textAppearanceMedium"
-        android:text="@string/generic_value"
-        android:id="@+id/textBeacon_ActiveRSSIMin"
-        android:layout_alignParentEnd="true"
-        android:layout_toEndOf="@+id/textBeacon_StaticRSSIMin"
-        android:layout_alignTop="@+id/textBeacon_StaticRSSIMin" />
+        android:layout_alignParentEnd="true" />
 
     <View style="@style/Divider"
         android:id="@+id/view4"
-        android:layout_below="@+id/textBeacon_StaticRSSIMin" />
+        android:layout_below="@+id/textBeacon_RSSIMin" />
 
     <TextView
         android:layout_width="match_parent"

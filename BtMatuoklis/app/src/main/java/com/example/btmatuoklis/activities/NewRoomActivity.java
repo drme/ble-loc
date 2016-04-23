@@ -1,13 +1,18 @@
 package com.example.btmatuoklis.activities;
 
+import android.annotation.TargetApi;
 import android.app.Activity;
 import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;
 import android.bluetooth.BluetoothManager;
+import android.bluetooth.le.BluetoothLeScanner;
+import android.bluetooth.le.ScanCallback;
+import android.bluetooth.le.ScanResult;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.AsyncTask;
+import android.os.Build;
 import android.os.Handler;
 import android.os.Bundle;
 import android.view.Menu;
@@ -43,8 +48,13 @@ public class NewRoomActivity extends Activity {
     ArrayList<String> allMACs;
     RoomsArray enviromentArray;
     MySQLiteHelper database;
+
     BluetoothAdapter mBluetoothAdapter;
     BluetoothAdapter.LeScanCallback mLeScanCallback;
+
+    BluetoothLeScanner mLEScanner;
+    ScanCallback mScanCallback;
+
     Handler handler;
     Runnable background;
     String roomName;
@@ -217,18 +227,36 @@ public class NewRoomActivity extends Activity {
             Intent enableBtIntent = new Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE);
             startActivityForResult(enableBtIntent, settings.REQUEST_ENABLE_BT);
         }
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            mLEScanner = mBluetoothAdapter.getBluetoothLeScanner();
+            //To-do: add settings filter?
+        }
     }
 
     void createBTLECallBack(){
-        mLeScanCallback = new BluetoothAdapter.LeScanCallback() {
-            @Override
-            public void onLeScan(BluetoothDevice device, int rssi, byte[] scanRecord) {
-                if (settings.showNullDevices() | device.getName() != null){
-                    scantools.assign(device, rssi, allMACs, enviromentArray);
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.LOLLIPOP){
+            mLeScanCallback = new BluetoothAdapter.LeScanCallback() {
+                @Override
+                public void onLeScan(BluetoothDevice device, int rssi, byte[] scanRecord) {
+                    if (settings.showNullDevices() | device.getName() != null){
+                        scantools.assign(device, rssi, allMACs, enviromentArray);
+                    }
+                    mBluetoothAdapter.stopLeScan(this); //Scan stabdomas
                 }
-                mBluetoothAdapter.stopLeScan(this); //Scan stabdomas
-            }
-        };
+            };
+        }
+        else {
+            mScanCallback = new ScanCallback() {
+                @Override
+                @TargetApi(Build.VERSION_CODES.LOLLIPOP)
+                public void onScanResult(int callbackType, ScanResult result) {
+                    if (settings.showNullDevices() | result.getDevice().getName() != null){
+                        scantools.assign(result.getDevice(), result.getRssi(), allMACs, enviromentArray);
+                    }
+                    mLEScanner.stopScan(this); //Scan stabdomas
+                }
+            };
+        }
     }
 
     void createThread(){
@@ -257,8 +285,14 @@ public class NewRoomActivity extends Activity {
         @Override
         protected Boolean doInBackground(Void... params) {
             if (!settings.isGeneratorEnabled()) {
-                mBluetoothAdapter.stopLeScan(mLeScanCallback);
-                mBluetoothAdapter.startLeScan(mLeScanCallback);
+                if (Build.VERSION.SDK_INT < Build.VERSION_CODES.LOLLIPOP){
+                    mBluetoothAdapter.stopLeScan(mLeScanCallback);
+                    mBluetoothAdapter.startLeScan(mLeScanCallback);
+                }
+                else {
+                    mLEScanner.stopScan(mScanCallback);
+                    mLEScanner.startScan(mScanCallback);
+                }
             }
             else{
                 scantools.fakeAssign(settings.getDebugBeacons(), settings.getDebugRSSIMin(),

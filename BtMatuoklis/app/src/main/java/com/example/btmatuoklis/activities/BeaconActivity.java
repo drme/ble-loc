@@ -52,33 +52,36 @@ public class BeaconActivity extends Activity {
     View displayArrayFrame;
     ImageView displayArrayArrow;
 
-    boolean toogle = true;
     BluetoothGattCallback mGattCallback;
+    boolean available;
     UUID customServices = UUID.fromString("a739aa00-f6cd-1692-994a-d66d9e0ce048");
     UUID ledCharacteristic = UUID.fromString("a739fffd-f6cd-1692-994a-d66d9e0ce048");
-    byte[] ledEnable = new byte[]{0x00, 0x01};
-    byte[] ledDisable = new byte[]{0x00, 0x00};
+    byte[] enable = new byte[]{0x00, 0x01};
+    byte[] disable = new byte[]{0x00, 0x00};
     byte[] command;
+    Runnable showToast;
+    String enabledMsg, disabledMsg;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_beacon);
         getActionBar().setSubtitle(getString(R.string.subtitle_existing_beacon));
-        displayRoomName = (TextView)findViewById(R.id.textBeacon_ActiveName);
+        displayRoomName = (TextView)findViewById(R.id.textBeacon_Name);
         displayBeacon = (TextView)findViewById(R.id.textBeacon_Info);
         displayArrayFrame = findViewById(R.id.viewBeacon_array);
         displayRSSIList = (TextView)displayArrayFrame.findViewById(android.R.id.text2);
         displayArrayArrow = (ImageView)displayArrayFrame.findViewById(android.R.id.icon);
-        displayRSSINum = (TextView)findViewById(R.id.textBeacon_ActiveRSSINum);
-        displayRSSIAverage = (TextView)findViewById(R.id.textBeacon_ActiveAverage);
-        displayRSSIMax = (TextView)findViewById(R.id.textBeacon_ActiveRSSIMax);
-        displayRSSIMin = (TextView)findViewById(R.id.textBeacon_ActiveRSSIMin);
+        displayRSSINum = (TextView)findViewById(R.id.textBeacon_RSSINum);
+        displayRSSIAverage = (TextView)findViewById(R.id.textBeacon_Average);
+        displayRSSIMax = (TextView)findViewById(R.id.textBeacon_RSSIMax);
+        displayRSSIMin = (TextView)findViewById(R.id.textBeacon_RSSIMin);
 
         setDefaultValues();
         setRSSIArrayListener();
         createBT();
         checkBT();
+        createNotifications();
         createGattCallbak();
     }
 
@@ -119,14 +122,19 @@ public class BeaconActivity extends Activity {
         rssiMax = currentBeacon.getRSSIMax();
         rssiMin = currentBeacon.getRSSIMin();
         rssiAverage = currentBeacon.getRSSIAverage();
-        displayRoomName.setText(currentRoom.getName());
+        displayRoomName.setText(getString(R.string.beaconactivity_text_name)+" "+currentRoom.getName());
         displayBeacon.setText(infohelper.getInfo(currentBeacon));
         displayRSSIList.setText(currentBeacon.getFullRSSI().toString());
-        displayRSSINum.setText(Integer.toString(rssiArray.size()));
-        displayRSSIAverage.setText(Byte.toString(rssiAverage));
-        displayRSSIMax.setText(Byte.toString(rssiMax));
-        displayRSSIMin.setText(Byte.toString(rssiMin));
+        displayRSSINum.setText(getString(R.string.beaconactivity_text_rssi_num)+" "+Integer.toString(rssiArray.size()));
+        displayRSSIAverage.setText(getString(R.string.beaconactivity_text_rssi_average)+" "+Byte.toString(rssiAverage));
+        displayRSSIMax.setText(getString(R.string.beaconactivity_text_rssi_max)+" "+Byte.toString(rssiMax));
+        displayRSSIMin.setText(getString(R.string.beaconactivity_text_rssi_min)+" "+Byte.toString(rssiMin));
         setChart(R.id.viewBeacon_chart1, currentBeacon);
+
+        available = true;
+        command = enable;
+        enabledMsg = getString(R.string.gatt_toast_function_enabled);
+        disabledMsg = getString(R.string.gatt_toast_function_disabled);
     }
 
     //RSSI reiksmiu vaizdo keitimas tarp vienos elutes ir daugelio eiluciu
@@ -169,15 +177,39 @@ public class BeaconActivity extends Activity {
         }
     }
 
+    void createNotifications(){
+        showToast = new Runnable() {
+            @Override
+            public void run() {
+                if (command == enable){
+                    Toast.makeText(getApplicationContext(), enabledMsg, Toast.LENGTH_SHORT).show();
+                    command = disable;
+                }
+                else {
+                    Toast.makeText(getApplicationContext(), disabledMsg, Toast.LENGTH_SHORT).show();
+                    command = enable;
+                }
+            }
+        };
+    }
+
     void createGattCallbak(){
         mGattCallback = new BluetoothGattCallback() {
             @Override
             public void onConnectionStateChange(BluetoothGatt gatt, int status, int newState) {
-                if (status == BluetoothGatt.GATT_SUCCESS && newState == BluetoothProfile.STATE_CONNECTED) {
-                    gatt.discoverServices();
-                } else if (status == BluetoothGatt.GATT_SUCCESS && newState == BluetoothProfile.STATE_DISCONNECTED) {
-                    gatt.close();
+                if (status == BluetoothGatt.GATT_SUCCESS) {
+                    if (newState == BluetoothProfile.STATE_CONNECTED){
+                        available = false;
+                        gatt.discoverServices();
+                        Log.d("_GATT", "Discovering Services...");
+                    }
+                    else if (newState == BluetoothProfile.STATE_DISCONNECTED){
+                        gatt.close();
+                        Log.d("_GATT", "Connection Closed");
+                        available = true;
+                    }
                 }
+                else { Log.d("_GATT", "OPERATION FAILED!"); }
             }
 
             @Override
@@ -185,18 +217,18 @@ public class BeaconActivity extends Activity {
                 BluetoothGattCharacteristic characteristic = gatt.getService(customServices).getCharacteristic(ledCharacteristic);
                 if (characteristic != null){
                     characteristic.setValue(command);
-                    boolean res = gatt.writeCharacteristic(characteristic);
-                    if (res) { Log.d("GATT Characteristic", "write Success"); }
-                    else { Log.d("GATT Characteristic", "write FAILED!"); }
+                    gatt.writeCharacteristic(characteristic);
                 }
                 else {
-                    Log.d("GATT Characteristic", "Not Found!");
+                    Log.d("_GATT", "CHARACTERISTIC NOT FOUND!");
                     gatt.disconnect();
                 }
             }
 
             @Override
             public void onCharacteristicWrite(BluetoothGatt gatt, BluetoothGattCharacteristic characteristic, int status) {
+                Log.d("_GATT", "Characteristic Write Success");
+                runOnUiThread(showToast);
                 gatt.disconnect();
             }
         };
@@ -205,18 +237,10 @@ public class BeaconActivity extends Activity {
     void toggleLED(){
         BluetoothDevice device = mBluetoothAdapter.getRemoteDevice(currentBeacon.getMAC());
         if (device != null){
-            if (toogle){
-                command = ledEnable;
-                Toast.makeText(getApplicationContext(), "LED ON", Toast.LENGTH_SHORT).show();
-            }
-            else {
-                command = ledDisable;
-                Toast.makeText(getApplicationContext(), "LED OFF", Toast.LENGTH_SHORT).show();
-            }
-            this.toogle = !toogle;
-            device.connectGatt(this, false, mGattCallback);
+            if (available){ device.connectGatt(this, false, mGattCallback);}
+            else { Log.d("_GATT", "UNAVAILABLE!"); }
         }
-        else { Log.d("GATT Connect", "FAILED!"); }
+        else { Log.d("_GATT", "FAILED TO GET REMOTE DEVICE!"); }
     }
 
     void removeCalibration(){

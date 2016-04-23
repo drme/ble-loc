@@ -97,13 +97,17 @@
     <string name="roomactivity_button_resume_calib">Tęsti kalibraciją</string>
 
     <!--BeaconActivity elementu tekstai-->
-    <string name="beaconactivity_text_name">Patalpa:\u0020</string>
+    <string name="beaconactivity_text_name">Patalpa:</string>
     <string name="beaconactivity_text_saved_rssi">Išsaugotos RSSI reikšmės:\u0020</string>
-    <string name="beaconactivity_text_rssi_num">RSSI Kiekis:\u0020</string>
-    <string name="beaconactivity_text_rssi_average">RSSI reikšmių vidurkis:\u0020</string>
-    <string name="beaconactivity_text_rssi_max">RSSI Max:\u0020</string>
-    <string name="beaconactivity_text_rssi_min">RSSI Min:\u0020</string>
+    <string name="beaconactivity_text_rssi_num">RSSI Kiekis:</string>
+    <string name="beaconactivity_text_rssi_average">RSSI reikšmių vidurkis:</string>
+    <string name="beaconactivity_text_rssi_max">RSSI Max:</string>
+    <string name="beaconactivity_text_rssi_min">RSSI Min:</string>
     <string name="beaconactivity_title_chart">RSSI reikšmių histograma</string>
+
+    <!--GATT toast informaciniai tekstai-->
+    <string name="gatt_toast_function_enabled">Funkcija įjungta</string>
+    <string name="gatt_toast_function_disabled">Funkcija išjungta</string>
 
     <!--exportCSVHelper klases tekstai-->
     <string name="exportcsv_name_calibrate">kalibracija</string>

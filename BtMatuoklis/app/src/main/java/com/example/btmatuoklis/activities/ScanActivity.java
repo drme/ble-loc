@@ -1,18 +1,22 @@
 package com.example.btmatuoklis.activities;
 
+import android.annotation.TargetApi;
 import android.app.Activity;
 import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;
 import android.bluetooth.BluetoothManager;
+import android.bluetooth.le.BluetoothLeScanner;
+import android.bluetooth.le.ScanCallback;
+import android.bluetooth.le.ScanResult;
 import android.content.Context;
 import android.content.Intent;
 import android.os.AsyncTask;
+import android.os.Build;
 import android.os.Handler;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
-import android.view.View;
 import android.view.WindowManager;
 import android.widget.ExpandableListView;
 import android.widget.TextView;
@@ -32,8 +36,13 @@ public class ScanActivity extends Activity {
     GlobalClass globalVariable;
     Settings settings;
     ScanTools scantools;
+
     BluetoothAdapter mBluetoothAdapter;
     BluetoothAdapter.LeScanCallback mLeScanCallback;
+
+    BluetoothLeScanner mLEScanner;
+    ScanCallback mScanCallback;
+
     Handler handler;
     Runnable background;
     Room environment;
@@ -100,18 +109,36 @@ public class ScanActivity extends Activity {
             Intent enableBtIntent = new Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE);
             startActivityForResult(enableBtIntent, settings.REQUEST_ENABLE_BT);
         }
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            mLEScanner = mBluetoothAdapter.getBluetoothLeScanner();
+            //To-do: add settings filter?
+        }
     }
 
     void createBTLECallBack(){
-        mLeScanCallback = new BluetoothAdapter.LeScanCallback() {
-            @Override
-            public void onLeScan(BluetoothDevice device, int rssi, byte[] scanRecord) {
-                if (settings.showNullDevices() | device.getName() != null){
-                    scantools.scan(device, rssi, roomsArray, enviromentArray);
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.LOLLIPOP){
+            mLeScanCallback = new BluetoothAdapter.LeScanCallback() {
+                @Override
+                public void onLeScan(BluetoothDevice device, int rssi, byte[] scanRecord) {
+                    if (settings.showNullDevices() | device.getName() != null){
+                        scantools.scan(device, rssi, roomsArray, enviromentArray);
+                    }
+                    mBluetoothAdapter.stopLeScan(this); //Scan stabdomas
                 }
-                mBluetoothAdapter.stopLeScan(this); //Scan stabdomas
-            }
-        };
+            };
+        }
+        else {
+            mScanCallback = new ScanCallback() {
+                @Override
+                @TargetApi(Build.VERSION_CODES.LOLLIPOP)
+                public void onScanResult(int callbackType, ScanResult result) {
+                    if (settings.showNullDevices() | result.getDevice().getName() != null){
+                        scantools.scan(result.getDevice(), result.getRssi(), roomsArray, enviromentArray);
+                    }
+                    mLEScanner.stopScan(this); //Scan stabdomas
+                }
+            };
+        }
     }
 
     //Nustatomos "default" reiksmes
@@ -155,12 +182,18 @@ public class ScanActivity extends Activity {
         @Override
         protected Boolean doInBackground(Void... params) {
             if (!settings.isGeneratorEnabled()){
-                /*mBluetoothAdapter.startLeScan(mLeScanCallback);
-                //Duodamos 100ms laiko aptikti bet kurio beacono signalui
-                try { Thread.sleep(100); } catch (InterruptedException e) { e.printStackTrace(); }
-                mBluetoothAdapter.stopLeScan(mLeScanCallback);*/
-                mBluetoothAdapter.stopLeScan(mLeScanCallback);
-                mBluetoothAdapter.startLeScan(mLeScanCallback);
+                if (Build.VERSION.SDK_INT < Build.VERSION_CODES.LOLLIPOP){
+                    /*mBluetoothAdapter.startLeScan(mLeScanCallback);
+                    //Duodamos 100ms laiko aptikti bet kurio beacono signalui
+                    try { Thread.sleep(100); } catch (InterruptedException e) { e.printStackTrace(); }
+                    mBluetoothAdapter.stopLeScan(mLeScanCallback);*/
+                    mBluetoothAdapter.stopLeScan(mLeScanCallback);
+                    mBluetoothAdapter.startLeScan(mLeScanCallback);
+                }
+                else {
+                    mLEScanner.stopScan(mScanCallback);
+                    mLEScanner.startScan(mScanCallback);
+                }
             }
             else {
                 scantools.fakeScan(settings.getDebugBeacons(), settings.getDebugRSSIMin(),
