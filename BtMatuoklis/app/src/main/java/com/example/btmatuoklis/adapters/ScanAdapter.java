@@ -17,7 +17,7 @@ import com.jjoe64.graphview.GraphView;
 
 import java.util.Collections;
 
-//List adapter for scan/room detection mode
+//List adapter for scanAppend/room detection mode
 public class ScanAdapter extends BaseExpandableListAdapter {
 
     private static int textItem = R.id.text1;

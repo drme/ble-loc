@@ -27,6 +27,7 @@ import android.widget.Toast;
 
 import com.example.btmatuoklis.R;
 import com.example.btmatuoklis.adapters.AssignAdapter;
+import com.example.btmatuoklis.classes.BeaconGenerator;
 import com.example.btmatuoklis.classes.RoomsArray;
 import com.example.btmatuoklis.helpers.DialogBuildHelper;
 import com.example.btmatuoklis.classes.Beacon;
@@ -54,6 +55,8 @@ public class NewRoomActivity extends Activity {
 
     BluetoothLeScanner mLEScanner;
     ScanCallback mScanCallback;
+
+    BeaconGenerator generator;
 
     Handler handler;
     Runnable background;
@@ -128,6 +131,9 @@ public class NewRoomActivity extends Activity {
         enviromentArray.getArray().add(new Room("Nepriskirti švyturėliai"));
         environment = new Room();
         database = new MySQLiteHelper(this);
+
+        generator = new BeaconGenerator(this);
+
         selectedBeacons = new ArrayList<Integer>();
         adapter = new AssignAdapter(this, enviromentArray, selectedBeacons);
         displayBeaconsList.setAdapter(adapter);
@@ -239,9 +245,8 @@ public class NewRoomActivity extends Activity {
                 @Override
                 public void onLeScan(BluetoothDevice device, int rssi, byte[] scanRecord) {
                     if (settings.showNullDevices() | device.getName() != null){
-                        scantools.assign(device, rssi, allMACs, enviromentArray);
+                        scantools.assignSample(device.getName(), device.getAddress(), (byte)rssi);
                     }
-                    mBluetoothAdapter.stopLeScan(this); //Scan stabdomas
                 }
             };
         }
@@ -251,9 +256,8 @@ public class NewRoomActivity extends Activity {
                 @TargetApi(Build.VERSION_CODES.LOLLIPOP)
                 public void onScanResult(int callbackType, ScanResult result) {
                     if (settings.showNullDevices() | result.getDevice().getName() != null){
-                        scantools.assign(result.getDevice(), result.getRssi(), allMACs, enviromentArray);
+                        scantools.assignSample(result.getDevice().getName(), result.getDevice().getAddress(), (byte)result.getRssi());
                     }
-                    mLEScanner.stopScan(this); //Scan stabdomas
                 }
             };
         }
@@ -262,20 +266,17 @@ public class NewRoomActivity extends Activity {
     void createThread(){
         handler = new Handler();
         //Background Runnable:
-        //nustatytu intervalu vykdo scan
+        //nustatytu intervalu vykdo scanAppend
         background = new Runnable() {
             @Override
             public void run() {
-                if (globalVariable.isScanning()) {
-                    new ScanTask().execute();
-                    handler.postDelayed(this, settings.getFrequency());
-                }
+                if (globalVariable.isScanning()) { new ScanTask().execute(); }
                 else { Thread.currentThread().interrupt(); }
             }
         };
     }
 
-    //Nuolatos pradedamas ir stabdomas scan
+    //Nuolatos pradedamas ir stabdomas scanAppend
     void continuousScan(boolean enable){
         globalVariable.setScanning(enable);
         if (enable){ new Thread(background).start(); }
@@ -284,25 +285,43 @@ public class NewRoomActivity extends Activity {
     private class ScanTask extends AsyncTask<Void, Void, Boolean> {
         @Override
         protected Boolean doInBackground(Void... params) {
-            if (!settings.isGeneratorEnabled()) {
-                if (Build.VERSION.SDK_INT < Build.VERSION_CODES.LOLLIPOP){
-                    mBluetoothAdapter.stopLeScan(mLeScanCallback);
-                    mBluetoothAdapter.startLeScan(mLeScanCallback);
-                }
-                else {
-                    mLEScanner.stopScan(mScanCallback);
-                    mLEScanner.startScan(mScanCallback);
-                }
-            }
-            else{
-                scantools.fakeAssign(settings.getDebugBeacons(), settings.getDebugRSSIMin(),
-                        settings.getDebugRSSIMax(), allMACs, enviromentArray);
-            }
+            assignLogic();
+            scantools.assignAppend(allMACs, enviromentArray);
             return true;
         }
         @Override
         protected void onPostExecute(Boolean aBoolean) {
+            handler.postDelayed(background, settings.getFrequency());
             adapter.notifyDataSetChanged();
         }
+    }
+
+    private void assignLogic(){
+        if (!settings.isGeneratorEnabled()) {
+            if (Build.VERSION.SDK_INT < Build.VERSION_CODES.LOLLIPOP){
+                mBluetoothAdapter.startLeScan(mLeScanCallback);
+                threadSleep(settings.getFrequency());
+                mBluetoothAdapter.stopLeScan(mLeScanCallback);
+            }
+            else {
+                mLEScanner.startScan(mScanCallback);
+                threadSleep(settings.getFrequency());
+                mLEScanner.stopScan(mScanCallback);
+            }
+        }
+        else{
+            int cycles = generator.numGen(0, settings.getDebugBeacons()*5);
+            threadSleep(settings.getFrequency());
+            for (int i = 0; i < cycles; i++) {
+                generator.generate(settings.getDebugBeacons(), settings.getDebugRSSIMin(), settings.getDebugRSSIMax());
+                scantools.assignSample(generator.getName(), generator.getMAC(), generator.getRSSI());
+            }
+            threadSleep(settings.getFrequency());
+        }
+    }
+
+    private void threadSleep(short time){
+        try { Thread.sleep(time); }
+        catch (InterruptedException e) { e.printStackTrace(); }
     }
 }

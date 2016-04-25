@@ -1,37 +1,57 @@
 package com.example.btmatuoklis.classes;
 
-import android.bluetooth.BluetoothDevice;
-
 import java.util.ArrayList;
-import java.util.Random;
 
 public class ScanTools{
 
-    public ScanTools(){}
+    Room sample;
 
-    private void assignLogic(String name, String mac, byte rssi, ArrayList<String> macs, RoomsArray enviroment){
-        int index;
-        if (macs.contains(mac)){
-            if (enviroment.getArray().get(0).getMACList().contains(mac)){
-                index = enviroment.getArray().get(0).getMACList().indexOf(mac);
-                enviroment.getArray().get(0).getBeacons().get(index).setRSSI(rssi);
-            }
-            else {
-                enviroment.getArray().get(0).getBeacons().add(new Beacon(name, mac, rssi));
-            }
-        }
-        else {
-            if (enviroment.getArray().get(1).getMACList().contains(mac)){
-                index = enviroment.getArray().get(1).getMACList().indexOf(mac);
-                enviroment.getArray().get(1).getBeacons().get(index).setRSSI(rssi);
-            }
-            else {
-                enviroment.getArray().get(1).getBeacons().add(new Beacon(name, mac, rssi));
-            }
-        }
+    public ScanTools(){ this.sample = new Room("Sample"); }
+
+    public void prepareSample(){ this.sample.getBeacons().clear(); }
+
+    public void assignSample(String name, String mac, byte rssi){
+        ArrayList<String> macs = this.sample.getMACList();
+        if (macs.contains(mac)){ this.sample.findBeacon(mac).getFullRSSI().add(rssi); }
+        else { this.sample.getBeacons().add(new Beacon(name, mac, rssi)); }
     }
 
-    private void scanLogic(String name, String mac, byte rssi, RoomsArray rooms, RoomsArray enviroment){
+    public void assignAppend(ArrayList<String> macs, RoomsArray enviroment){
+        ArrayList<Beacon> beacons = this.sample.getBeacons();
+        for (int i = 0; i < beacons.size(); i++){
+            Beacon beacon = beacons.get(i);
+            this.assign(beacon.getName(), beacon.getMAC(), beacon.getRSSIAverage(), macs, enviroment);
+        }
+        this.prepareSample();
+    }
+
+    public void assign(String name, String mac, byte rssi, ArrayList<String> macs, RoomsArray enviroment){
+        int beaconIndex, roomIndex;
+        if (macs.contains(mac)){ roomIndex = 0; }
+        else { roomIndex = 1; }
+        if (enviroment.getArray().get(roomIndex).getMACList().contains(mac)){
+            beaconIndex = enviroment.getArray().get(roomIndex).getMACList().indexOf(mac);
+            enviroment.getArray().get(roomIndex).getBeacons().get(beaconIndex).setRSSI(rssi);
+        }
+        else { enviroment.getArray().get(roomIndex).getBeacons().add(new Beacon(name, mac, rssi)); }
+    }
+
+    public void scanSample(String name, String mac, byte rssi){
+        ArrayList<String> macs = this.sample.getMACList();
+        if (macs.contains(mac)){ this.sample.findBeacon(mac).getFullRSSI().add(rssi); }
+        else { this.sample.getBeacons().add(new Beacon(name, mac, rssi)); }
+    }
+
+    public void scanAppend(RoomsArray rooms, RoomsArray enviroment){
+        ArrayList<Beacon> beacons = this.sample.getBeacons();
+        for (int i = 0; i < beacons.size(); i++){
+            Beacon beacon = beacons.get(i);
+            this.scan(beacon.getName(), beacon.getMAC(), beacon.getRSSIAverage(), rooms, enviroment);
+        }
+        this.prepareSample();
+    }
+
+    public void scan(String name, String mac, byte rssi, RoomsArray rooms, RoomsArray enviroment){
         int roomIndex = rooms.findRoomIndex(mac);
         if (roomIndex > -1){
             String roomName = rooms.getArray().get(roomIndex).getName();
@@ -52,62 +72,31 @@ public class ScanTools{
         }
     }
 
-    private void calibrateLogic(String mac, byte rssi, Room room){
-        ArrayList<String> macs = room.getMACList();
-        if (macs.contains(mac)){
-            int index = macs.indexOf(mac);
-            room.getBeacons().get(index).getFullRSSI().add(rssi);
+    public void calibratePrepare(Room room){
+        this.prepareSample();
+        ArrayList<Beacon> temp = room.getBeacons();
+        ArrayList<Beacon> beacons = this.sample.getBeacons();
+        for (int i = 0; i < temp.size(); i++){
+            beacons.add(new Beacon(temp.get(i).getName(), temp.get(i).getMAC()));
         }
     }
 
-    public void assign(BluetoothDevice device, int rssi, ArrayList<String> macs, RoomsArray enviroment){
-        String currentName = device.getName();
-        String currentMAC = device.getAddress();
-        byte currentRSSI = (byte)rssi;
-        this.assignLogic(currentName, currentMAC, currentRSSI, macs, enviroment);
+    public void calibrateSample(String mac, byte rssi, ArrayList<String> macs){
+        if (macs.contains(mac)){ this.sample.findBeacon(mac).getFullRSSI().add(rssi); }
     }
 
-    public void scan(BluetoothDevice device, int rssi, RoomsArray roomsArray, RoomsArray enviroment){
-        String currentName = device.getName();
-        String currentMAC = device.getAddress();
-        byte currentRSSI = (byte)rssi;
-        this.scanLogic(currentName, currentMAC, currentRSSI, roomsArray, enviroment);
+    public void calibrateAppend(Room room){
+        ArrayList<Beacon> beacons = this.sample.getBeacons();
+        for (int i = 0; i < beacons.size(); i++){
+            Beacon beacon = beacons.get(i);
+            if (!beacon.getFullRSSI().isEmpty()){
+                this.calibrate(beacon.getMAC(), beacon.getRSSIAverage(), room);
+            }
+        }
+        for (int i = 0; i < beacons.size(); i++){ beacons.get(i).getFullRSSI().clear(); }
     }
 
-    public void calibrate(BluetoothDevice device, int rssi, Room room){
-        String currentMAC = device.getAddress();
-        byte currentRSSI = (byte)rssi;
-        this.calibrateLogic(currentMAC, currentRSSI, room);
-    }
-
-    //------------Debug------------
-
-    public void fakeAssign(int generatedBeacons, int generatedRSSIMin, int generatedRSSIMax, ArrayList<String> macs, RoomsArray enviroment){
-        int beaconNumber = inetegerGenerator(1, generatedBeacons);
-        String currentName = "Beacon" + beaconNumber;
-        String currentMAC = "MAC" + beaconNumber;
-        byte currentRSSI = (byte)inetegerGenerator(generatedRSSIMin, generatedRSSIMax);
-        this.assignLogic(currentName, currentMAC, currentRSSI, macs, enviroment);
-    }
-
-    public void fakeScan(int generatedBeacons, int generatedRSSIMin, int generatedRSSIMax, RoomsArray roomsArray, RoomsArray enviroment){
-        int beaconNumber = inetegerGenerator(1, generatedBeacons);
-        String currentName = "Beacon" + beaconNumber;
-        String currentMAC = "MAC" + beaconNumber;
-        byte currentRSSI = (byte)inetegerGenerator(generatedRSSIMin, generatedRSSIMax);
-        this.scanLogic(currentName, currentMAC, currentRSSI, roomsArray, enviroment);
-    }
-
-    public void fakeCalibrate(int generatedBeacons, int generatedRSSIMin, int generatedRSSIMax, Room room){
-        int beaconNumber = inetegerGenerator(1, generatedBeacons);
-        String currentMAC = "MAC" + beaconNumber;
-        byte currentRSSI = (byte)inetegerGenerator(generatedRSSIMin, generatedRSSIMax);
-        this.calibrateLogic(currentMAC, currentRSSI, room);
-    }
-
-    int inetegerGenerator(int min, int max){
-        Random random = new Random();
-        int value = random.nextInt(max - min + 1) + min;
-        return value;
+    public void calibrate(String mac, byte rssi, Room room){
+        room.findBeacon(mac).getFullRSSI().add(rssi);
     }
 }

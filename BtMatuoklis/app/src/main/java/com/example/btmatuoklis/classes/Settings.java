@@ -18,7 +18,7 @@ public class Settings {
     //Maksimalus teorinis BTLE aptikimo atstumas metrais
     public static byte maxRange;
 
-    //Kas kiek laiko kartosis scan
+    //Kas kiek laiko kartosis scanAppend
     //Matuojant su maziau negu 300ms, po kurio laiko uzstringa
     private short frequency, defaultFrequency;
 
@@ -60,7 +60,7 @@ public class Settings {
         defaultGeneratedBeacons = (byte)context.getResources().getInteger(R.integer.debug_default_beacons);
         defaultGeneratedRSSIMin = (byte)context.getResources().getInteger(R.integer.debug_default_rssi_min);
         defaultGeneratedRSSIMax = (byte)context.getResources().getInteger(R.integer.debug_default_rssi_max);
-        maxRange = (byte)context.getResources().getInteger(R.integer.default_max_range);
+        maxRange = (byte)context.getResources().getInteger(R.integer.max_range);
     }
 
     public void refreshValues(){

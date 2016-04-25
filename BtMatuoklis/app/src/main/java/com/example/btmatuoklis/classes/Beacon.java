@@ -15,10 +15,6 @@ public class Beacon {
 
     //private RangeCalculator calculator = new RangeCalculator();
 
-    public Beacon(){
-        this.rssi = new ArrayList<Byte>();
-    }
-
     public Beacon(String name, String mac){
         this.name = name;
         this.mac = mac;
