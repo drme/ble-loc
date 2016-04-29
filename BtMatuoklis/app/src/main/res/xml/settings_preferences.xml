@@ -5,15 +5,6 @@
         android:summary="@string/settingsactivity_category_main_settings" >
 
         <EditTextPreference
-            android:id="@+id/preferences_Frequency"
-            android:key="@string/key_delay"
-            android:defaultValue="@integer/default_frequency"
-            android:title="@string/settingsactivity_text_frequency"
-            android:summary="@string/generic_value"
-            android:dialogMessage="@string/generic_hint"
-            android:inputType="number"
-            android:maxLength="4" />
-        <EditTextPreference
             android:id="@+id/preferences_Shadow"
             android:key="@string/key_shadow"
             android:defaultValue="@integer/default_shadow"

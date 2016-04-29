@@ -14,7 +14,7 @@ public class SettingsActivity extends PreferenceActivity {
 
     Settings settings;
     SharedPreferences.OnSharedPreferenceChangeListener preferenceListener;
-    EditTextPreference editFrequency, editShadow;
+    EditTextPreference editShadow;
     SwitchPreference switchNullDevices;
     SwitchPreference switchGenerator;
     EditTextPreference debugBeacons, debugRSSIMin, debugRSSIMax;
@@ -24,7 +24,6 @@ public class SettingsActivity extends PreferenceActivity {
         super.onCreate(savedInstanceState);
         getActionBar().setSubtitle(getString(R.string.subtitle_settings));
         addPreferencesFromResource(R.xml.settings_preferences);
-        editFrequency = (EditTextPreference)findPreference(this.getString(R.string.key_delay));
         editShadow = (EditTextPreference)findPreference(this.getString(R.string.key_shadow));
         switchNullDevices = (SwitchPreference)findPreference(this.getString(R.string.key_shownull));
         switchGenerator = (SwitchPreference)findPreference(this.getString(R.string.debug_generator));
@@ -68,9 +67,7 @@ public class SettingsActivity extends PreferenceActivity {
     //Jeigu programa leidziama ne pirma karta - nustatomos issaugotos reiksmes
     void setDefaultValues(){
         settings = MainActivity.settings;
-        editFrequency.setSummary(getString(R.string.settingsactivity_subtext_value)+" "+settings.getFrequency() + "ms");
         editShadow.setSummary(getString(R.string.settingsactivity_subtext_value)+" "+settings.getShadow());
-        editFrequency.setDialogMessage(getString(R.string.settingsactivity_hint_frequency)+" "+settings.getDefaultFrequency());
 
         debugBeacons.setSummary(getString(R.string.settingsactivity_subtext_value)+" "+settings.getDebugBeacons());
         debugRSSIMin.setSummary(getString(R.string.settingsactivity_subtext_value)+" "+settings.getDebugRSSIMin());

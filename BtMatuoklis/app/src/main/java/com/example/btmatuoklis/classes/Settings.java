@@ -12,15 +12,11 @@ public class Settings {
     private SharedPreferences preferences;
     public static byte REQUEST_ENABLE_BT = 1;
 
-    private String key_delay, key_shadow, key_shownull;
+    private String key_shadow, key_shownull;
     private String debug_generator, debug_beacons, debug_rssi_min, debug_rssi_max;
 
     //Maksimalus teorinis BTLE aptikimo atstumas metrais
     public static byte maxRange;
-
-    //Kas kiek laiko kartosis scanAppend
-    //Matuojant su maziau negu 300ms, po kurio laiko uzstringa
-    private short frequency, defaultFrequency;
 
     //Kiek RSSI saugoti aktyvaus Scan rezimu
     private byte shadow, defaultShadow;
@@ -43,7 +39,6 @@ public class Settings {
     }
 
     private void initKeys(Context context){
-        key_delay = context.getString(R.string.key_delay);
         key_shadow = context.getString(R.string.key_shadow);
         key_shownull = context.getString(R.string.key_shownull);
         debug_generator = context.getString(R.string.debug_generator);
@@ -53,7 +48,6 @@ public class Settings {
     }
 
     public void setDefaultValues(){
-        defaultFrequency = (short)context.getResources().getInteger(R.integer.default_frequency);
         defaultShadow = (byte)context.getResources().getInteger(R.integer.default_shadow);
         defaultShowNull = context.getResources().getBoolean(R.bool.default_show_null);
         defaultGenerator = context.getResources().getBoolean(R.bool.debug_default_generator);
@@ -64,7 +58,6 @@ public class Settings {
     }
 
     public void refreshValues(){
-        frequency = Short.parseShort(preferences.getString(key_delay, Short.toString(defaultFrequency)));
         shadow = Byte.parseByte(preferences.getString(key_shadow, Byte.toString(defaultShadow)));
         showNull = preferences.getBoolean(key_shownull, defaultShowNull);
         generator = preferences.getBoolean(debug_generator, defaultGenerator);
@@ -75,13 +68,9 @@ public class Settings {
 
     public byte getMaxRange(){ return maxRange; }
 
-    public short getFrequency(){ return this.frequency; }
-
     public byte getShadow(){ return this.shadow; }
 
     public boolean showNullDevices() { return this.showNull; }
-
-    public short getDefaultFrequency() { return this.defaultFrequency; }
 
     public boolean isGeneratorEnabled() { return this.generator; }
 

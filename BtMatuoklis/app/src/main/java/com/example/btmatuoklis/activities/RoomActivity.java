@@ -59,6 +59,8 @@ public class RoomActivity extends Activity {
 
     BeaconGenerator generator;
 
+    short sleepMin, sleepMax, sampleTime;
+
     Handler handler;
     Runnable background;
     MenuItem exportItem;
@@ -155,6 +157,10 @@ public class RoomActivity extends Activity {
         exportCSV = new CSVExportHelper(this);
 
         generator = new BeaconGenerator(this);
+
+        sleepMin = (short)getResources().getInteger(R.integer.sleep_min);
+        sleepMax = (short)getResources().getInteger(R.integer.sleep_max);
+        sampleTime = (short)getResources().getInteger(R.integer.scan_min);
 
         listAdapter = new LinkAdapter(this, roomArray);
         displayBeaconsList.setAdapter(listAdapter);
@@ -355,7 +361,7 @@ public class RoomActivity extends Activity {
         }
         @Override
         protected void onPostExecute(Boolean aBoolean) {
-            handler.postDelayed(background, settings.getFrequency());
+            handler.postDelayed(background, sleepMin);
             listAdapter.notifyDataSetChanged();
             if (currentRoom.isCalibrated()) { buttonCalibrate.setEnabled(true); }
         }
@@ -365,23 +371,22 @@ public class RoomActivity extends Activity {
         if (!settings.isGeneratorEnabled()) {
             if (Build.VERSION.SDK_INT < Build.VERSION_CODES.LOLLIPOP){
                 mBluetoothAdapter.startLeScan(mLeScanCallback);
-                threadSleep(settings.getFrequency());
+                threadSleep(sampleTime);
                 mBluetoothAdapter.stopLeScan(mLeScanCallback);
             }
             else {
                 mLEScanner.startScan(mScanCallback);
-                threadSleep(settings.getFrequency());
+                threadSleep(sampleTime);
                 mLEScanner.stopScan(mScanCallback);
             }
         }
         else {
             int cycles = generator.numGen(0, settings.getDebugBeacons()*5);
-            threadSleep(settings.getFrequency());
             for (int i = 0; i < cycles; i++) {
                 generator.generate(settings.getDebugBeacons(), settings.getDebugRSSIMin(), settings.getDebugRSSIMax());
                 scantools.calibrateSample(generator.getMAC(), generator.getRSSI(), roomMACs);
             }
-            threadSleep(settings.getFrequency());
+            threadSleep(sampleTime);
         }
     }
 

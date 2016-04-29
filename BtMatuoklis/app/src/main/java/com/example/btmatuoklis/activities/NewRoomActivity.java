@@ -58,6 +58,8 @@ public class NewRoomActivity extends Activity {
 
     BeaconGenerator generator;
 
+    short sleepMin, sleepMax, sampleTime;
+
     Handler handler;
     Runnable background;
     String roomName;
@@ -133,6 +135,10 @@ public class NewRoomActivity extends Activity {
         database = new MySQLiteHelper(this);
 
         generator = new BeaconGenerator(this);
+
+        sleepMin = (short)getResources().getInteger(R.integer.sleep_min);
+        sleepMax = (short)getResources().getInteger(R.integer.sleep_max);
+        sampleTime = (short)getResources().getInteger(R.integer.scan_min);
 
         selectedBeacons = new ArrayList<Integer>();
         adapter = new AssignAdapter(this, enviromentArray, selectedBeacons);
@@ -291,7 +297,7 @@ public class NewRoomActivity extends Activity {
         }
         @Override
         protected void onPostExecute(Boolean aBoolean) {
-            handler.postDelayed(background, settings.getFrequency());
+            handler.postDelayed(background, sleepMin);
             adapter.notifyDataSetChanged();
         }
     }
@@ -300,23 +306,22 @@ public class NewRoomActivity extends Activity {
         if (!settings.isGeneratorEnabled()) {
             if (Build.VERSION.SDK_INT < Build.VERSION_CODES.LOLLIPOP){
                 mBluetoothAdapter.startLeScan(mLeScanCallback);
-                threadSleep(settings.getFrequency());
+                threadSleep(sampleTime);
                 mBluetoothAdapter.stopLeScan(mLeScanCallback);
             }
             else {
                 mLEScanner.startScan(mScanCallback);
-                threadSleep(settings.getFrequency());
+                threadSleep(sampleTime);
                 mLEScanner.stopScan(mScanCallback);
             }
         }
         else{
             int cycles = generator.numGen(0, settings.getDebugBeacons()*5);
-            threadSleep(settings.getFrequency());
             for (int i = 0; i < cycles; i++) {
                 generator.generate(settings.getDebugBeacons(), settings.getDebugRSSIMin(), settings.getDebugRSSIMax());
                 scantools.assignSample(generator.getName(), generator.getMAC(), generator.getRSSI());
             }
-            threadSleep(settings.getFrequency());
+            threadSleep(sampleTime);
         }
     }
 

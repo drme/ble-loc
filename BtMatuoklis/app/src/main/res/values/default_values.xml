@@ -2,7 +2,6 @@
 <resources>
 
     <!--Settings keys-->
-    <string name="key_delay">savedDelay</string>
     <string name="key_shadow">savedShadow</string>
     <string name="key_shownull">showNull</string>
     <string name="debug_generator">debugGenerator</string>
@@ -11,7 +10,6 @@
     <string name="debug_rssi_max">debugRSSIMax</string>
 
     <!--Default key values-->
-    <integer name="default_frequency">1000</integer>
     <integer name="default_shadow">1</integer>
     <bool name="default_show_null">true</bool>
     <bool name="debug_default_generator">false</bool>
@@ -20,9 +18,9 @@
     <integer name="debug_default_rssi_max">-20</integer>
 
     <!--Other values-->
-    <integer name="sleep_min">300</integer>
-    <integer name="sleep_max">5000</integer>
-    <integer name="scan_min">300</integer>
+    <integer name="sleep_min">5000</integer>
+    <integer name="sleep_max">30000</integer>
+    <integer name="scan_min">1500</integer>
     <integer name="scan_max">5000</integer>
     <integer name="max_range">100</integer>
 
