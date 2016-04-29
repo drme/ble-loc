@@ -20,8 +20,10 @@ public class RoomDetector {
         settings = MainActivity.settings;
     }
 
-    public String getRoomName(RoomsArray created, RoomsArray enviroment){
+    public int getDetectedRoomIndex(RoomsArray created, RoomsArray enviroment){
+        int index = -2;
         if (!created.getArray().isEmpty()) {
+            index = -1;
             coeff = new ArrayList<Byte>();
             indexes = new ArrayList<Integer>();
             scannedBeacons = enviroment.getFullBeaconList();
@@ -33,19 +35,26 @@ public class RoomDetector {
                     if (res < 0){ coeff.add(res); indexes.add(i); }
                 }
             }
-            if (!coeff.isEmpty()){
+            if (!coeff.isEmpty() && !indexes.isEmpty()){
                 Byte minCoeff = Collections.min(coeff);
                 int coeffIndex = coeff.indexOf(minCoeff);
                 int minIndex = indexes.get(coeffIndex);
                 //ateiciai - prideti if'a kuris patikrintu ar beaconas vis dar yra aptinkamas
                 //jeigu ne - imti sekancia maziausia koeficiento reiksme
                 String minMAC = scannedBeacons.get(minIndex).getMAC();
-                int roomIndex = created.findRoomIndex(minMAC);
-                return locatedIn+created.getArray().get(roomIndex).getName();
+                index = created.findRoomIndex(minMAC);
             }
-            return notDetected;
         }
-        return noRooms;
+        return index;
+    }
+
+    public String getDetectedRoomName(RoomsArray created, RoomsArray enviroment){
+        int index = this.getDetectedRoomIndex(created, enviroment);
+        switch (index){
+            case -2: return noRooms;
+            case -1: return notDetected;
+            default: return locatedIn+created.getArray().get(index).getName();
+        }
     }
 
     private byte compareCalibrationShadow(ArrayList<Byte> calibrations, ArrayList<Byte> rssis){
