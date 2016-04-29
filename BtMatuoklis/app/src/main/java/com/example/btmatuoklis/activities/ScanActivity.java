@@ -189,7 +189,7 @@ public class ScanActivity extends Activity {
         protected Boolean doInBackground(Void... params) {
             scanLogic();
             scantools.scanAppend(roomsArray, enviromentArray);
-            roomName = detector.getRoomName(roomsArray, enviromentArray);
+            roomName = detector.getDetectedRoomName(roomsArray, enviromentArray);
             return true;
         }
         @Override
