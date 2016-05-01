@@ -74,7 +74,6 @@ public class ScanActivity extends Activity {
         createBTLECallBack();
         createThreads();
 
-        _control.findRoomDeviceIndex(roomsArray);
         continuousScan(true);
     }
 
@@ -159,21 +158,20 @@ public class ScanActivity extends Activity {
         enviromentArray = new RoomsArray();
         enviromentArray.getArray().add(new Room("Nepriskirti įrenginiai"));
         detector = new RoomDetector();
-
         _generator = new _DebugBeaconGenerator(this);
         _control = new _DebugDeviceControl(ScanActivity.this, detector);
-
         sleepMin = (short)getResources().getInteger(R.integer.sleep_min);
         sleepMax = (short)getResources().getInteger(R.integer.sleep_max);
         sampleTime = (short)getResources().getInteger(R.integer.scan_min);
-
         adapter = new ScanAdapter(this, roomsArray, enviromentArray);
         displayBeaconsList.setAdapter(adapter);
+
+        _control.findRoomDeviceIndex(roomsArray);
     }
 
     void createThreads(){
         handler = new Handler();
-        //Background Runnable - paleidziamas scanAppend AsyncTask
+        //Background Runnable - paleidziamas scan AsyncTask
         background = new Runnable() {
             @Override
             public void run() {

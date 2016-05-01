@@ -22,9 +22,9 @@ public class _DebugDeviceControl {
     private String mac = "68:9E:19:15:1B:ED";
     private UUID customServices = UUID.fromString("a739aa00-f6cd-1692-994a-d66d9e0ce048");
     private UUID ledCharacteristic = UUID.fromString("a739fffd-f6cd-1692-994a-d66d9e0ce048");
-    byte[] enable = new byte[]{0x00, 0x01};
-    byte[] disable = new byte[]{0x00, 0x00};
-    byte[] command;
+    private byte[] enable = new byte[]{0x00, 0x01};
+    private byte[] disable = new byte[]{0x00, 0x00};
+    private byte[] command;
     private boolean available, switchDevice;
     private String enabledMsg, disabledMsg;
     private int deviceRoomIndex, prevRoomIndex;
@@ -38,6 +38,7 @@ public class _DebugDeviceControl {
         this.switchDevice = false;
         this.enabledMsg = this.context.getString(R.string.gatt_toast_function_enabled);
         this.disabledMsg = this.context.getString(R.string.gatt_toast_function_disabled);
+        this.prevRoomIndex = -2;
         //this.createNotifications();
         this.createGattCallbak();
     }
