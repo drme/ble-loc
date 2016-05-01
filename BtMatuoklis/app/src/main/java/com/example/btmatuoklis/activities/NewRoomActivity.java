@@ -27,7 +27,7 @@ import android.widget.Toast;
 
 import com.example.btmatuoklis.R;
 import com.example.btmatuoklis.adapters.AssignAdapter;
-import com.example.btmatuoklis.classes.BeaconGenerator;
+import com.example.btmatuoklis.classes._DebugBeaconGenerator;
 import com.example.btmatuoklis.classes.RoomsArray;
 import com.example.btmatuoklis.helpers.DialogBuildHelper;
 import com.example.btmatuoklis.classes.Beacon;
@@ -56,7 +56,7 @@ public class NewRoomActivity extends Activity {
     BluetoothLeScanner mLEScanner;
     ScanCallback mScanCallback;
 
-    BeaconGenerator generator;
+    _DebugBeaconGenerator _generator;
 
     short sleepMin, sleepMax, sampleTime;
 
@@ -134,7 +134,7 @@ public class NewRoomActivity extends Activity {
         environment = new Room();
         database = new MySQLiteHelper(this);
 
-        generator = new BeaconGenerator(this);
+        _generator = new _DebugBeaconGenerator(this);
 
         sleepMin = (short)getResources().getInteger(R.integer.sleep_min);
         sleepMax = (short)getResources().getInteger(R.integer.sleep_max);
@@ -316,10 +316,10 @@ public class NewRoomActivity extends Activity {
             }
         }
         else{
-            int cycles = generator.numGen(0, settings.getDebugBeacons()*5);
+            int cycles = _generator.numGen(0, settings.getDebugBeacons()*5);
             for (int i = 0; i < cycles; i++) {
-                generator.generate(settings.getDebugBeacons(), settings.getDebugRSSIMin(), settings.getDebugRSSIMax());
-                scantools.assignSample(generator.getName(), generator.getMAC(), generator.getRSSI());
+                _generator.generate(settings.getDebugBeacons(), settings.getDebugRSSIMin(), settings.getDebugRSSIMax());
+                scantools.assignSample(_generator.getName(), _generator.getMAC(), _generator.getRSSI());
             }
             threadSleep(sampleTime);
         }

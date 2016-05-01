@@ -113,7 +113,7 @@
     <string name="exportcsv_column_mac">BeaconMac</string>
     <string name="exportcsv_column_rssi">RSSI</string>
 
-    <!--BeaconGenerator naudojami tekstai-->
+    <!--_DebugBeaconGenerator naudojami tekstai-->
     <string name="gen_beacon_name">Beacon</string>
     <string name="gen_beacon_mac">MAC</string>
 

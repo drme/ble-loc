@@ -6,13 +6,13 @@ import com.example.btmatuoklis.R;
 
 import java.util.Random;
 
-public class BeaconGenerator {
+public class _DebugBeaconGenerator {
 
     private String defaultName, defaultMAC;
     private String name, mac;
     private byte rssi;
 
-    public BeaconGenerator(Context context){
+    public _DebugBeaconGenerator(Context context){
         defaultName = context.getString(R.string.gen_beacon_name);
         defaultMAC = context.getString(R.string.gen_beacon_mac);
     }

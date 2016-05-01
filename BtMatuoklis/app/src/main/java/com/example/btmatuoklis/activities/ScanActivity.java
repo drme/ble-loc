@@ -23,7 +23,6 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.btmatuoklis.R;
-import com.example.btmatuoklis.classes.BeaconGenerator;
 import com.example.btmatuoklis.classes.RoomsArray;
 import com.example.btmatuoklis.adapters.ScanAdapter;
 import com.example.btmatuoklis.classes.GlobalClass;
@@ -31,6 +30,8 @@ import com.example.btmatuoklis.classes.Room;
 import com.example.btmatuoklis.classes.RoomDetector;
 import com.example.btmatuoklis.classes.ScanTools;
 import com.example.btmatuoklis.classes.Settings;
+import com.example.btmatuoklis.classes._DebugBeaconGenerator;
+import com.example.btmatuoklis.classes._DebugDeviceControl;
 
 public class ScanActivity extends Activity {
 
@@ -44,7 +45,8 @@ public class ScanActivity extends Activity {
     BluetoothLeScanner mLEScanner;
     ScanCallback mScanCallback;
 
-    BeaconGenerator generator;
+    _DebugBeaconGenerator _generator;
+    _DebugDeviceControl _control;
 
     short sleepMin, sleepMax, sampleTime;
 
@@ -71,6 +73,8 @@ public class ScanActivity extends Activity {
         checkBT();
         createBTLECallBack();
         createThreads();
+
+        _control.findRoomDeviceIndex(roomsArray);
         continuousScan(true);
     }
 
@@ -156,7 +160,8 @@ public class ScanActivity extends Activity {
         enviromentArray.getArray().add(new Room("Nepriskirti įrenginiai"));
         detector = new RoomDetector();
 
-        generator = new BeaconGenerator(this);
+        _generator = new _DebugBeaconGenerator(this);
+        _control = new _DebugDeviceControl(ScanActivity.this, detector);
 
         sleepMin = (short)getResources().getInteger(R.integer.sleep_min);
         sleepMax = (short)getResources().getInteger(R.integer.sleep_max);
@@ -190,14 +195,16 @@ public class ScanActivity extends Activity {
             scanLogic();
             scantools.scanAppend(roomsArray, enviromentArray);
             roomName = detector.getDetectedRoomName(roomsArray, enviromentArray);
+            _control.checkDevice(roomsArray, enviromentArray);
             return true;
         }
         @Override
         protected void onPostExecute(Boolean aBoolean) {
-            //To-do: "adaptyvus" delayed laiko paskaiciavimas pagal aptiktu beaconu kieki
-            handler.postDelayed(background, sleepMin);
             adapter.notifyDataSetChanged();
             detectedRoom.setText(roomName);
+            _control.activateDevice(mBluetoothAdapter);
+            //To-do: "adaptyvus" delayed laiko paskaiciavimas pagal aptiktu beaconu kieki
+            handler.postDelayed(background, sleepMin);
         }
     }
 
@@ -216,16 +223,16 @@ public class ScanActivity extends Activity {
             }
         }
         else {
-            int cycles = generator.numGen(0, settings.getDebugBeacons()*5);
+            int cycles = _generator.numGen(0, settings.getDebugBeacons()*5);
             for (int i = 0; i < cycles; i++){
-                generator.generate(settings.getDebugBeacons(), settings.getDebugRSSIMin(), settings.getDebugRSSIMax());
-                scantools.scanSample(generator.getName(), generator.getMAC(), generator.getRSSI());
+                _generator.generate(settings.getDebugBeacons(), settings.getDebugRSSIMin(), settings.getDebugRSSIMax());
+                scantools.scanSample(_generator.getName(), _generator.getMAC(), _generator.getRSSI());
             }
             threadSleep(sampleTime);
         }
     }
 
-    private void threadSleep(short time){
+    private void threadSleep(short time) {
         try { Thread.sleep(time); }
         catch (InterruptedException e) { e.printStackTrace(); }
     }
