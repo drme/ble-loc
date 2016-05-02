@@ -200,7 +200,7 @@ public class ScanActivity extends Activity {
         protected void onPostExecute(Boolean aBoolean) {
             adapter.notifyDataSetChanged();
             detectedRoom.setText(roomName);
-            _control.activateDevice(mBluetoothAdapter);
+            _control.activateDevice(handler, mBluetoothAdapter);
             //To-do: "adaptyvus" delayed laiko paskaiciavimas pagal aptiktu beaconu kieki
             handler.postDelayed(background, sleepMin);
         }

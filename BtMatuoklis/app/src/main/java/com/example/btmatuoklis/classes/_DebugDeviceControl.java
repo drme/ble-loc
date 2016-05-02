@@ -7,6 +7,7 @@ import android.bluetooth.BluetoothGattCallback;
 import android.bluetooth.BluetoothGattCharacteristic;
 import android.bluetooth.BluetoothProfile;
 import android.content.Context;
+import android.os.Handler;
 import android.util.Log;
 import android.widget.Toast;
 
@@ -28,6 +29,7 @@ public class _DebugDeviceControl {
     private boolean available, switchDevice;
     private String enabledMsg, disabledMsg;
     private int deviceRoomIndex, prevRoomIndex;
+    private Handler handler;
     private Runnable showToast;
 
     public _DebugDeviceControl(Context context, RoomDetector detector){
@@ -41,6 +43,7 @@ public class _DebugDeviceControl {
         this.prevRoomIndex = -2;
         //this.createNotifications();
         this.createGattCallbak();
+        this.createNotifications();
     }
 
     private void createGattCallbak(){
@@ -81,6 +84,7 @@ public class _DebugDeviceControl {
                 Log.d("_GATT", "Characteristic Write Success");
                 //To-do: Display toast when function enabled/disabled
                 //runOnUiThread(showToast);
+                handler.post(showToast);
                 gatt.disconnect();
             }
         };
@@ -123,8 +127,9 @@ public class _DebugDeviceControl {
         else { this.switchDevice = false; }
     }
 
-    public void activateDevice(BluetoothAdapter mBluetoothAdapter){
+    public void activateDevice(Handler handler, BluetoothAdapter mBluetoothAdapter){
         if (this.switchDevice){
+            this.handler = handler;
             BluetoothDevice device = mBluetoothAdapter.getRemoteDevice(this.mac);
             if (device != null){
                 if (available){ device.connectGatt(this.context, false, mGattCallback);}
