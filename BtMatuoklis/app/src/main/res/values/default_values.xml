@@ -9,13 +9,17 @@
     <string name="debug_rssi_min">debugRSSIMin</string>
     <string name="debug_rssi_max">debugRSSIMax</string>
 
-    <!--Default key values-->
+    <!--Default setting values-->
     <integer name="default_shadow">1</integer>
     <bool name="default_show_null">true</bool>
     <bool name="debug_default_generator">false</bool>
     <integer name="debug_default_beacons">2</integer>
     <integer name="debug_default_rssi_min">-90</integer>
     <integer name="debug_default_rssi_max">-20</integer>
+
+    <!--Cross-Activity keys-->
+    <string name="activity_key_room">roomIndex</string>
+    <string name="activity_key_beacon">beaconIndex</string>
 
     <!--Other values-->
     <integer name="sleep_min">5000</integer>

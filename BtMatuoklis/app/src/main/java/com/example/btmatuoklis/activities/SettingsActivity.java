@@ -56,7 +56,6 @@ public class SettingsActivity extends PreferenceActivity {
         preferenceListener = new SharedPreferences.OnSharedPreferenceChangeListener() {
             @Override
             public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String key) {
-                Log.d("SettingsActivity", "Preferences changed");
                 settings.refreshValues();
                 setDefaultValues();
             }

@@ -27,7 +27,7 @@ import java.util.ArrayList;
 public class BeaconActivity extends Activity {
 
     GlobalClass globalVariable;
-    int roomID, beaconID;
+    int roomIndex, beaconIndex;
     Room currentRoom;
     Beacon currentBeacon;
     MySQLiteHelper database;
@@ -38,6 +38,7 @@ public class BeaconActivity extends Activity {
     TextView displayRSSINum, displayRSSIAverage, displayRSSIMax, displayRSSIMin;
     View displayArrayFrame;
     ImageView displayArrayArrow;
+    String room_key, beacon_key;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -84,10 +85,12 @@ public class BeaconActivity extends Activity {
 
     void setDefaultValues(){
         globalVariable = (GlobalClass) getApplicationContext();
-        roomID = getIntent().getExtras().getInt("roomID");
-        beaconID = getIntent().getExtras().getInt("beaconID");
-        currentRoom = globalVariable.getRoomsArray().getArray().get(roomID);
-        currentBeacon = currentRoom.getBeacons().get(beaconID);
+        room_key = getString(R.string.activity_key_room);
+        beacon_key = getString(R.string.activity_key_beacon);
+        roomIndex = getIntent().getExtras().getInt(room_key);
+        beaconIndex = getIntent().getExtras().getInt(beacon_key);
+        currentRoom = globalVariable.getRoomsArray().getArray().get(roomIndex);
+        currentBeacon = currentRoom.getBeacons().get(beaconIndex);
         database = new MySQLiteHelper(this);
         infohelper = new BeaconInfoHelper(this);
         rssiArray = currentBeacon.getFullRSSI();
@@ -155,10 +158,10 @@ public class BeaconActivity extends Activity {
         int id = database.getCalibrationID(currentRoom.getID(), currentBeacon.getID());
         database.deleteCalibration(id);
         database.deleteBeacon(currentBeacon.getID());
-        currentRoom.getBeacons().remove(beaconID);
+        currentRoom.getBeacons().remove(beaconIndex);
         if (currentRoom.getBeacons().isEmpty()){
             database.deleteRoom(currentRoom.getID());
-            globalVariable.getRoomsArray().getArray().remove(roomID);
+            globalVariable.getRoomsArray().getArray().remove(roomIndex);
             if (globalVariable.getRoomsArray().getArray().isEmpty()){
                 database.clearDB();
                 globalVariable.getRoomsArray().getArray().clear();

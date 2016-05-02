@@ -2,11 +2,11 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android" >
 
     <item
-        android:id="@+id/action_remove"
-        android:icon="@android:drawable/ic_menu_delete"
-        android:title="@string/bartext_existing_room_remove"
+        android:id="@+id/action_add"
+        android:icon="@android:drawable/ic_menu_add"
+        android:title="@string/bartext_beacon_add"
         android:visible="true"
-        android:onClick="onRemoveActionClick"
+        android:onClick="onAddActionClick"
         android:showAsAction="ifRoom"/>
 
     <item
@@ -19,11 +19,11 @@
         android:showAsAction="ifRoom"/>
 
     <item
-        android:id="@+id/action_help"
-        android:icon="@android:drawable/ic_menu_help"
-        android:title="@string/bartext_help"
+        android:id="@+id/action_remove"
+        android:icon="@android:drawable/ic_menu_delete"
+        android:title="@string/bartext_room_remove"
         android:visible="true"
-        android:onClick="onHelpActionClick"
+        android:onClick="onRemoveActionClick"
         android:showAsAction="ifRoom"/>
 
     <item

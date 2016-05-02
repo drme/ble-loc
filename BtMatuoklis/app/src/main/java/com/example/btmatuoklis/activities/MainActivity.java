@@ -90,13 +90,6 @@ public class MainActivity extends Activity {
         Toast.makeText(getApplicationContext(), "Duombazė užkrauta.", Toast.LENGTH_SHORT).show();
     }
 
-    public void clearDatabase(MenuItem item){
-        MySQLiteHelper database = new MySQLiteHelper(this);
-        database.clearDB();
-        globalVariable.getRoomsArray().getArray().clear();
-        Toast.makeText(getApplicationContext(), "Duombazė išvalyta", Toast.LENGTH_SHORT).show();
-    }
-
     //Sukuriamas Bluetooth adapteris
     public void createBT(){
         BluetoothManager bluetoothManager =

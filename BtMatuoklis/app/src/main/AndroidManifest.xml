@@ -28,7 +28,7 @@
         <activity android:name=".activities.SettingsActivity" />
         <activity android:name=".activities.AllRoomsActivity" />
         <activity android:name=".activities.RoomActivity" />
-        <activity android:name=".activities.NewRoomActivity" />
+        <activity android:name=".activities.BeaconAssignActivity" />
         <activity android:name=".activities.BeaconActivity" />
     </application>
 

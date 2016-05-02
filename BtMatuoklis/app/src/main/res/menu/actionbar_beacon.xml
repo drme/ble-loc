@@ -4,7 +4,7 @@
     <item
         android:id="@+id/action_remove"
         android:icon="@android:drawable/ic_menu_delete"
-        android:title="@string/bartext_existing_beacon_remove"
+        android:title="@string/bartext_beacon_remove"
         android:visible="true"
         android:onClick="onRemoveActionClick"
         android:showAsAction="ifRoom"/>

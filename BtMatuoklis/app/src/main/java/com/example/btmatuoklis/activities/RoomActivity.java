@@ -42,7 +42,7 @@ import java.util.ArrayList;
 public class RoomActivity extends Activity {
 
     GlobalClass globalVariable;
-    int roomID;
+    int roomIndex;
     Settings settings;
     ScanTools scantools;
     Room currentRoom;
@@ -50,24 +50,20 @@ public class RoomActivity extends Activity {
     RoomsArray roomArray;
     MySQLiteHelper database;
     CSVExportHelper exportCSV;
-
     BluetoothAdapter mBluetoothAdapter;
     BluetoothAdapter.LeScanCallback mLeScanCallback;
-
     BluetoothLeScanner mLEScanner;
     ScanCallback mScanCallback;
-
     _DebugBeaconGenerator _generator;
-
     short sleepMin, sleepMax, sampleTime;
-
     Handler handler;
     Runnable background;
-    MenuItem exportItem;
+    MenuItem assignItem, exportItem;
     LinkAdapter listAdapter;
     ExpandableListView displayBeaconsList;
     TextView displayRoomName;
     Button buttonCalibrate;
+    String room_key, beacon_key;
     
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -79,6 +75,7 @@ public class RoomActivity extends Activity {
         buttonCalibrate = (Button)findViewById(R.id.buttonSingleRoom_Calibrate);
 
         setDefaultValues();
+        checkBeacons();
         createBT();
         checkBT();
         createBTLECallBack();
@@ -99,6 +96,7 @@ public class RoomActivity extends Activity {
 
     @Override
     public boolean onPrepareOptionsMenu(Menu menu) {
+        assignItem = menu.findItem(R.id.action_add);
         exportItem = menu.findItem(R.id.action_export);
         if (currentRoom.getBeacons().isEmpty()){ this.finish(); }
         else if (!currentRoom.isCalibrationStarted()){ restoreCalibrateButton(); }
@@ -119,14 +117,13 @@ public class RoomActivity extends Activity {
         this.finish();
     }
 
-    public void onRemoveActionClick(MenuItem item){ removeRoomConfirm(); }
-
-    public void onExportActionClick(MenuItem item) { ExportRoomCSVConfirm(); }
-
-    public void onHelpActionClick(MenuItem item){
-        //Work in progress
-        Toast.makeText(getApplicationContext(), "Not implemented.", Toast.LENGTH_SHORT).show();
+    public void onAddActionClick(MenuItem item){
+        startBeaconAssignConfirm();
     }
+
+    public void onExportActionClick(MenuItem item) { exportRoomCSVConfirm(); }
+
+    public void onRemoveActionClick(MenuItem item){ removeRoomConfirm(); }
 
     public void onSettingsActionClick(MenuItem item){
         startActivity(new Intent(getBaseContext(), SettingsActivity.class));
@@ -146,25 +143,45 @@ public class RoomActivity extends Activity {
 
     void setDefaultValues(){
         globalVariable = (GlobalClass) getApplicationContext();
-        roomID = getIntent().getExtras().getInt("roomID");
+        room_key = getString(R.string.activity_key_room);
+        beacon_key = getString(R.string.activity_key_beacon);
+        roomIndex = getIntent().getExtras().getInt(room_key);
         settings = MainActivity.settings;
         scantools = new ScanTools();
         roomArray = new RoomsArray();
-        currentRoom = globalVariable.getRoomsArray().getArray().get(roomID);
+        currentRoom = globalVariable.getRoomsArray().getArray().get(roomIndex);
         roomMACs = currentRoom.getMACList();
-        roomArray.getArray().add(new Room("Priskirti švyturėliai", currentRoom.getBeacons()));
+        roomArray.getArray().add(new Room(getString(R.string.category_assigned_beacons), currentRoom.getBeacons()));
         database = new MySQLiteHelper(this);
         exportCSV = new CSVExportHelper(this);
-
         _generator = new _DebugBeaconGenerator(this);
-
         sleepMin = (short)getResources().getInteger(R.integer.sleep_min);
         sleepMax = (short)getResources().getInteger(R.integer.sleep_max);
         sampleTime = (short)getResources().getInteger(R.integer.scan_min);
-
         listAdapter = new LinkAdapter(this, roomArray);
         displayBeaconsList.setAdapter(listAdapter);
         displayRoomName.setText(getString(R.string.roomactivity_text_name) + " " + currentRoom.getName());
+    }
+
+    void checkBeacons(){
+        if (currentRoom.getBeacons().isEmpty()){ startBeaconAssign(); }
+    }
+
+    void startBeaconAssignConfirm() {
+        DialogBuildHelper dialog = new DialogBuildHelper(RoomActivity.this, getString(R.string.dialog_title_beacon_assign),
+                getString(R.string.dialog_assign_beacons), android.R.drawable.ic_dialog_info);
+        dialog.getBuilder().setPositiveButton(getString(R.string.dialog_button_ok), new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) { startBeaconAssign(); }});
+        dialog.setNegative(getString(R.string.dialog_button_cancel));
+        dialog.showDialog();
+    }
+
+    void startBeaconAssign(){
+        Intent intent = new Intent(getBaseContext(), BeaconAssignActivity.class);
+        intent.putExtra(room_key, roomIndex);
+        this.finish();
+        startActivity(intent);
     }
 
     //Veiksmai kalibracijai pradeti
@@ -174,10 +191,9 @@ public class RoomActivity extends Activity {
         displayBeaconsList.setOnChildClickListener(null);
         buttonCalibrate.setText(getString(R.string.roomactivity_button_finish_calib));
         buttonCalibrate.setEnabled(false);
+        enableMenuItem(assignItem, false);
         enableMenuItem(exportItem, false);
-
         scantools.calibratePrepare(currentRoom);
-
         continuousScan(true);
     }
 
@@ -189,6 +205,7 @@ public class RoomActivity extends Activity {
         buttonCalibrate.setEnabled(true);
         setListListener(currentRoom.isCalibrated());
         saveRSSIInDatabase();
+        enableMenuItem(assignItem, true);
         enableMenuItem(exportItem, true);
         continuousScan(false);
     }
@@ -218,6 +235,7 @@ public class RoomActivity extends Activity {
         buttonCalibrate.setText(getString(R.string.roomactivity_button_calibrate));
         buttonCalibrate.setEnabled(true);
         displayBeaconsList.setOnChildClickListener(null);
+        enableMenuItem(assignItem, false);
         enableMenuItem(exportItem, false);
     }
 
@@ -227,6 +245,7 @@ public class RoomActivity extends Activity {
         buttonCalibrate.setText(getString(R.string.roomactivity_button_resume_calib));
         buttonCalibrate.setEnabled(true);
         setListListener(currentRoom.isCalibrated());
+        enableMenuItem(assignItem, true);
         enableMenuItem(exportItem, true);
     }
 
@@ -242,8 +261,8 @@ public class RoomActivity extends Activity {
                 @Override
                 public boolean onChildClick(ExpandableListView parent, View v, int groupPosition, int childPosition, long id) {
                     Intent intent = new Intent(getBaseContext(), BeaconActivity.class);
-                    intent.putExtra("roomID", roomID);
-                    intent.putExtra("beaconID", childPosition);
+                    intent.putExtra(room_key, roomIndex);
+                    intent.putExtra(beacon_key, childPosition);
                     startActivity(intent);
                     return true;
                 }
@@ -257,7 +276,7 @@ public class RoomActivity extends Activity {
         database.deleteBeacons(currentRoom.getBeaconsIDs());
         database.deleteRoom(currentRoom.getID());
         database.deleteCalibrations(currentRoom.getID());
-        globalVariable.getRoomsArray().getArray().remove(roomID);
+        globalVariable.getRoomsArray().getArray().remove(roomIndex);
         if (globalVariable.getRoomsArray().getArray().isEmpty()){
             database.clearDB();
             globalVariable.getRoomsArray().getArray().clear();
@@ -265,6 +284,16 @@ public class RoomActivity extends Activity {
         Toast.makeText(getApplicationContext(),
                 getString(R.string.toast_info_removed), Toast.LENGTH_SHORT).show();
         RoomActivity.this.finish();
+    }
+
+    void exportRoomCSVConfirm() {
+        DialogBuildHelper dialog = new DialogBuildHelper(RoomActivity.this, getString(R.string.dialog_title_export),
+                getString(R.string.dialog_export_room_csv), android.R.drawable.ic_dialog_info);
+        dialog.getBuilder().setPositiveButton(getString(R.string.dialog_button_ok), new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) { exportRoomCSV(); }});
+        dialog.setNegative(getString(R.string.dialog_button_cancel));
+        dialog.showDialog();
     }
 
     void removeRoomConfirm() {
@@ -276,16 +305,6 @@ public class RoomActivity extends Activity {
                 removeRoom();
             }
         });
-        dialog.setNegative(getString(R.string.dialog_button_cancel));
-        dialog.showDialog();
-    }
-
-    void ExportRoomCSVConfirm() {
-        DialogBuildHelper dialog = new DialogBuildHelper(RoomActivity.this, getString(R.string.dialog_title_export),
-                getString(R.string.dialog_export_room_csv), android.R.drawable.ic_dialog_info);
-        dialog.getBuilder().setPositiveButton(getString(R.string.dialog_button_ok), new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) { exportRoomCSV(); }});
         dialog.setNegative(getString(R.string.dialog_button_cancel));
         dialog.showDialog();
     }
@@ -306,7 +325,6 @@ public class RoomActivity extends Activity {
         }
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             mLEScanner = mBluetoothAdapter.getBluetoothLeScanner();
-            //To-do: add settings filter?
         }
     }
 

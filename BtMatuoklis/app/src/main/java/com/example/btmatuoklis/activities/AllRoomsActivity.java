@@ -14,6 +14,7 @@ import android.widget.ListView;
 import android.widget.Toast;
 
 import com.example.btmatuoklis.R;
+import com.example.btmatuoklis.classes.Room;
 import com.example.btmatuoklis.helpers.DialogBuildHelper;
 import com.example.btmatuoklis.classes.GlobalClass;
 import com.example.btmatuoklis.helpers.MySQLiteHelper;
@@ -28,8 +29,8 @@ public class AllRoomsActivity extends Activity {
     ArrayAdapter<String> listAdapter;
     RoomsArray roomsArray;
     ArrayList<String> savedRoomsList;
-    String roomName;
     DialogBuildHelper entryDialog;
+    String room_key;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -83,7 +84,7 @@ public class AllRoomsActivity extends Activity {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 Intent intent = new Intent(getBaseContext(), RoomActivity.class);
-                intent.putExtra("roomID", position);
+                intent.putExtra(room_key, position);
                 startActivity(intent);
             }
         });
@@ -93,6 +94,7 @@ public class AllRoomsActivity extends Activity {
         globalVariable = (GlobalClass) getApplicationContext();
         roomsArray = globalVariable.getRoomsArray();
         savedRoomsList = roomsArray.getNameList();
+        room_key = getString(R.string.activity_key_room);
         listAdapter = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, savedRoomsList);
         displayRoomsList.setAdapter(listAdapter);
     }
@@ -113,21 +115,39 @@ public class AllRoomsActivity extends Activity {
     }
 
     void roomNameEntry(DialogBuildHelper dialog){
-        roomName = dialog.getInputText().trim();
-        if (roomName.equals("")) {
+        String name = dialog.getInputText().trim();
+        if (name.equals("")) {
             Toast.makeText(getApplicationContext(),
                     getString(R.string.toast_warning_empty_entry), Toast.LENGTH_SHORT).show();
             dialog.cancelInput();
-        } else if (savedRoomsList.contains(roomName)) {
+        } else if (savedRoomsList.contains(name)) {
             Toast.makeText(getApplicationContext(),
                     getString(R.string.toast_warning_duplicate_entry), Toast.LENGTH_SHORT).show();
         }
         else {
-            Intent intent = new Intent(getBaseContext(), NewRoomActivity.class);
-            intent.putExtra("roomName", roomName);
-            AllRoomsActivity.this.finish();
-            startActivity(intent);
+            Room room = createRoom(name);
+            createRoomInDatabase(room);
+            notifyCreatedRoom(name);
+            this.onResume();
         }
+    }
+
+    Room createRoom(String name){
+        globalVariable.getRoomsArray().getArray().add(new Room(name));
+        int roomIndex = globalVariable.getRoomsArray().getArray().size() - 1;
+        return globalVariable.getRoomsArray().getArray().get(roomIndex);
+    }
+
+    void createRoomInDatabase(Room room){
+        MySQLiteHelper database = new MySQLiteHelper(this);
+        database.addRoom(room);
+        room.setID(database.getLastRoomID());
+    }
+
+    void notifyCreatedRoom(String name){
+        Toast.makeText(getApplicationContext(), getString(R.string.toast_info_created_room1)+
+                        " \""+name+"\" "+getString(R.string.toast_info_created_room2),
+                Toast.LENGTH_SHORT).show();
     }
 
     void removeAllRoomsConfirm() {

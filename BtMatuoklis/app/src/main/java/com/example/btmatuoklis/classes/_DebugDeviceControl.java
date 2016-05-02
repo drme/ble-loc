@@ -41,7 +41,6 @@ public class _DebugDeviceControl {
         this.enabledMsg = this.context.getString(R.string.gatt_toast_function_enabled);
         this.disabledMsg = this.context.getString(R.string.gatt_toast_function_disabled);
         this.prevRoomIndex = -2;
-        //this.createNotifications();
         this.createGattCallbak();
         this.createNotifications();
     }
@@ -82,8 +81,6 @@ public class _DebugDeviceControl {
             @Override
             public void onCharacteristicWrite(BluetoothGatt gatt, BluetoothGattCharacteristic characteristic, int status) {
                 Log.d("_GATT", "Characteristic Write Success");
-                //To-do: Display toast when function enabled/disabled
-                //runOnUiThread(showToast);
                 handler.post(showToast);
                 gatt.disconnect();
             }

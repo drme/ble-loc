@@ -156,7 +156,7 @@ public class ScanActivity extends Activity {
         environment = new Room();
         roomsArray = globalVariable.getRoomsArray();
         enviromentArray = new RoomsArray();
-        enviromentArray.getArray().add(new Room("Nepriskirti įrenginiai"));
+        enviromentArray.getArray().add(new Room(getString(R.string.category_unassigned_beacons)));
         detector = new RoomDetector();
         _generator = new _DebugBeaconGenerator(this);
         _control = new _DebugDeviceControl(ScanActivity.this, detector);

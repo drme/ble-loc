@@ -39,39 +39,34 @@ import com.example.btmatuoklis.classes.Settings;
 
 import java.util.ArrayList;
 
-public class NewRoomActivity extends Activity {
+public class BeaconAssignActivity extends Activity {
 
     GlobalClass globalVariable;
-    int roomID;
+    int roomIndex;
     Settings settings;
     ScanTools scantools;
-    Room environment, currentRoom;
+    Room currentRoom;
     ArrayList<String> allMACs;
     RoomsArray enviromentArray;
     MySQLiteHelper database;
-
     BluetoothAdapter mBluetoothAdapter;
     BluetoothAdapter.LeScanCallback mLeScanCallback;
-
     BluetoothLeScanner mLEScanner;
     ScanCallback mScanCallback;
-
     _DebugBeaconGenerator _generator;
-
     short sleepMin, sleepMax, sampleTime;
-
     Handler handler;
     Runnable background;
-    String roomName;
     ExpandableListView displayBeaconsList;
     AssignAdapter adapter;
     ArrayList<Integer> selectedBeacons;
     Button buttonAccept;
+    String room_key;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_new_room);
+        setContentView(R.layout.activity_beacon_assign);
         getActionBar().setSubtitle(getString(R.string.subtitle_new_room_beacons));
         displayBeaconsList = (ExpandableListView)findViewById(R.id.listNewRoom_BeaconsList);
         buttonAccept = (Button)findViewById(R.id.buttonNewRoom_End);
@@ -92,7 +87,7 @@ public class NewRoomActivity extends Activity {
         getActionBar().setCustomView(R.layout.action_view_progress);
         getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
         MenuInflater inflater = getMenuInflater();
-        inflater.inflate(R.menu.actionbar_newroom, menu);
+        inflater.inflate(R.menu.actionbar_beaconassign, menu);
         return true;
     }
 
@@ -116,30 +111,27 @@ public class NewRoomActivity extends Activity {
 
     public void onAcceptButtonClick(View view){
         continuousScan(false);
-        createRoom();
         saveSelectedBeacons();
-        NewRoomActivity.this.finish();
+        BeaconAssignActivity.this.finish();
         startActivity(new Intent(getBaseContext(), AllRoomsActivity.class));
     }
 
     void setDefaultValues(){
         globalVariable = (GlobalClass) getApplicationContext();
-        roomName = getIntent().getExtras().getString("roomName");
+        room_key = getString(R.string.activity_key_room);
+        roomIndex = getIntent().getExtras().getInt(room_key);
         settings = MainActivity.settings;
         scantools = new ScanTools();
         allMACs = globalVariable.getRoomsArray().getFullMACList();
         enviromentArray = new RoomsArray();
-        enviromentArray.getArray().add(new Room("Kitų patalpų švyturėliai"));
-        enviromentArray.getArray().add(new Room("Nepriskirti švyturėliai"));
-        environment = new Room();
+        enviromentArray.getArray().add(new Room(getString(R.string.category_assigned_beacons)));
+        enviromentArray.getArray().add(new Room(getString(R.string.category_unassigned_beacons)));
+        currentRoom = globalVariable.getRoomsArray().getArray().get(roomIndex);
         database = new MySQLiteHelper(this);
-
         _generator = new _DebugBeaconGenerator(this);
-
         sleepMin = (short)getResources().getInteger(R.integer.sleep_min);
         sleepMax = (short)getResources().getInteger(R.integer.sleep_max);
         sampleTime = (short)getResources().getInteger(R.integer.scan_min);
-
         selectedBeacons = new ArrayList<Integer>();
         adapter = new AssignAdapter(this, enviromentArray, selectedBeacons);
         displayBeaconsList.setAdapter(adapter);
@@ -171,12 +163,12 @@ public class NewRoomActivity extends Activity {
         continuousScan(false);
         Toast.makeText(getApplicationContext(),
                 getString(R.string.toast_info_cancelled), Toast.LENGTH_SHORT).show();
-        NewRoomActivity.this.finish();
+        BeaconAssignActivity.this.finish();
         startActivity(new Intent(getBaseContext(), AllRoomsActivity.class));
     }
 
     void cancelCreationConfirm(){
-        DialogBuildHelper dialog = new DialogBuildHelper(NewRoomActivity.this, getString(R.string.dialog_title_cancel),
+        DialogBuildHelper dialog = new DialogBuildHelper(BeaconAssignActivity.this, getString(R.string.dialog_title_cancel),
                 getString(R.string.dialog_cancel_room_creation), android.R.drawable.ic_dialog_alert);
         dialog.getBuilder().setPositiveButton(getString(R.string.dialog_button_ok), new DialogInterface.OnClickListener() {
             @Override
@@ -188,29 +180,17 @@ public class NewRoomActivity extends Activity {
         dialog.showDialog();
     }
 
-    void createRoom(){
-        globalVariable.getRoomsArray().getArray().add(new Room(roomName));
-        roomID = globalVariable.getRoomsArray().getArray().size() - 1;
-        currentRoom = globalVariable.getRoomsArray().getArray().get(roomID);
-    }
-
     void saveSelectedBeacons(){
-        createRoomInDatabase();
         for (int i = 0; i < selectedBeacons.size(); i++){
-            Beacon beacon = enviromentArray.getArray().get(1).getBeacons().get(selectedBeacons.get(i));
-            currentRoom.getBeacons().add(new Beacon(beacon.getName(), beacon.getMAC()));
-            saveBeaconsInDatabase(currentRoom.getBeacons().get(i));
+            Beacon temp = enviromentArray.getArray().get(1).getBeacons().get(selectedBeacons.get(i));
+            Beacon beacon = new Beacon(temp.getName(), temp.getMAC());
+            currentRoom.getBeacons().add(beacon);
+            saveBeaconInDatabase(beacon);
         }
-        notifyCreatedRoomAndBeacons();
+        notifyAssignedBeacons();
     }
 
-    void createRoomInDatabase(){
-        MySQLiteHelper database = new MySQLiteHelper(this);
-        database.addRoom(currentRoom);
-        currentRoom.setID(database.getLastRoomID());
-    }
-
-    void saveBeaconsInDatabase(Beacon beacon){
+    void saveBeaconInDatabase(Beacon beacon){
         MySQLiteHelper database = new MySQLiteHelper(this);
         database.addBeacon(beacon);
         int id = database.getLastBeaconID();
@@ -218,10 +198,9 @@ public class NewRoomActivity extends Activity {
         database.addCalibration(currentRoom.getID(), id, null);
     }
 
-    void notifyCreatedRoomAndBeacons(){
-        Toast.makeText(getApplicationContext(), getString(R.string.toast_info_created_room1)+
-                " \""+roomName+"\" "+getString(R.string.toast_info_created_room2)+"\n"+
-                getString(R.string.toast_info_created_room3)+" "+ currentRoom.getBeacons().size(),
+    void notifyAssignedBeacons(){
+        Toast.makeText(getApplicationContext(),
+                getString(R.string.toast_info_created_room3)+" "+currentRoom.getBeacons().size(),
                 Toast.LENGTH_SHORT).show();
     }
 
@@ -241,7 +220,6 @@ public class NewRoomActivity extends Activity {
         }
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             mLEScanner = mBluetoothAdapter.getBluetoothLeScanner();
-            //To-do: add settings filter?
         }
     }
 

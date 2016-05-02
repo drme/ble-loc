@@ -17,8 +17,9 @@
     <string name="bartext_new_room_add">Pridėti naują patalpą</string>
     <string name="bartext_new_room_cancel">Atšaukti kūrimą</string>
     <string name="bartext_all_rooms_remove">Pašalinti visas patalpas</string>
-    <string name="bartext_existing_room_remove">Pašalinti patalpą</string>
-    <string name="bartext_existing_beacon_remove">Pašalinti įrenginį</string>
+    <string name="bartext_room_remove">Pašalinti patalpą</string>
+    <string name="bartext_beacon_add">Priskirti švytrėlius</string>
+    <string name="bartext_beacon_remove">Pašalinti Švyturėlį</string>
     <string name="bartext_export_room_csv">Eksportuoti CSV</string>
     <string name="bartext_settings">Nustatymai</string>
     <string name="bartext_help">Pagalba</string>
@@ -30,8 +31,10 @@
     <string name="dialog_title_cancel">Atšaukti?</string>
     <string name="dialog_title_export">Eksportavimas</string>
     <string name="dialog_title_new_room">Nauja patalpa</string>
+    <string name="dialog_title_beacon_assign">Švyturėlių priskyrimas</string>
     <string name="dialog_new_room_name">Naujos patalpos pavadinimas:</string>
-    <string name="dialog_cancel_room_creation">Ar tikrai norite atšaukti naujos patalpos kūrimą?</string>
+    <string name="dialog_cancel_room_creation">Ar tikrai norite atšaukti švyturėlių priskyrimą patalpai?</string>
+    <string name="dialog_assign_beacons">Ar tikrai norite šiam kambariui priskirti daugiau švyturėlių?</string>
     <string name="dialog_remove_all_rooms">Ar tikrai norite pašalinti visas patalpas?</string>
     <string name="dialog_remove_room">Ar tikrai norite pašalinti patalpą?</string>
     <string name="dialog_remove_calibration">Ar tikrai norite pašalinti įrenginio kalibracines reikšmes?</string>
@@ -64,6 +67,10 @@
     <string name="generic_hint">Hint</string>
     <string name="generic_value">value</string>
 
+    <!--Sarasu kategoriju tekstai-->
+    <string name="category_assigned_beacons">Priskirti švyturėliai</string>
+    <string name="category_unassigned_beacons">Nepriskirti švyturėliai</string>
+
     <!--MainActivity elementu tekstai-->
     <string name="mainactivity_button_scan">Scan</string>
     <string name="mainactivity_button_allrooms">Patalpos</string>
@@ -85,7 +92,7 @@
     <!--ScanActivity elementu tekstai-->
     <string name="scanactivity_text_name">Esate patalpoje:</string>
 
-    <!--NewRoomActivity elementu tekstai-->
+    <!--BeaconAssignActivity elementu tekstai-->
     <string name="newroomactivity_button_finish">Baigti</string>
 
     <!--RoomActivity elementu tekstai-->
