@@ -5,7 +5,6 @@ import android.os.Bundle;
 import android.preference.EditTextPreference;
 import android.preference.PreferenceActivity;
 import android.preference.SwitchPreference;
-import android.util.Log;
 
 import com.example.btmatuoklis.R;
 import com.example.btmatuoklis.classes.Settings;
@@ -15,7 +14,7 @@ public class SettingsActivity extends PreferenceActivity {
     Settings settings;
     SharedPreferences.OnSharedPreferenceChangeListener preferenceListener;
     EditTextPreference editShadow;
-    SwitchPreference switchNullDevices;
+    SwitchPreference switchFastSleep, switchNullDevices;
     SwitchPreference switchGenerator;
     EditTextPreference debugBeacons, debugRSSIMin, debugRSSIMax;
 
@@ -25,7 +24,8 @@ public class SettingsActivity extends PreferenceActivity {
         getActionBar().setSubtitle(getString(R.string.subtitle_settings));
         addPreferencesFromResource(R.xml.settings_preferences);
         editShadow = (EditTextPreference)findPreference(this.getString(R.string.key_shadow));
-        switchNullDevices = (SwitchPreference)findPreference(this.getString(R.string.key_shownull));
+        switchFastSleep = (SwitchPreference)findPreference(this.getString(R.string.key_fast_sleep));
+        switchNullDevices = (SwitchPreference)findPreference(this.getString(R.string.key_show_null));
         switchGenerator = (SwitchPreference)findPreference(this.getString(R.string.debug_generator));
         debugBeacons = (EditTextPreference)findPreference(this.getString(R.string.debug_beacons));
         debugRSSIMin = (EditTextPreference)findPreference(this.getString(R.string.debug_rssi_min));

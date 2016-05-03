@@ -48,7 +48,7 @@ public class ScanActivity extends Activity {
     _DebugBeaconGenerator _generator;
     _DebugDeviceControl _control;
 
-    short sleepMin, sleepMax, sampleTime;
+    short sleepMin, sleepMax, sleepFast, sampleTime;
 
     Handler handler;
     Runnable background;
@@ -73,7 +73,6 @@ public class ScanActivity extends Activity {
         checkBT();
         createBTLECallBack();
         createThreads();
-
         continuousScan(true);
     }
 
@@ -160,12 +159,12 @@ public class ScanActivity extends Activity {
         detector = new RoomDetector();
         _generator = new _DebugBeaconGenerator(this);
         _control = new _DebugDeviceControl(ScanActivity.this, detector);
-        sleepMin = (short)getResources().getInteger(R.integer.sleep_min);
-        sleepMax = (short)getResources().getInteger(R.integer.sleep_max);
-        sampleTime = (short)getResources().getInteger(R.integer.scan_min);
+        sleepMin = (short)getResources().getInteger(R.integer.scan_sleep_min);
+        sleepMax = (short)getResources().getInteger(R.integer.scan_sleep_max);
+        sleepFast = (short)getResources().getInteger(R.integer.sleep_fast);
+        sampleTime = (short)getResources().getInteger(R.integer.scan_sample_min);
         adapter = new ScanAdapter(this, roomsArray, enviromentArray);
         displayBeaconsList.setAdapter(adapter);
-
         _control.findRoomDeviceIndex(roomsArray);
     }
 
@@ -202,7 +201,7 @@ public class ScanActivity extends Activity {
             detectedRoom.setText(roomName);
             _control.activateDevice(handler, mBluetoothAdapter);
             //To-do: "adaptyvus" delayed laiko paskaiciavimas pagal aptiktu beaconu kieki
-            handler.postDelayed(background, sleepMin);
+            handler.postDelayed(background, getSleepTime());
         }
     }
 
@@ -228,6 +227,13 @@ public class ScanActivity extends Activity {
             }
             threadSleep(sampleTime);
         }
+    }
+
+    private short getSleepTime(){
+        short time;
+        if (settings.isFastSleep()){ time = sleepFast; }
+        else { time = sleepMin; }
+        return time;
     }
 
     private void threadSleep(short time) {

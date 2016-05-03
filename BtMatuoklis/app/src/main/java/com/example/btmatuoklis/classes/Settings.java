@@ -3,7 +3,6 @@ package com.example.btmatuoklis.classes;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.preference.PreferenceManager;
-import android.util.Log;
 
 import com.example.btmatuoklis.R;
 
@@ -12,7 +11,7 @@ public class Settings {
     private SharedPreferences preferences;
     public static byte REQUEST_ENABLE_BT = 1;
 
-    private String key_shadow, key_shownull;
+    private String key_shadow, key_fast_sleep, key_show_null;
     private String debug_generator, debug_beacons, debug_rssi_min, debug_rssi_max;
 
     //Maksimalus teorinis BTLE aptikimo atstumas metrais
@@ -20,6 +19,9 @@ public class Settings {
 
     //Kiek RSSI saugoti aktyvaus Scan rezimu
     private byte shadow, defaultShadow;
+
+    //Nustatymas, kuris reguliuoja ar sarasuose bus rodomi BTLE irenginiai, kurie neturi pavadinimu
+    private boolean fastSleep, defaultFastSleep;
 
     //Nustatymas, kuris reguliuoja ar sarasuose bus rodomi BTLE irenginiai, kurie neturi pavadinimu
     private boolean showNull, defaultShowNull;
@@ -40,7 +42,8 @@ public class Settings {
 
     private void initKeys(Context context){
         key_shadow = context.getString(R.string.key_shadow);
-        key_shownull = context.getString(R.string.key_shownull);
+        key_fast_sleep = context.getString(R.string.key_fast_sleep);
+        key_show_null = context.getString(R.string.key_show_null);
         debug_generator = context.getString(R.string.debug_generator);
         debug_beacons = context.getString(R.string.debug_beacons);
         debug_rssi_min = context.getString(R.string.debug_rssi_min);
@@ -49,6 +52,7 @@ public class Settings {
 
     public void setDefaultValues(){
         defaultShadow = (byte)context.getResources().getInteger(R.integer.default_shadow);
+        defaultFastSleep = context.getResources().getBoolean(R.bool.default_fast_sleep);
         defaultShowNull = context.getResources().getBoolean(R.bool.default_show_null);
         defaultGenerator = context.getResources().getBoolean(R.bool.debug_default_generator);
         defaultGeneratedBeacons = (byte)context.getResources().getInteger(R.integer.debug_default_beacons);
@@ -59,7 +63,8 @@ public class Settings {
 
     public void refreshValues(){
         shadow = Byte.parseByte(preferences.getString(key_shadow, Byte.toString(defaultShadow)));
-        showNull = preferences.getBoolean(key_shownull, defaultShowNull);
+        fastSleep = preferences.getBoolean(key_fast_sleep, defaultFastSleep);
+        showNull = preferences.getBoolean(key_show_null, defaultShowNull);
         generator = preferences.getBoolean(debug_generator, defaultGenerator);
         generatedBeacons = Byte.parseByte(preferences.getString(debug_beacons, Byte.toString(defaultGeneratedBeacons)));
         generatedRSSIMin = Byte.parseByte(preferences.getString(debug_rssi_min, Byte.toString(defaultGeneratedRSSIMin)));
@@ -69,6 +74,8 @@ public class Settings {
     public byte getMaxRange(){ return maxRange; }
 
     public byte getShadow(){ return this.shadow; }
+
+    public boolean isFastSleep() { return this.fastSleep; }
 
     public boolean showNullDevices() { return this.showNull; }
 

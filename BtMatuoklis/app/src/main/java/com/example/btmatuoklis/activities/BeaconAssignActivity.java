@@ -54,7 +54,7 @@ public class BeaconAssignActivity extends Activity {
     BluetoothLeScanner mLEScanner;
     ScanCallback mScanCallback;
     _DebugBeaconGenerator _generator;
-    short sleepMin, sleepMax, sampleTime;
+    short sleepTime, sampleTime;
     Handler handler;
     Runnable background;
     ExpandableListView displayBeaconsList;
@@ -102,7 +102,7 @@ public class BeaconAssignActivity extends Activity {
 
     public void onHelpActionClick(MenuItem item){
         //Work in progress
-        Toast.makeText(getApplicationContext(), "Not implemented.", Toast.LENGTH_SHORT).show();
+        Toast.makeText(getApplicationContext(), "Not  implemented.", Toast.LENGTH_SHORT).show();
     }
 
     public void onSettingsActionClick(MenuItem item){
@@ -129,9 +129,8 @@ public class BeaconAssignActivity extends Activity {
         currentRoom = globalVariable.getRoomsArray().getArray().get(roomIndex);
         database = new MySQLiteHelper(this);
         _generator = new _DebugBeaconGenerator(this);
-        sleepMin = (short)getResources().getInteger(R.integer.sleep_min);
-        sleepMax = (short)getResources().getInteger(R.integer.sleep_max);
-        sampleTime = (short)getResources().getInteger(R.integer.scan_min);
+        sleepTime = (short)getResources().getInteger(R.integer.sleep_fast);
+        sampleTime = (short)getResources().getInteger(R.integer.scan_sample_min);
         selectedBeacons = new ArrayList<Integer>();
         adapter = new AssignAdapter(this, enviromentArray, selectedBeacons);
         displayBeaconsList.setAdapter(adapter);
@@ -275,7 +274,7 @@ public class BeaconAssignActivity extends Activity {
         }
         @Override
         protected void onPostExecute(Boolean aBoolean) {
-            handler.postDelayed(background, sleepMin);
+            handler.postDelayed(background, sleepTime);
             adapter.notifyDataSetChanged();
         }
     }

@@ -3,7 +3,8 @@
 
     <!--Settings keys-->
     <string name="key_shadow">savedShadow</string>
-    <string name="key_shownull">showNull</string>
+    <string name="key_fast_sleep">fastSleep</string>
+    <string name="key_show_null">showNull</string>
     <string name="debug_generator">debugGenerator</string>
     <string name="debug_beacons">debugBeacons</string>
     <string name="debug_rssi_min">debugRSSIMin</string>
@@ -11,6 +12,7 @@
 
     <!--Default setting values-->
     <integer name="default_shadow">1</integer>
+    <bool name="default_fast_sleep">false</bool>
     <bool name="default_show_null">true</bool>
     <bool name="debug_default_generator">false</bool>
     <integer name="debug_default_beacons">2</integer>
@@ -22,10 +24,11 @@
     <string name="activity_key_beacon">beaconIndex</string>
 
     <!--Other values-->
-    <integer name="sleep_min">5000</integer>
-    <integer name="sleep_max">30000</integer>
-    <integer name="scan_min">1500</integer>
-    <integer name="scan_max">5000</integer>
+    <integer name="sleep_fast">500</integer>
+    <integer name="scan_sleep_min">5000</integer>
+    <integer name="scan_sleep_max">30000</integer>
+    <integer name="scan_sample_min">1500</integer>
+    <integer name="scan_sample_max">5000</integer>
     <integer name="max_range">100</integer>
 
 </resources>

@@ -14,8 +14,14 @@
             android:inputType="number"
             android:maxLength="1" />
         <SwitchPreference
+            android:id="@+id/preferences_Fast_Sleep"
+            android:key="@string/key_fast_sleep"
+            android:defaultValue="@bool/default_fast_sleep"
+            android:title="@string/settingsactivity_text_fast_sleep"
+            android:summary="@string/settingsactivity_hint_fast_sleep" />
+        <SwitchPreference
             android:id="@+id/preferences_Show_Null"
-            android:key="@string/key_shownull"
+            android:key="@string/key_show_null"
             android:defaultValue="@bool/default_show_null"
             android:title="@string/settingsactivity_text_show_null"
             android:summary="@string/settingsactivity_hint_show_null" />

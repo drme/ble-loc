@@ -55,7 +55,7 @@ public class RoomActivity extends Activity {
     BluetoothLeScanner mLEScanner;
     ScanCallback mScanCallback;
     _DebugBeaconGenerator _generator;
-    short sleepMin, sleepMax, sampleTime;
+    short sleepTime, sampleTime;
     Handler handler;
     Runnable background;
     MenuItem assignItem, exportItem;
@@ -155,9 +155,8 @@ public class RoomActivity extends Activity {
         database = new MySQLiteHelper(this);
         exportCSV = new CSVExportHelper(this);
         _generator = new _DebugBeaconGenerator(this);
-        sleepMin = (short)getResources().getInteger(R.integer.sleep_min);
-        sleepMax = (short)getResources().getInteger(R.integer.sleep_max);
-        sampleTime = (short)getResources().getInteger(R.integer.scan_min);
+        sleepTime = (short)getResources().getInteger(R.integer.sleep_fast);
+        sampleTime = (short)getResources().getInteger(R.integer.scan_sample_min);
         listAdapter = new LinkAdapter(this, roomArray);
         displayBeaconsList.setAdapter(listAdapter);
         displayRoomName.setText(getString(R.string.roomactivity_text_name) + " " + currentRoom.getName());
@@ -379,7 +378,7 @@ public class RoomActivity extends Activity {
         }
         @Override
         protected void onPostExecute(Boolean aBoolean) {
-            handler.postDelayed(background, sleepMin);
+            handler.postDelayed(background, sleepTime);
             listAdapter.notifyDataSetChanged();
             if (currentRoom.isCalibrated()) { buttonCalibrate.setEnabled(true); }
         }
