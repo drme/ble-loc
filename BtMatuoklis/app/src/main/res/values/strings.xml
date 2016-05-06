@@ -85,8 +85,8 @@
     <!--ScanActivity elementu tekstai-->
     <string name="scanactivity_text_name">Esate patalpoje:</string>
 
-    <!--BeaconAssignActivity elementu tekstai-->
-    <string name="newroomactivity_button_finish">Baigti</string>
+    <!--AssignActivity elementu tekstai-->
+    <string name="assignactivity_button_finish">Baigti</string>
 
     <!--RoomActivity elementu tekstai-->
     <string name="roomactivity_text_name">Pavadinimas:</string>

@@ -29,7 +29,7 @@
         <activity android:name=".activities.AllRoomsActivity"
             android:launchMode="singleTask"/>
         <activity android:name=".activities.RoomActivity" />
-        <activity android:name=".activities.BeaconAssignActivity" />
+        <activity android:name=".activities.AssignActivity" />
         <activity android:name=".activities.BeaconActivity" />
     </application>
 

@@ -10,6 +10,7 @@ import android.bluetooth.le.ScanCallback;
 import android.bluetooth.le.ScanResult;
 import android.content.Context;
 import android.content.Intent;
+import android.content.pm.ActivityInfo;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Handler;
@@ -82,6 +83,7 @@ public class ScanActivity extends Activity {
         getActionBar().setDisplayShowCustomEnabled(true);
         getActionBar().setCustomView(R.layout.action_view_progress);
         getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
+        setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LOCKED);
         MenuInflater inflater = getMenuInflater();
         inflater.inflate(R.menu.actionbar_scan, menu);
         return true;

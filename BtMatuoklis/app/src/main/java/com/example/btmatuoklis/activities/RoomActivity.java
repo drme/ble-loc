@@ -11,6 +11,7 @@ import android.bluetooth.le.ScanResult;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.pm.ActivityInfo;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Handler;
@@ -178,7 +179,7 @@ public class RoomActivity extends Activity {
     }
 
     void startBeaconAssign(){
-        Intent intent = new Intent(getBaseContext(), BeaconAssignActivity.class);
+        Intent intent = new Intent(getBaseContext(), AssignActivity.class);
         intent.putExtra(room_key, roomIndex);
         intent.putExtra(simple_beacon_key, true);
         this.finish();
@@ -196,7 +197,7 @@ public class RoomActivity extends Activity {
     }
 
     void startDeviceAssign() {
-        Intent intent = new Intent(getBaseContext(), BeaconAssignActivity.class);
+        Intent intent = new Intent(getBaseContext(), AssignActivity.class);
         intent.putExtra(room_key, roomIndex);
         intent.putExtra(simple_beacon_key, false);
         this.finish();
@@ -207,6 +208,7 @@ public class RoomActivity extends Activity {
     void startCalibration(){
         getActionBar().getCustomView().setVisibility(View.VISIBLE);
         getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
+        setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LOCKED);
         setListListener(false);
         buttonCalibrate.setText(getString(R.string.roomactivity_button_finish_calib));
         enableMenuItem(assignItem, false);
@@ -219,6 +221,7 @@ public class RoomActivity extends Activity {
     void finishCalibration(){
         getActionBar().getCustomView().setVisibility(View.INVISIBLE);
         getWindow().clearFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
+        setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_UNSPECIFIED);
         buttonCalibrate.setText(getString(R.string.roomactivity_button_resume_calib));
         setListListener(true);
         saveRSSIInDatabase();

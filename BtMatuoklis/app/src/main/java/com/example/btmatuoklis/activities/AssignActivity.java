@@ -11,6 +11,7 @@ import android.bluetooth.le.ScanResult;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.pm.ActivityInfo;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Handler;
@@ -39,7 +40,7 @@ import com.example.btmatuoklis.classes.Settings;
 
 import java.util.ArrayList;
 
-public class BeaconAssignActivity extends Activity {
+public class AssignActivity extends Activity {
 
     GlobalClass globalVariable;
     int roomIndex;
@@ -67,7 +68,7 @@ public class BeaconAssignActivity extends Activity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_beacon_assign);
+        setContentView(R.layout.activity_assign);
         getActionBar().setSubtitle(getString(R.string.subtitle_new_room_beacons));
         displayBeaconsList = (ExpandableListView)findViewById(R.id.listNewRoom_BeaconsList);
         buttonAccept = (Button)findViewById(R.id.buttonNewRoom_End);
@@ -87,8 +88,9 @@ public class BeaconAssignActivity extends Activity {
         getActionBar().setDisplayShowCustomEnabled(true);
         getActionBar().setCustomView(R.layout.action_view_progress);
         getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
+        setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LOCKED);
         MenuInflater inflater = getMenuInflater();
-        inflater.inflate(R.menu.actionbar_beaconassign, menu);
+        inflater.inflate(R.menu.actionbar_assign, menu);
         return true;
     }
 
@@ -108,7 +110,7 @@ public class BeaconAssignActivity extends Activity {
     public void onAcceptButtonClick(View view){
         continuousScan(false);
         saveSelectedBeacons(simple_beacon);
-        BeaconAssignActivity.this.finish();
+        AssignActivity.this.finish();
         startActivity(new Intent(getBaseContext(), AllRoomsActivity.class));
     }
 
@@ -162,12 +164,12 @@ public class BeaconAssignActivity extends Activity {
         continuousScan(false);
         Toast.makeText(getApplicationContext(),
                 getString(R.string.toast_info_cancelled), Toast.LENGTH_SHORT).show();
-        BeaconAssignActivity.this.finish();
+        AssignActivity.this.finish();
         startActivity(new Intent(getBaseContext(), AllRoomsActivity.class));
     }
 
     void cancelCreationConfirm(){
-        DialogBuildHelper dialog = new DialogBuildHelper(BeaconAssignActivity.this, getString(R.string.dialog_title_cancel),
+        DialogBuildHelper dialog = new DialogBuildHelper(AssignActivity.this, getString(R.string.dialog_title_cancel),
                 getString(R.string.dialog_cancel_room_creation), android.R.drawable.ic_dialog_alert);
         dialog.getBuilder().setPositiveButton(getString(R.string.dialog_button_ok), new DialogInterface.OnClickListener() {
             @Override

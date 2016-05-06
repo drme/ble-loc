@@ -64,6 +64,7 @@ public class BeaconActivity extends Activity {
         chartName = (TextView)findViewById(R.id.textBeacon_title_chart1);
         chart = (GraphView)findViewById(R.id.viewBeacon_chart1);
 
+
         setDefaultValues();
         setRSSIdata();
     }
