@@ -63,7 +63,7 @@ public class RoomActivity extends Activity {
     ExpandableListView displayBeaconsList;
     TextView displayRoomName;
     Button buttonCalibrate;
-    String room_key, beacon_key;
+    String room_key, beacon_key, simple_beacon_key;
     
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -80,7 +80,7 @@ public class RoomActivity extends Activity {
         checkBT();
         createBTLECallBack();
         createThread();
-        setListListener(currentRoom.isCalibrated());
+        setListListener(true);
     }
 
     @Override
@@ -123,6 +123,8 @@ public class RoomActivity extends Activity {
 
     public void onExportActionClick(MenuItem item) { exportRoomCSVConfirm(); }
 
+    public void onAddDeviceActionClick(MenuItem item) { startDeviceAssignConfirm(); }
+
     public void onRemoveActionClick(MenuItem item){ removeRoomConfirm(); }
 
     public void onSettingsActionClick(MenuItem item){
@@ -130,21 +132,15 @@ public class RoomActivity extends Activity {
     }
 
     public void onCalibrateButtonClick(View view){
-        if (!globalVariable.isScanning() && !currentRoom.isCalibrated()) {
-            startCalibration();
-        } else if (globalVariable.isScanning() && currentRoom.isCalibrated()) {
-            finishCalibration();
-        }
-        else {
-            startCalibration();
-            buttonCalibrate.setEnabled(true);
-        }
+        if (!globalVariable.isScanning()) { startCalibration(); }
+        else { finishCalibration(); }
     }
 
     void setDefaultValues(){
         globalVariable = (GlobalClass) getApplicationContext();
         room_key = getString(R.string.activity_key_room);
         beacon_key = getString(R.string.activity_key_beacon);
+        simple_beacon_key = getString(R.string.key_simple_beacon);
         roomIndex = getIntent().getExtras().getInt(room_key);
         settings = MainActivity.settings;
         scantools = new ScanTools();
@@ -152,6 +148,11 @@ public class RoomActivity extends Activity {
         currentRoom = globalVariable.getRoomsArray().getArray().get(roomIndex);
         roomMACs = currentRoom.getMACList();
         roomArray.getArray().add(new Room(getString(R.string.category_assigned_beacons), currentRoom.getBeacons()));
+
+        if (!currentRoom._getDevices().isEmpty()){
+            roomArray.getArray().add(new Room(getString(R.string.category_unassigned_devices), currentRoom._getDevices()));
+        }
+
         database = new MySQLiteHelper(this);
         exportCSV = new CSVExportHelper(this);
         _generator = new _DebugBeaconGenerator(this);
@@ -179,6 +180,25 @@ public class RoomActivity extends Activity {
     void startBeaconAssign(){
         Intent intent = new Intent(getBaseContext(), BeaconAssignActivity.class);
         intent.putExtra(room_key, roomIndex);
+        intent.putExtra(simple_beacon_key, true);
+        this.finish();
+        startActivity(intent);
+    }
+
+    void startDeviceAssignConfirm() {
+        DialogBuildHelper dialog = new DialogBuildHelper(RoomActivity.this, getString(R.string.dialog_title_device_assign),
+                getString(R.string.dialog_assign_devices), android.R.drawable.ic_dialog_info);
+        dialog.getBuilder().setPositiveButton(getString(R.string.dialog_button_ok), new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) { startDeviceAssign(); }});
+        dialog.setNegative(getString(R.string.dialog_button_cancel));
+        dialog.showDialog();
+    }
+
+    void startDeviceAssign() {
+        Intent intent = new Intent(getBaseContext(), BeaconAssignActivity.class);
+        intent.putExtra(room_key, roomIndex);
+        intent.putExtra(simple_beacon_key, false);
         this.finish();
         startActivity(intent);
     }
@@ -187,9 +207,8 @@ public class RoomActivity extends Activity {
     void startCalibration(){
         getActionBar().getCustomView().setVisibility(View.VISIBLE);
         getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
-        displayBeaconsList.setOnChildClickListener(null);
+        setListListener(false);
         buttonCalibrate.setText(getString(R.string.roomactivity_button_finish_calib));
-        buttonCalibrate.setEnabled(false);
         enableMenuItem(assignItem, false);
         enableMenuItem(exportItem, false);
         scantools.calibratePrepare(currentRoom);
@@ -201,8 +220,7 @@ public class RoomActivity extends Activity {
         getActionBar().getCustomView().setVisibility(View.INVISIBLE);
         getWindow().clearFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
         buttonCalibrate.setText(getString(R.string.roomactivity_button_resume_calib));
-        buttonCalibrate.setEnabled(true);
-        setListListener(currentRoom.isCalibrated());
+        setListListener(true);
         saveRSSIInDatabase();
         enableMenuItem(assignItem, true);
         enableMenuItem(exportItem, true);
@@ -232,9 +250,8 @@ public class RoomActivity extends Activity {
     void restoreCalibrateButton(){
         continuousScan(false);
         buttonCalibrate.setText(getString(R.string.roomactivity_button_calibrate));
-        buttonCalibrate.setEnabled(true);
-        displayBeaconsList.setOnChildClickListener(null);
-        enableMenuItem(assignItem, false);
+        setListListener(true);
+        enableMenuItem(assignItem, true);
         enableMenuItem(exportItem, false);
     }
 
@@ -242,8 +259,7 @@ public class RoomActivity extends Activity {
     void resumeCalibrateButton(){
         continuousScan(false);
         buttonCalibrate.setText(getString(R.string.roomactivity_button_resume_calib));
-        buttonCalibrate.setEnabled(true);
-        setListListener(currentRoom.isCalibrated());
+        setListListener(true);
         enableMenuItem(assignItem, true);
         enableMenuItem(exportItem, true);
     }
@@ -261,6 +277,7 @@ public class RoomActivity extends Activity {
                 public boolean onChildClick(ExpandableListView parent, View v, int groupPosition, int childPosition, long id) {
                     Intent intent = new Intent(getBaseContext(), BeaconActivity.class);
                     intent.putExtra(room_key, roomIndex);
+                    intent.putExtra(simple_beacon_key, groupPosition < 1);
                     intent.putExtra(beacon_key, childPosition);
                     startActivity(intent);
                     return true;
@@ -380,7 +397,6 @@ public class RoomActivity extends Activity {
         protected void onPostExecute(Boolean aBoolean) {
             handler.postDelayed(background, sleepTime);
             listAdapter.notifyDataSetChanged();
-            if (currentRoom.isCalibrated()) { buttonCalibrate.setEnabled(true); }
         }
     }
 

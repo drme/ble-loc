@@ -5,26 +5,31 @@ import java.util.ArrayList;
 public class Room {
     private String name;
     private ArrayList<Beacon> beacons;
+    private ArrayList<Beacon> _devices;
     private int id;
 
     public Room(){
         this.beacons = new ArrayList<Beacon>();
+        this._devices = new ArrayList<Beacon>();
     }
 
     public Room(String name){
         this.name = name;
         this.beacons = new ArrayList<Beacon>();
+        this._devices = new ArrayList<Beacon>();
     }
 
     public Room(String name, ArrayList<Beacon> beacons){
         this.name = name;
         this.beacons = beacons;
+        this._devices = new ArrayList<Beacon>();
     }
 
     public Room(int id, String name){
         this.id = id;
         this.name = name;
         this.beacons = new ArrayList<Beacon>();
+        this._devices = new ArrayList<Beacon>();
     }
 
     public void setName(String name){
@@ -74,6 +79,16 @@ public class Room {
 
     public ArrayList<Beacon> getBeacons(){
         return this.beacons;
+    }
+
+    public ArrayList<Beacon> _getDevices() { return this._devices; }
+
+    public ArrayList<String> _getDevicesMACList(){
+        ArrayList<String> res = new ArrayList<String>();
+        for (int i = 0; i < this._devices.size(); i++){
+            res.add(this._devices.get(i).getMAC());
+        }
+        return res;
     }
 
     public int findBeaconIndex(String mac){

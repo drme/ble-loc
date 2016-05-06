@@ -26,7 +26,8 @@
         </activity>
         <activity android:name=".activities.ScanActivity" />
         <activity android:name=".activities.SettingsActivity" />
-        <activity android:name=".activities.AllRoomsActivity" />
+        <activity android:name=".activities.AllRoomsActivity"
+            android:launchMode="singleTask"/>
         <activity android:name=".activities.RoomActivity" />
         <activity android:name=".activities.BeaconAssignActivity" />
         <activity android:name=".activities.BeaconActivity" />

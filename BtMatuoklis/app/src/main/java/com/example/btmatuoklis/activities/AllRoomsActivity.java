@@ -70,11 +70,6 @@ public class AllRoomsActivity extends Activity {
         removeAllRoomsConfirm();
     }
 
-    public void onHelpActionClick(MenuItem item){
-        //Work in progress
-        Toast.makeText(getApplicationContext(), "Not implemented.", Toast.LENGTH_SHORT).show();
-    }
-
     public void onSettingsActionClick(MenuItem item){
         startActivity(new Intent(getBaseContext(), SettingsActivity.class));
     }

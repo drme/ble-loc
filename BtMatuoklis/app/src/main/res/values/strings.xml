@@ -1,20 +1,19 @@
 <resources>
 
     <!--ActionBar antrastes-->
-    <string name="app_name">BtMatuoklis</string>
+    <string name="app_name">BTMatuoklis</string>
     <string name="subtitle_main">Pagrindinis</string>
-    <string name="subtitle_scan">Rasti Įrenginiai:</string>
+    <string name="subtitle_scan">Rasti BTLE Įrenginiai:</string>
     <string name="subtitle_settings">Nustatymai</string>
-    <!--not used atm--> <string name="subtitle_help">Pagalba</string>
     <string name="subtitle_all_rooms">Visos patalpos</string>
     <string name="subtitle_existing_room">Patalpa</string>
-    <!--not used atm--> <string name="subtitle_new_room">Nauja patalpa</string>
-    <string name="subtitle_new_room_beacons">Pasirinkite įrenginius:</string>
-    <string name="subtitle_existing_beacon">Įrenginys</string>
+    <string name="subtitle_new_room">Nauja patalpa</string>
+    <string name="subtitle_new_room_beacons">Pasirinkite BTLE įrenginius:</string>
+    <string name="subtitle_existing_beacon">BTLE Įrenginys</string>
 
     <!--ActionBar elementu tekstai-->
     <string name="bartext_loading">Progresas</string>
-    <string name="bartext_new_room_add">Pridėti naują patalpą</string>
+    <string name="bartext_new_room_add">Registruoti naują patalpą</string>
     <string name="bartext_new_room_cancel">Atšaukti kūrimą</string>
     <string name="bartext_all_rooms_remove">Pašalinti visas patalpas</string>
     <string name="bartext_room_remove">Pašalinti patalpą</string>
@@ -22,7 +21,6 @@
     <string name="bartext_beacon_remove">Pašalinti Švyturėlį</string>
     <string name="bartext_export_room_csv">Eksportuoti CSV</string>
     <string name="bartext_settings">Nustatymai</string>
-    <string name="bartext_help">Pagalba</string>
 
     <!--AlertDialog antrastes-->
     <string name="dialog_button_ok">OK</string>
@@ -31,21 +29,20 @@
     <string name="dialog_title_cancel">Atšaukti?</string>
     <string name="dialog_title_export">Eksportavimas</string>
     <string name="dialog_title_new_room">Nauja patalpa</string>
-    <string name="dialog_title_beacon_assign">Švyturėlių priskyrimas</string>
+    <string name="dialog_title_beacon_assign">BTLE įrenginių priskyrimas</string>
     <string name="dialog_new_room_name">Naujos patalpos pavadinimas:</string>
-    <string name="dialog_cancel_room_creation">Ar tikrai norite atšaukti švyturėlių priskyrimą patalpai?</string>
+    <string name="dialog_cancel_room_creation">Ar tikrai norite atšaukti BTLE įrenginių priskyrimą patalpai?</string>
     <string name="dialog_assign_beacons">Ar tikrai norite šiam kambariui priskirti daugiau švyturėlių?</string>
     <string name="dialog_remove_all_rooms">Ar tikrai norite pašalinti visas patalpas?</string>
     <string name="dialog_remove_room">Ar tikrai norite pašalinti patalpą?</string>
     <string name="dialog_remove_calibration">Ar tikrai norite pašalinti įrenginio kalibracines reikšmes?</string>
-    <string name="dialog_remove_beacon">Ar tikrai norite pašalinti įrenginį?</string>
+    <string name="dialog_remove_beacon">Ar tikrai norite pašalinti BTLE įrenginį?</string>
     <string name="dialog_export_room_csv">Ar tikrai norite eksportuoti šio kambario kalibracines reikšmes?</string>
 
     <!--Toast informaciniai tekstai-->
     <string name="toast_warning_empty_entry">Neįvesta reikšmė!</string>
     <string name="toast_warning_duplicate_entry">Kambarys tokiu pavadinimu jau yra!</string>
     <string name="toast_warning_wrong_range">Netinkamas intervalas!</string>
-    <string name="toast_warning_no_beacons">Nepasirinktas nei vienas įrenginys!</string>
     <string name="toast_info_saved">Išsaugota</string>
     <string name="toast_info_removed">Pašalinta</string>
     <string name="toast_info_cancelled">Atšaukta</string>
@@ -53,7 +50,7 @@
     <string name="toast_info_created_file2">išsaugotas aplanke:</string>
     <string name="toast_info_created_room1">Patalpa</string>
     <string name="toast_info_created_room2">sukurta</string>
-    <string name="toast_info_created_room3">Priskirta įrenginių:</string>
+    <string name="toast_info_created_room3">Priskirta BTLE įrenginių:</string>
 
     <!--Beacon informacijos tekstai-->
     <string name="beacon_name">Pavadinimas:</string>
@@ -72,24 +69,18 @@
     <string name="category_unassigned_beacons">Nepriskirti švyturėliai</string>
 
     <!--MainActivity elementu tekstai-->
-    <string name="mainactivity_button_scan">Scan</string>
-    <string name="mainactivity_button_allrooms">Patalpos</string>
+    <string name="mainactivity_button_scan">Lokalizacija</string>
+    <string name="mainactivity_button_allrooms">Registruotos Patalpos</string>
 
     <!--SettingsActivity elementu tekstai-->
     <string name="settingsactivity_category_main_settings">Pagrindiniai Nustatymai</string>
-    <string name="settingsactivity_category_debug_settings">Debug Nustatymai</string>
     <string name="settingsactivity_text_shadow">Reikšmių Vektoriaus Dydis</string>
     <string name="settingsactivity_text_fast_sleep">Greitas aptikimas</string>
     <string name="settingsactivity_text_show_null">\u0022null\u0022 rodymas</string>
     <string name="settingsactivity_hint_shadow">Ši reikšmė nurodo kiek RSSI reikšmių saugoti aktyvaus Scan rėžimo metu</string>
     <string name="settingsactivity_hint_fast_sleep">Įspėjimas - didesnės baterijos sąnaudos</string>
-    <string name="settingsactivity_hint_show_null">Rodyti įrenginius be pavadinimų</string>
+    <string name="settingsactivity_hint_show_null">Rodyti BTLE įrenginius be pavadinimų</string>
     <string name="settingsactivity_subtext_value">Dabartinis:</string>
-    <string name="settingsactivity_debug_slider_generator">Generatorius</string>
-    <string name="settingsactivity_debug_hint_generator">Netikrų įrenginių/reikšmių generatorius</string>
-    <string name="settingsactivity_debug_beacons">Generuojamų Įrenginių Kiekis</string>
-    <string name="settingsactivity_debug_rssi_min">Minimali Generuojama RSSI Reikšmė</string>
-    <string name="settingsactivity_debug_rssi_max">Maksimali Generuojama RSSI Reikšmė</string>
 
     <!--ScanActivity elementu tekstai-->
     <string name="scanactivity_text_name">Esate patalpoje:</string>
@@ -99,7 +90,7 @@
 
     <!--RoomActivity elementu tekstai-->
     <string name="roomactivity_text_name">Pavadinimas:</string>
-    <string name="roomactivity_button_calibrate">Kalibruoti įrenginius</string>
+    <string name="roomactivity_button_calibrate">Kalibruoti švyturėlius</string>
     <string name="roomactivity_button_finish_calib">Baigti kalibraciją</string>
     <string name="roomactivity_button_resume_calib">Tęsti kalibraciją</string>
 
@@ -112,18 +103,44 @@
     <string name="beaconactivity_text_rssi_min">RSSI Min:</string>
     <string name="beaconactivity_title_chart">RSSI reikšmių histograma</string>
 
-    <!--GATT toast informaciniai tekstai-->
-    <string name="gatt_toast_function_enabled">Funkcija įjungta</string>
-    <string name="gatt_toast_function_disabled">Funkcija išjungta</string>
-
-    <!--exportCSVHelper klases tekstai-->
+    <!--CSVExportHelper klases tekstai-->
     <string name="exportcsv_name_calibrate">kalibracija</string>
     <string name="exportcsv_column_beacon">BeaconName</string>
     <string name="exportcsv_column_mac">BeaconMac</string>
     <string name="exportcsv_column_rssi">RSSI</string>
 
+    <!--RoomDetector klases tekstai-->
+    <string name="roomdetector_located">Esate patalpoje:</string>
+    <string name="roomdetector_not_detected">Lokacija nenustatyta!</string>
+    <string name="roomdetector_no_rooms">Nėra registruotų patalpų!</string>
+
+    <!--[Laikinai naudojami tekstai]-->
+    <!--GATT toast informaciniai tekstai-->
+    <string name="gatt_toast_function_enabling">Ruošiamasi įjungti funkciją</string>
+    <string name="gatt_toast_function_disabling">Ruošiamasi išjungti funkciją</string>
+    <string name="gatt_toast_function_enabled">Funkcija įjungta</string>
+    <string name="gatt_toast_function_disabled">Funkcija išjungta</string>
+
+    <!--Papildomi SettingsActivity elementu tekstai-->
+    <string name="settingsactivity_category_debug_settings">Debug Nustatymai</string>
+    <string name="settingsactivity_debug_slider_generator">Generatorius</string>
+    <string name="settingsactivity_debug_hint_generator">Netikrų įrenginių/reikšmių generatorius</string>
+    <string name="settingsactivity_debug_beacons">Generuojamų Įrenginių Kiekis</string>
+    <string name="settingsactivity_debug_rssi_min">Minimali Generuojama RSSI Reikšmė</string>
+    <string name="settingsactivity_debug_rssi_max">Maksimali Generuojama RSSI Reikšmė</string>
+
     <!--_DebugBeaconGenerator naudojami tekstai-->
     <string name="gen_beacon_name">Beacon</string>
     <string name="gen_beacon_mac">MAC</string>
+
+    <!--Papildomi ActionBar elementu tekstai-->
+    <string name="bartext_device_add">Priskirti BTLE įrenginius valdymui</string>
+
+    <!--Papildomi sarasu kategoriju tekstai-->
+    <string name="category_unassigned_devices">Priskirti valdomi įrenginiai</string>
+
+    <!--Papildomos AlertDialog antrastes-->
+    <string name="dialog_title_device_assign">Įrenginių valdymui priskyrimas</string>
+    <string name="dialog_assign_devices">Ar tikrai norite šiam kambariui priskirti įrenginių valdymui?</string>
 
 </resources>

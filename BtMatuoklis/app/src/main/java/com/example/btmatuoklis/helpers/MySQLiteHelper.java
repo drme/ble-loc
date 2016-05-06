@@ -132,8 +132,14 @@ public class MySQLiteHelper extends SQLiteOpenHelper {
             Cursor cursor = database.rawQuery(query, new String[]{Integer.toString(room.getID())});
             if (cursor.moveToFirst()){
                 do{
-                    room.getBeacons().add(new Beacon(cursor.getInt(0), cursor.getString(1),
-                            cursor.getString(2), loadRSSIS(cursor.getString(3))));
+                    if (_checkDevice(cursor.getString(3))){
+                        room._getDevices().add(new Beacon(cursor.getInt(0), cursor.getString(1),
+                                cursor.getString(2), null));
+                    }
+                    else {
+                        room.getBeacons().add(new Beacon(cursor.getInt(0), cursor.getString(1),
+                                cursor.getString(2), loadRSSIS(cursor.getString(3))));
+                    }
                 } while (cursor.moveToNext());
                 cursor.close();
             }
@@ -141,9 +147,7 @@ public class MySQLiteHelper extends SQLiteOpenHelper {
     }
 
     private ArrayList<Byte> loadRSSIS(String rssiArray){
-        if (rssiArray == null){
-            return new ArrayList<Byte>();
-        }
+        if (rssiArray == null){ return new ArrayList<Byte>(); }
         String onlyRSSI = rssiArray.replaceAll("[\\[\\]\\^]", "");
         String[] RSSIS = onlyRSSI.split(", ");
         ArrayList<Byte> arrays = new ArrayList<Byte>();
@@ -152,6 +156,10 @@ public class MySQLiteHelper extends SQLiteOpenHelper {
             arrays.add(lastrssi);
         }
         return arrays;
+    }
+
+    private boolean _checkDevice(String string){
+        return (string != null && string.contains("device"));
     }
 
     public int getCalibrationID(int roomID, int beaconID){

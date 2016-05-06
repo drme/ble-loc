@@ -34,17 +34,20 @@
 
     <View style="@style/Divider"
         android:id="@+id/view2"
-        android:layout_below="@+id/textBeacon_Info" />
+        android:layout_below="@+id/textBeacon_Info"
+        android:visibility="gone" />
 
     <include layout="@layout/item_array_display"
         android:id="@+id/viewBeacon_array"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_below="@+id/view2" />
+        android:layout_below="@+id/view2"
+        android:visibility="gone" />
 
     <View style="@style/Divider"
         android:id="@+id/view3"
-        android:layout_below="@+id/viewBeacon_array" />
+        android:layout_below="@+id/viewBeacon_array"
+        android:visibility="gone" />
 
     <TextView
         android:layout_width="wrap_content"
@@ -54,7 +57,8 @@
         android:id="@+id/textBeacon_RSSINum"
         android:layout_below="@+id/view3"
         android:layout_alignParentStart="true"
-        android:layout_alignParentEnd="true" />
+        android:layout_alignParentEnd="true"
+        android:visibility="gone" />
 
     <TextView
         android:layout_width="wrap_content"
@@ -64,7 +68,8 @@
         android:id="@+id/textBeacon_Average"
         android:layout_below="@+id/textBeacon_RSSINum"
         android:layout_alignParentStart="true"
-        android:layout_alignParentEnd="true" />
+        android:layout_alignParentEnd="true"
+        android:visibility="gone" />
 
     <TextView
         android:layout_width="wrap_content"
@@ -74,7 +79,8 @@
         android:id="@+id/textBeacon_RSSIMax"
         android:layout_below="@+id/textBeacon_Average"
         android:layout_alignParentStart="true"
-        android:layout_alignParentEnd="true" />
+        android:layout_alignParentEnd="true"
+        android:visibility="gone" />
 
     <TextView
         android:layout_width="wrap_content"
@@ -84,11 +90,13 @@
         android:id="@+id/textBeacon_RSSIMin"
         android:layout_below="@+id/textBeacon_RSSIMax"
         android:layout_alignParentStart="true"
-        android:layout_alignParentEnd="true" />
+        android:layout_alignParentEnd="true"
+        android:visibility="gone" />
 
     <View style="@style/Divider"
         android:id="@+id/view4"
-        android:layout_below="@+id/textBeacon_RSSIMin" />
+        android:layout_below="@+id/textBeacon_RSSIMin"
+        android:visibility="gone" />
 
     <TextView
         android:layout_width="match_parent"
@@ -98,14 +106,16 @@
         android:id="@+id/textBeacon_title_chart1"
         android:layout_alignParentStart="true"
         android:layout_below="@+id/view4"
-        android:text="@string/beaconactivity_title_chart" />
+        android:text="@string/beaconactivity_title_chart"
+        android:visibility="gone" />
 
     <com.jjoe64.graphview.helper.GraphViewXML
         android:id="@+id/viewBeacon_chart1"
         android:layout_width="match_parent"
         android:layout_height="@dimen/activity_chart_height"
         app:seriesData="0=0"
-        android:layout_below="@+id/textBeacon_title_chart1" />
+        android:layout_below="@+id/textBeacon_title_chart1"
+        android:visibility="gone" />
 
 </RelativeLayout>
 </ScrollView>

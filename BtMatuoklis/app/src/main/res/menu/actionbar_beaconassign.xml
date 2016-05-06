@@ -10,14 +10,6 @@
         android:showAsAction="ifRoom"/>
 
     <item
-        android:id="@+id/action_help"
-        android:icon="@android:drawable/ic_menu_help"
-        android:title="@string/bartext_help"
-        android:visible="true"
-        android:onClick="onHelpActionClick"
-        android:showAsAction="ifRoom"/>
-
-    <item
         android:id="@+id/action_settings"
         android:icon="@android:drawable/ic_menu_preferences"
         android:title="@string/bartext_settings"

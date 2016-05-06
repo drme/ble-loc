@@ -61,7 +61,8 @@ public class BeaconAssignActivity extends Activity {
     AssignAdapter adapter;
     ArrayList<Integer> selectedBeacons;
     Button buttonAccept;
-    String room_key;
+    String room_key, simple_beacon_key, sql_device_key;
+    boolean simple_beacon;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -100,18 +101,13 @@ public class BeaconAssignActivity extends Activity {
         cancelCreationConfirm();
     }
 
-    public void onHelpActionClick(MenuItem item){
-        //Work in progress
-        Toast.makeText(getApplicationContext(), "Not  implemented.", Toast.LENGTH_SHORT).show();
-    }
-
     public void onSettingsActionClick(MenuItem item){
         startActivity(new Intent(getBaseContext(), SettingsActivity.class));
     }
 
     public void onAcceptButtonClick(View view){
         continuousScan(false);
-        saveSelectedBeacons();
+        saveSelectedBeacons(simple_beacon);
         BeaconAssignActivity.this.finish();
         startActivity(new Intent(getBaseContext(), AllRoomsActivity.class));
     }
@@ -119,10 +115,14 @@ public class BeaconAssignActivity extends Activity {
     void setDefaultValues(){
         globalVariable = (GlobalClass) getApplicationContext();
         room_key = getString(R.string.activity_key_room);
+        simple_beacon_key = getString(R.string.key_simple_beacon);
+        sql_device_key = getString(R.string.key_sql_device);
         roomIndex = getIntent().getExtras().getInt(room_key);
+        simple_beacon = getIntent().getExtras().getBoolean(simple_beacon_key);
         settings = MainActivity.settings;
         scantools = new ScanTools();
         allMACs = globalVariable.getRoomsArray().getFullMACList();
+        allMACs.addAll(globalVariable.getRoomsArray()._getFullDeviceMACList());
         enviromentArray = new RoomsArray();
         enviromentArray.getArray().add(new Room(getString(R.string.category_assigned_beacons)));
         enviromentArray.getArray().add(new Room(getString(R.string.category_unassigned_beacons)));
@@ -179,22 +179,24 @@ public class BeaconAssignActivity extends Activity {
         dialog.showDialog();
     }
 
-    void saveSelectedBeacons(){
+    void saveSelectedBeacons(boolean simpleBeacon){
         for (int i = 0; i < selectedBeacons.size(); i++){
             Beacon temp = enviromentArray.getArray().get(1).getBeacons().get(selectedBeacons.get(i));
             Beacon beacon = new Beacon(temp.getName(), temp.getMAC());
-            currentRoom.getBeacons().add(beacon);
-            saveBeaconInDatabase(beacon);
+            if (simpleBeacon){ currentRoom.getBeacons().add(beacon); }
+            else { currentRoom._getDevices().add(beacon); }
+            saveBeaconInDatabase(simpleBeacon, beacon);
         }
         notifyAssignedBeacons();
     }
 
-    void saveBeaconInDatabase(Beacon beacon){
+    void saveBeaconInDatabase(boolean simpleBeacon, Beacon beacon){
         MySQLiteHelper database = new MySQLiteHelper(this);
         database.addBeacon(beacon);
         int id = database.getLastBeaconID();
         beacon.setID(id);
-        database.addCalibration(currentRoom.getID(), id, null);
+        if (simpleBeacon){ database.addCalibration(currentRoom.getID(), id, null); }
+        else { database.addCalibration(currentRoom.getID(), id, sql_device_key); }
     }
 
     void notifyAssignedBeacons(){

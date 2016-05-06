@@ -1,5 +1,8 @@
 package com.example.btmatuoklis.classes;
 
+import android.content.Context;
+
+import com.example.btmatuoklis.R;
 import com.example.btmatuoklis.activities.MainActivity;
 
 import java.util.ArrayList;
@@ -7,17 +10,18 @@ import java.util.Collections;
 
 public class RoomDetector {
 
-    String locatedIn = "Esate patalpoje: ";
-    String notDetected = "Lokacija nenustatyta!";
-    String noRooms = "Nėra sukurtų kambarių!";
-    ArrayList<Byte> coeff;
-    ArrayList<Integer> indexes;
-    ArrayList<Beacon> scannedBeacons;
-    Beacon scannedBeacon, calibratedBeacon;
-    Settings settings;
+    private String locatedIn, notDetected, noRooms;
+    private ArrayList<Byte> coeff;
+    private ArrayList<Integer> indexes;
+    private ArrayList<Beacon> scannedBeacons;
+    private Beacon scannedBeacon, calibratedBeacon;
+    private Settings settings;
 
-    public RoomDetector() {
+    public RoomDetector(Context context) {
         settings = MainActivity.settings;
+        this.locatedIn = context.getString(R.string.roomdetector_located);
+        this.notDetected = context.getString(R.string.roomdetector_not_detected);
+        this.noRooms = context.getString(R.string.roomdetector_no_rooms);
     }
 
     public int getDetectedRoomIndex(RoomsArray created, RoomsArray enviroment){
@@ -48,8 +52,7 @@ public class RoomDetector {
         return index;
     }
 
-    public String getDetectedRoomName(RoomsArray created, RoomsArray enviroment){
-        int index = this.getDetectedRoomIndex(created, enviroment);
+    public String getDetectedRoomName(RoomsArray created, int index){
         switch (index){
             case -2: return noRooms;
             case -1: return notDetected;

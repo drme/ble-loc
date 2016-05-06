@@ -93,11 +93,6 @@ public class ScanActivity extends Activity {
         this.finish();
     }
 
-    public void onHelpActionClick(MenuItem item){
-        //Work in progress
-        Toast.makeText(getApplicationContext(), "Not implemented.", Toast.LENGTH_SHORT).show();
-    }
-
     public void onSettingsActionClick(MenuItem item){
         startActivity(new Intent(getBaseContext(), SettingsActivity.class));
     }
@@ -114,11 +109,10 @@ public class ScanActivity extends Activity {
     void checkBT(){
         if (mBluetoothAdapter == null || !mBluetoothAdapter.isEnabled()) {
             Intent enableBtIntent = new Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE);
-            startActivityForResult(enableBtIntent, settings.REQUEST_ENABLE_BT);
+            startActivityForResult(enableBtIntent, Settings.REQUEST_ENABLE_BT);
         }
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             mLEScanner = mBluetoothAdapter.getBluetoothLeScanner();
-            //To-do: add settings filter?
         }
     }
 
@@ -156,7 +150,7 @@ public class ScanActivity extends Activity {
         roomsArray = globalVariable.getRoomsArray();
         enviromentArray = new RoomsArray();
         enviromentArray.getArray().add(new Room(getString(R.string.category_unassigned_beacons)));
-        detector = new RoomDetector();
+        detector = new RoomDetector(this);
         _generator = new _DebugBeaconGenerator(this);
         _control = new _DebugDeviceControl(ScanActivity.this, detector);
         sleepMin = (short)getResources().getInteger(R.integer.scan_sleep_min);
@@ -165,7 +159,6 @@ public class ScanActivity extends Activity {
         sampleTime = (short)getResources().getInteger(R.integer.scan_sample_min);
         adapter = new ScanAdapter(this, roomsArray, enviromentArray);
         displayBeaconsList.setAdapter(adapter);
-        _control.findRoomDeviceIndex(roomsArray);
     }
 
     void createThreads(){
@@ -191,8 +184,9 @@ public class ScanActivity extends Activity {
         protected Boolean doInBackground(Void... params) {
             scanLogic();
             scantools.scanAppend(roomsArray, enviromentArray);
-            roomName = detector.getDetectedRoomName(roomsArray, enviromentArray);
-            _control.checkDevice(roomsArray, enviromentArray);
+            int index = detector.getDetectedRoomIndex(roomsArray, enviromentArray);
+            roomName = detector.getDetectedRoomName(roomsArray, index);
+            _control.checkDevices(roomsArray, index);
             return true;
         }
         @Override

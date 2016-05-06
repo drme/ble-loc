@@ -17,7 +17,8 @@ import com.example.btmatuoklis.helpers.BeaconInfoHelper;
 public class LinkAdapter extends BaseExpandableListAdapter {
 
     private static int checkItem = R.id.text1;
-    private int groupLayout, itemLayout;
+    private static int _simpleItem = android.R.id.text1;
+    private int groupLayout, itemLayout, _simpleItemLayout;
     private LayoutInflater inflater;
     private RoomsArray enviroment;
     private BeaconInfoHelper infohelper;
@@ -25,6 +26,7 @@ public class LinkAdapter extends BaseExpandableListAdapter {
     public LinkAdapter(Context context, RoomsArray enviroment){
         this.groupLayout = R.layout.list_group;
         this.itemLayout = R.layout.list_checked;
+        this._simpleItemLayout = android.R.layout.simple_list_item_1;
         this.enviroment = enviroment;
         this.infohelper = new BeaconInfoHelper(context);
         this.inflater = (LayoutInflater)context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
@@ -76,16 +78,29 @@ public class LinkAdapter extends BaseExpandableListAdapter {
     @Override
     public View getChildView(int groupPosition, int childPosition, boolean isLastChild, View convertView, ViewGroup parent) {
         Beacon beacon = this.enviroment.getArray().get(groupPosition).getBeacons().get(childPosition);
-        String info = this.infohelper.getCalibrationInfo(beacon);
+        String info;
         View view = convertView;
-        CheckHolder checkHolder;
-        if (convertView == null){
-            view = this.inflater.inflate(this.itemLayout, parent, false);
-            checkHolder = new CheckHolder(view);
-            view.setTag(checkHolder);
-        } else { checkHolder = (CheckHolder)view.getTag(); }
-        checkHolder.checkedView.setText(info);
-        checkHolder.checkedView.setChecked(beacon.getFullRSSI().size() > 0);
+        if (groupPosition == 0){
+            info = this.infohelper.getCalibrationInfo(beacon);
+            CheckHolder checkHolder;
+            if (convertView == null || !(convertView.getTag() instanceof CheckHolder)){
+                view = this.inflater.inflate(this.itemLayout, parent, false);
+                checkHolder = new CheckHolder(view);
+                view.setTag(checkHolder);
+            } else { checkHolder = (CheckHolder)view.getTag(); }
+            checkHolder.checkedView.setText(info);
+            checkHolder.checkedView.setChecked(beacon.getFullRSSI().size() > 0);
+        }
+        else {
+            info = this.infohelper.getInfo(beacon);
+            _SimpleHolder _simpleHolder;
+            if (convertView == null || !(convertView.getTag() instanceof _SimpleHolder)){
+                view = this.inflater.inflate(this._simpleItemLayout, parent, false);
+                _simpleHolder = new _SimpleHolder(view);
+                view.setTag(_simpleHolder);
+            } else { _simpleHolder = (_SimpleHolder)view.getTag(); }
+                _simpleHolder._simpleView.setText(info);
+        }
         return view;
     }
 
@@ -98,6 +113,13 @@ public class LinkAdapter extends BaseExpandableListAdapter {
         public CheckedTextView checkedView;
         public CheckHolder(View view){
             checkedView = (CheckedTextView)view.findViewById(LinkAdapter.checkItem);
+        }
+    }
+
+    class _SimpleHolder {
+        public TextView _simpleView;
+        public _SimpleHolder(View view){
+            _simpleView = (TextView)view.findViewById(LinkAdapter._simpleItem);
         }
     }
 }

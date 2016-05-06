@@ -19,6 +19,14 @@
         android:showAsAction="ifRoom"/>
 
     <item
+        android:id="@+id/action_help"
+        android:icon="@android:drawable/ic_menu_help"
+        android:title="@string/bartext_device_add"
+        android:visible="true"
+        android:onClick="onAddDeviceActionClick"
+        android:showAsAction="ifRoom" />
+
+    <item
         android:id="@+id/action_remove"
         android:icon="@android:drawable/ic_menu_delete"
         android:title="@string/bartext_room_remove"

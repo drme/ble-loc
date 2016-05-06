@@ -13,6 +13,7 @@ import android.widget.Toast;
 
 import com.example.btmatuoklis.R;
 
+import java.util.ArrayList;
 import java.util.UUID;
 
 public class _DebugDeviceControl {
@@ -20,17 +21,17 @@ public class _DebugDeviceControl {
     private Context context;
     private RoomDetector detector;
     private BluetoothGattCallback mGattCallback;
-    private String mac = "68:9E:19:15:1B:ED";
     private UUID customServices = UUID.fromString("a739aa00-f6cd-1692-994a-d66d9e0ce048");
     private UUID ledCharacteristic = UUID.fromString("a739fffd-f6cd-1692-994a-d66d9e0ce048");
     private byte[] enable = new byte[]{0x00, 0x01};
     private byte[] disable = new byte[]{0x00, 0x00};
     private byte[] command;
     private boolean available, switchDevice;
-    private String enabledMsg, disabledMsg;
-    private int deviceRoomIndex, prevRoomIndex;
+    private String enablingMsg, disablingMsg, enabledMsg, disabledMsg;
+    private ArrayList<String> roomDeviceMACs, prevDeviceMACs;
+    private int prevRoomIndex;
     private Handler handler;
-    private Runnable showToast;
+    private Runnable toastPreparing, toastCompleted;
 
     public _DebugDeviceControl(Context context, RoomDetector detector){
         this.context = context;
@@ -38,8 +39,12 @@ public class _DebugDeviceControl {
         this.command = this.disable;
         this.available = true;
         this.switchDevice = false;
+        this.enablingMsg = this.context.getString(R.string.gatt_toast_function_enabling);
+        this.disablingMsg = this.context.getString(R.string.gatt_toast_function_disabling);
         this.enabledMsg = this.context.getString(R.string.gatt_toast_function_enabled);
         this.disabledMsg = this.context.getString(R.string.gatt_toast_function_disabled);
+        this.roomDeviceMACs = new ArrayList<String>();
+        this.prevDeviceMACs = new ArrayList<String>();
         this.prevRoomIndex = -2;
         this.createGattCallbak();
         this.createNotifications();
@@ -81,20 +86,24 @@ public class _DebugDeviceControl {
             @Override
             public void onCharacteristicWrite(BluetoothGatt gatt, BluetoothGattCharacteristic characteristic, int status) {
                 Log.d("_GATT", "Characteristic Write Success");
-                handler.post(showToast);
+                handler.post(toastCompleted);
                 gatt.disconnect();
             }
         };
     }
 
     private void createNotifications(){
-        this.showToast = new Runnable() {
+        this.toastPreparing = new Runnable() {
             @Override
-            public void run() { showCommand(); }
+            public void run() { showPreparingAction(); }
+        };
+        this.toastCompleted = new Runnable() {
+            @Override
+            public void run() { showCompletedAction(); }
         };
     }
 
-    private void showCommand(){
+    private void showCompletedAction(){
         if (command == enable){
             Toast.makeText(this.context, enabledMsg, Toast.LENGTH_SHORT).show();
         }
@@ -103,36 +112,52 @@ public class _DebugDeviceControl {
         }
     }
 
-    public void findRoomDeviceIndex(RoomsArray created){
-        this.deviceRoomIndex = created.findRoomIndex(this.mac);
+    private void showPreparingAction(){
+        if (command == enable){
+            Toast.makeText(this.context, enablingMsg, Toast.LENGTH_SHORT).show();
+        }
+        else {
+            Toast.makeText(this.context, disablingMsg, Toast.LENGTH_SHORT).show();
+        }
     }
 
-    public void checkDevice(RoomsArray created, RoomsArray enviroment){
-        int roomIndex = this.detector.getDetectedRoomIndex(created, enviroment);
-        if (this.deviceRoomIndex > -1 && roomIndex > -2 && this.prevRoomIndex != roomIndex){
-            if (this.deviceRoomIndex == roomIndex){
-                command = enable;
+    public void checkDevices(RoomsArray created, int index){
+        if (index > -2 && this.prevRoomIndex != index){
+            this.prevDeviceMACs.clear();
+            this.prevDeviceMACs.addAll(this.roomDeviceMACs);
+            if (index == -1){ this.roomDeviceMACs.clear(); }
+            else { this.roomDeviceMACs = created.getArray().get(index)._getDevicesMACList(); }
+            if (!this.roomDeviceMACs.isEmpty()){
+                this.command = this.enable;
                 this.switchDevice = true;
             }
-            else if (this.deviceRoomIndex == this.prevRoomIndex) {
-                command = disable;
+            else if (this.roomDeviceMACs.isEmpty() && !this.prevDeviceMACs.isEmpty()){
+                this.command = this.disable;
                 this.switchDevice = true;
             }
             else { this.switchDevice = false; }
-            this.prevRoomIndex = roomIndex;
+            this.prevRoomIndex = index;
         }
         else { this.switchDevice = false; }
     }
 
     public void activateDevice(Handler handler, BluetoothAdapter mBluetoothAdapter){
         if (this.switchDevice){
+            ArrayList<String> macs;
+            if (this.command == this.enable){ macs = this.roomDeviceMACs; }
+            else { macs = this.prevDeviceMACs; }
             this.handler = handler;
-            BluetoothDevice device = mBluetoothAdapter.getRemoteDevice(this.mac);
-            if (device != null){
-                if (available){ device.connectGatt(this.context, false, mGattCallback);}
-                else { Log.d("_GATT", "UNAVAILABLE!"); }
+            for (int i = 0; i < macs.size() && i < 6; i++){
+                BluetoothDevice device = mBluetoothAdapter.getRemoteDevice(macs.get(i));
+                if (device != null){
+                    if (available){
+                        this.handler.post(this.toastPreparing);
+                        device.connectGatt(this.context, false, mGattCallback);
+                    }
+                    else { Log.d("_GATT", "UNAVAILABLE!"); }
+                }
+                else { Log.d("_GATT", "FAILED TO GET REMOTE DEVICE!"); }
             }
-            else { Log.d("_GATT", "FAILED TO GET REMOTE DEVICE!"); }
         }
     }
 

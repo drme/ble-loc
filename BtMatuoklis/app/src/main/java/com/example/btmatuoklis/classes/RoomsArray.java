@@ -58,6 +58,36 @@ public class RoomsArray {
         return id;
     }
 
+    public ArrayList<String> _getFullDeviceMACList(){
+        ArrayList<String> res = new ArrayList<String>();
+        for (int i = 0; i < this.rooms.size(); i++){
+            res.addAll(this.rooms.get(i)._getDevicesMACList());
+        }
+        return res;
+    }
+
+    public ArrayList<Integer> _getFullRoomDeviceIndexes(){
+        ArrayList<Integer> res = new ArrayList<Integer>();
+        for (int i = 0; i < this.rooms.size(); i++){
+            int size = this.rooms.get(i)._getDevices().size();
+            for (int j = 0; j < size; j++){
+                res.add(i);
+            }
+        }
+        return res;
+    }
+
+    public int _findRoomDeviceIndex(String mac){
+        int id = -1;
+        ArrayList<String> fullMACs = _getFullDeviceMACList();
+        ArrayList<Integer> fullIDs = _getFullRoomDeviceIndexes();
+        if (!fullMACs.isEmpty() & fullMACs.contains(mac)){
+            int macID = fullMACs.indexOf(mac);
+            id = fullIDs.get(macID);
+        }
+        return id;
+    }
+
     public int getRoomIndex(String name){
         int id = -1;
         ArrayList<String> names = new ArrayList<String>();

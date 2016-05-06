@@ -36,9 +36,13 @@ public class BeaconActivity extends Activity {
     byte rssiMax, rssiMin, rssiAverage;
     TextView displayRoomName, displayBeacon, displayRSSIList;
     TextView displayRSSINum, displayRSSIAverage, displayRSSIMax, displayRSSIMin;
+    TextView chartName;
+    View line2, line3, line4;
     View displayArrayFrame;
+    GraphView chart;
     ImageView displayArrayArrow;
-    String room_key, beacon_key;
+    String room_key, beacon_key, simple_beacon_key;
+    Boolean simpleBeacon;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -47,16 +51,21 @@ public class BeaconActivity extends Activity {
         getActionBar().setSubtitle(getString(R.string.subtitle_existing_beacon));
         displayRoomName = (TextView)findViewById(R.id.textBeacon_Name);
         displayBeacon = (TextView)findViewById(R.id.textBeacon_Info);
+        line2 = findViewById(R.id.view2);
         displayArrayFrame = findViewById(R.id.viewBeacon_array);
         displayRSSIList = (TextView)displayArrayFrame.findViewById(android.R.id.text2);
         displayArrayArrow = (ImageView)displayArrayFrame.findViewById(android.R.id.icon);
+        line3 = findViewById(R.id.view3);
         displayRSSINum = (TextView)findViewById(R.id.textBeacon_RSSINum);
         displayRSSIAverage = (TextView)findViewById(R.id.textBeacon_Average);
         displayRSSIMax = (TextView)findViewById(R.id.textBeacon_RSSIMax);
         displayRSSIMin = (TextView)findViewById(R.id.textBeacon_RSSIMin);
+        line4 = findViewById(R.id.view4);
+        chartName = (TextView)findViewById(R.id.textBeacon_title_chart1);
+        chart = (GraphView)findViewById(R.id.viewBeacon_chart1);
 
         setDefaultValues();
-        setRSSIArrayListener();
+        setRSSIdata();
     }
 
     @Override
@@ -75,10 +84,6 @@ public class BeaconActivity extends Activity {
         removeBeaconConfirm();
     }
 
-    public void onHelpActionClick(MenuItem item){
-        Toast.makeText(getApplicationContext(), "Not implemented.", Toast.LENGTH_SHORT).show();
-    }
-
     public void onSettingsActionClick(MenuItem item){
         startActivity(new Intent(getBaseContext(), SettingsActivity.class));
     }
@@ -87,24 +92,49 @@ public class BeaconActivity extends Activity {
         globalVariable = (GlobalClass) getApplicationContext();
         room_key = getString(R.string.activity_key_room);
         beacon_key = getString(R.string.activity_key_beacon);
+        simple_beacon_key = getString(R.string.key_simple_beacon);
         roomIndex = getIntent().getExtras().getInt(room_key);
+        simpleBeacon = getIntent().getExtras().getBoolean(simple_beacon_key);
         beaconIndex = getIntent().getExtras().getInt(beacon_key);
         currentRoom = globalVariable.getRoomsArray().getArray().get(roomIndex);
-        currentBeacon = currentRoom.getBeacons().get(beaconIndex);
+        if (simpleBeacon){ currentBeacon = currentRoom.getBeacons().get(beaconIndex); }
+        else { currentBeacon = currentRoom._getDevices().get(beaconIndex); }
         database = new MySQLiteHelper(this);
         infohelper = new BeaconInfoHelper(this);
-        rssiArray = currentBeacon.getFullRSSI();
-        rssiMax = currentBeacon.getRSSIMax();
-        rssiMin = currentBeacon.getRSSIMin();
-        rssiAverage = currentBeacon.getRSSIAverage();
         displayRoomName.setText(getString(R.string.beaconactivity_text_name)+" "+currentRoom.getName());
         displayBeacon.setText(infohelper.getInfo(currentBeacon));
-        displayRSSIList.setText(currentBeacon.getFullRSSI().toString());
-        displayRSSINum.setText(getString(R.string.beaconactivity_text_rssi_num)+" "+Integer.toString(rssiArray.size()));
-        displayRSSIAverage.setText(getString(R.string.beaconactivity_text_rssi_average)+" "+Byte.toString(rssiAverage));
-        displayRSSIMax.setText(getString(R.string.beaconactivity_text_rssi_max)+" "+Byte.toString(rssiMax));
-        displayRSSIMin.setText(getString(R.string.beaconactivity_text_rssi_min)+" "+Byte.toString(rssiMin));
-        setChart(R.id.viewBeacon_chart1, currentBeacon);
+        rssiArray = currentBeacon.getFullRSSI();
+    }
+
+    void setRSSIdata(){
+        if (simpleBeacon && !rssiArray.isEmpty()){
+            rssiMax = currentBeacon.getRSSIMax();
+            rssiMin = currentBeacon.getRSSIMin();
+            rssiAverage = currentBeacon.getRSSIAverage();
+            displayRSSIList.setText(currentBeacon.getFullRSSI().toString());
+            displayRSSINum.setText(getString(R.string.beaconactivity_text_rssi_num)+" "+Integer.toString(rssiArray.size()));
+            displayRSSIAverage.setText(getString(R.string.beaconactivity_text_rssi_average)+" "+Byte.toString(rssiAverage));
+            displayRSSIMax.setText(getString(R.string.beaconactivity_text_rssi_max)+" "+Byte.toString(rssiMax));
+            displayRSSIMin.setText(getString(R.string.beaconactivity_text_rssi_min)+" "+Byte.toString(rssiMin));
+            setChart(R.id.viewBeacon_chart1, currentBeacon);
+            setElementVisibility();
+            setRSSIArrayListener();
+        }
+    }
+
+    void setElementVisibility(){
+        line2.setVisibility(View.VISIBLE);
+        displayArrayFrame.setVisibility(View.VISIBLE);
+        displayRSSIList.setVisibility(View.VISIBLE);
+        displayArrayArrow.setVisibility(View.VISIBLE);
+        line3.setVisibility(View.VISIBLE);
+        displayRSSINum.setVisibility(View.VISIBLE);
+        displayRSSIAverage.setVisibility(View.VISIBLE);
+        displayRSSIMax.setVisibility(View.VISIBLE);
+        displayRSSIMin.setVisibility(View.VISIBLE);
+        line4.setVisibility(View.VISIBLE);
+        chartName.setVisibility(View.VISIBLE);
+        chart.setVisibility(View.VISIBLE);
     }
 
     //RSSI reiksmiu vaizdo keitimas tarp vienos elutes ir daugelio eiluciu
@@ -158,7 +188,8 @@ public class BeaconActivity extends Activity {
         int id = database.getCalibrationID(currentRoom.getID(), currentBeacon.getID());
         database.deleteCalibration(id);
         database.deleteBeacon(currentBeacon.getID());
-        currentRoom.getBeacons().remove(beaconIndex);
+        if (simpleBeacon) { currentRoom.getBeacons().remove(beaconIndex); }
+        else { currentRoom._getDevices().remove(beaconIndex); }
         if (currentRoom.getBeacons().isEmpty()){
             database.deleteRoom(currentRoom.getID());
             globalVariable.getRoomsArray().getArray().remove(roomIndex);

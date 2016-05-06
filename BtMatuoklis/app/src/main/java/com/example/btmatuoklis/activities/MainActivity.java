@@ -47,11 +47,6 @@ public class MainActivity extends Activity {
         return true;
     }
 
-    public void onHelpActionClick(MenuItem item){
-        //Work in progress
-        Toast.makeText(getApplicationContext(), "Not implemented.", Toast.LENGTH_SHORT).show();
-    }
-
     public void onSettingsActionClick(MenuItem item){
         startActivity(new Intent(getBaseContext(), SettingsActivity.class));
     }
@@ -67,7 +62,7 @@ public class MainActivity extends Activity {
     void setDefaultValues(){
         globalVariable = (GlobalClass) getApplicationContext();
         settings = new Settings(getApplicationContext());
-        loadDatabase(null);
+        loadDatabase();
     }
 
     void loadRooms(){
@@ -83,11 +78,10 @@ public class MainActivity extends Activity {
         database.loadAllBeacons(globalVariable.getRoomsArray().getArray());
     }
 
-    public void loadDatabase(MenuItem item){
+    void loadDatabase(){
         globalVariable.getRoomsArray().getArray().clear();
         loadRooms();
         loadBeacons();
-        Toast.makeText(getApplicationContext(), "Duombazė užkrauta.", Toast.LENGTH_SHORT).show();
     }
 
     //Sukuriamas Bluetooth adapteris
