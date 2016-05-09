@@ -6,7 +6,7 @@ public class ScanTools{
 
     Room sample;
 
-    public ScanTools(){ this.sample = new Room("Sample"); }
+    public ScanTools(){ this.sample = new Room(); }
 
     public void prepareSample(){ this.sample.getBeacons().clear(); }
 
@@ -46,7 +46,9 @@ public class ScanTools{
         ArrayList<Beacon> beacons = this.sample.getBeacons();
         for (int i = 0; i < beacons.size(); i++){
             Beacon beacon = beacons.get(i);
-            this.scan(beacon.getName(), beacon.getMAC(), beacon.getRSSIAverage(), rooms, enviroment);
+            if (this._isBeacon(beacon.getMAC(), rooms)){
+                this.scan(beacon.getName(), beacon.getMAC(), beacon.getRSSIAverage(), rooms, enviroment);
+            }
         }
         this.prepareSample();
     }
@@ -70,6 +72,18 @@ public class ScanTools{
             if (beaconIndex > -1){ enviroment.getArray().get(0).getBeacons().get(beaconIndex).setRSSI(rssi); }
             else { enviroment.getArray().get(0).getBeacons().add(new Beacon(beaconIndex, name, mac, rssi)); }
         }
+    }
+
+    private boolean _isBeacon(String mac, RoomsArray rooms){
+        if (!rooms.getArray().isEmpty()){
+            for (int i = 0; i < rooms.getArray().size(); i++){
+                if (!rooms.getArray().get(i)._getDevices().isEmpty()
+                        && rooms.getArray().get(i)._getDevicesMACList().contains(mac)){
+                    return false;
+                }
+            }
+        }
+        return true;
     }
 
     public void calibratePrepare(Room room){

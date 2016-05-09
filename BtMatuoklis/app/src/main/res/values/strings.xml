@@ -30,6 +30,7 @@
     <string name="dialog_title_export">Eksportavimas</string>
     <string name="dialog_title_new_room">Nauja patalpa</string>
     <string name="dialog_title_beacon_assign">BTLE įrenginių priskyrimas</string>
+    <string name="dialog_error_existing">Toks pavadinimas jau yra!</string>
     <string name="dialog_new_room_name">Naujos patalpos pavadinimas:</string>
     <string name="dialog_cancel_room_creation">Ar tikrai norite atšaukti BTLE įrenginių priskyrimą patalpai?</string>
     <string name="dialog_assign_beacons">Ar tikrai norite šiam kambariui priskirti daugiau švyturėlių?</string>
@@ -40,8 +41,6 @@
     <string name="dialog_export_room_csv">Ar tikrai norite eksportuoti šio kambario kalibracines reikšmes?</string>
 
     <!--Toast informaciniai tekstai-->
-    <string name="toast_warning_empty_entry">Neįvesta reikšmė!</string>
-    <string name="toast_warning_duplicate_entry">Kambarys tokiu pavadinimu jau yra!</string>
     <string name="toast_warning_wrong_range">Netinkamas intervalas!</string>
     <string name="toast_info_saved">Išsaugota</string>
     <string name="toast_info_removed">Pašalinta</string>

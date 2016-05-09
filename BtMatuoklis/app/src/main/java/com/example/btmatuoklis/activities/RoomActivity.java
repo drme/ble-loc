@@ -59,7 +59,7 @@ public class RoomActivity extends Activity {
     short sleepTime, sampleTime;
     Handler handler;
     Runnable background;
-    MenuItem assignItem, exportItem;
+    MenuItem assignItem, exportItem, settingsItem;
     LinkAdapter listAdapter;
     ExpandableListView displayBeaconsList;
     TextView displayRoomName;
@@ -99,6 +99,7 @@ public class RoomActivity extends Activity {
     public boolean onPrepareOptionsMenu(Menu menu) {
         assignItem = menu.findItem(R.id.action_add);
         exportItem = menu.findItem(R.id.action_export);
+        settingsItem = menu.findItem(R.id.action_settings);
         if (currentRoom.getBeacons().isEmpty()){ this.finish(); }
         else if (!currentRoom.isCalibrationStarted()){ restoreCalibrateButton(); }
         else { resumeCalibrateButton(); }
@@ -213,6 +214,7 @@ public class RoomActivity extends Activity {
         buttonCalibrate.setText(getString(R.string.roomactivity_button_finish_calib));
         enableMenuItem(assignItem, false);
         enableMenuItem(exportItem, false);
+        enableMenuItem(settingsItem, false);
         scantools.calibratePrepare(currentRoom);
         continuousScan(true);
     }
@@ -227,6 +229,7 @@ public class RoomActivity extends Activity {
         saveRSSIInDatabase();
         enableMenuItem(assignItem, true);
         enableMenuItem(exportItem, true);
+        enableMenuItem(settingsItem, true);
         continuousScan(false);
     }
 
@@ -256,6 +259,7 @@ public class RoomActivity extends Activity {
         setListListener(true);
         enableMenuItem(assignItem, true);
         enableMenuItem(exportItem, false);
+        enableMenuItem(settingsItem, true);
     }
 
     //Veiksmai mygtuko isvaizdai nustatyti, kai yra kalibraciniu reiksmiu
@@ -265,6 +269,7 @@ public class RoomActivity extends Activity {
         setListListener(true);
         enableMenuItem(assignItem, true);
         enableMenuItem(exportItem, true);
+        enableMenuItem(settingsItem, true);
     }
 
     void enableMenuItem(MenuItem item, boolean enabled){

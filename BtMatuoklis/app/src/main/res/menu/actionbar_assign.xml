@@ -9,12 +9,4 @@
         android:onClick="onCancelActionClick"
         android:showAsAction="ifRoom"/>
 
-    <item
-        android:id="@+id/action_settings"
-        android:icon="@android:drawable/ic_menu_preferences"
-        android:title="@string/bartext_settings"
-        android:visible="true"
-        android:onClick="onSettingsActionClick"
-        android:showAsAction="ifRoom"/>
-
 </menu>

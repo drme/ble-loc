@@ -6,9 +6,12 @@ import android.content.DialogInterface;
 import android.graphics.Color;
 import android.text.Editable;
 import android.text.InputType;
-import android.text.TextUtils;
 import android.text.TextWatcher;
 import android.widget.EditText;
+
+import com.example.btmatuoklis.R;
+
+import java.util.ArrayList;
 
 public class DialogBuildHelper {
     AlertDialog.Builder builder;
@@ -18,6 +21,8 @@ public class DialogBuildHelper {
     int theme = AlertDialog.THEME_HOLO_DARK;
     int inputType = InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_FLAG_CAP_SENTENCES;
     int color = Color.WHITE;
+    ArrayList<String> names;
+    String existingError;
 
     public DialogBuildHelper(Context context, String title, String message, int icon) {
         this.context = context;
@@ -25,6 +30,11 @@ public class DialogBuildHelper {
         builder.setTitle(title);
         builder.setMessage(message);
         builder.setIcon(icon);
+        existingError = this.context.getString(R.string.dialog_error_existing);
+    }
+
+    public void setNameCheck(ArrayList<String> list){
+        this.names = list;
     }
 
     public void setInput(){
@@ -65,11 +75,17 @@ public class DialogBuildHelper {
 
             @Override
             public void afterTextChanged(Editable s) {
-                if (TextUtils.isEmpty(s)) {
-                    dialog.getButton(AlertDialog.BUTTON_POSITIVE).setEnabled(false);
-                } else {
-                    dialog.getButton(AlertDialog.BUTTON_POSITIVE).setEnabled(true);
-                }
+                String string = s.toString().trim();
+                if (!string.isEmpty() && string.length() > 3) {
+                    if (names != null && !names.isEmpty() && names.contains(string)){
+                        dialog.getButton(AlertDialog.BUTTON_POSITIVE).setEnabled(false);
+                        input.setError(existingError);
+                    }
+                    else {
+                        dialog.getButton(AlertDialog.BUTTON_POSITIVE).setEnabled(true);
+                        input.setError(null);
+                    }
+                } else { dialog.getButton(AlertDialog.BUTTON_POSITIVE).setEnabled(false); }
             }
         });
     }

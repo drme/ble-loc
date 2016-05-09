@@ -16,12 +16,10 @@ import android.os.Build;
 import android.os.Handler;
 import android.os.Bundle;
 import android.view.Menu;
-import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.WindowManager;
 import android.widget.ExpandableListView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.example.btmatuoklis.R;
 import com.example.btmatuoklis.classes.RoomsArray;
@@ -69,6 +67,7 @@ public class ScanActivity extends Activity {
         detectedRoom = (TextView)findViewById(R.id.textScan_DetectedRoom);
         displayBeaconsList = (ExpandableListView)findViewById(R.id.listScan_BeaconsList);
 
+        
         setDefaultValues();
         createBT();
         checkBT();
@@ -84,8 +83,6 @@ public class ScanActivity extends Activity {
         getActionBar().setCustomView(R.layout.action_view_progress);
         getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
         setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LOCKED);
-        MenuInflater inflater = getMenuInflater();
-        inflater.inflate(R.menu.actionbar_scan, menu);
         return true;
     }
 
@@ -154,7 +151,7 @@ public class ScanActivity extends Activity {
         enviromentArray.getArray().add(new Room(getString(R.string.category_unassigned_beacons)));
         detector = new RoomDetector(this);
         _generator = new _DebugBeaconGenerator(this);
-        _control = new _DebugDeviceControl(ScanActivity.this, detector);
+        _control = new _DebugDeviceControl(ScanActivity.this);
         sleepMin = (short)getResources().getInteger(R.integer.scan_sleep_min);
         sleepMax = (short)getResources().getInteger(R.integer.scan_sleep_max);
         sleepFast = (short)getResources().getInteger(R.integer.sleep_fast);

@@ -99,6 +99,7 @@ public class AllRoomsActivity extends Activity {
                 getString(R.string.dialog_new_room_name), android.R.drawable.ic_dialog_info);
         entryDialog = dialog;
         dialog.setInput();
+        dialog.setNameCheck(savedRoomsList);
         dialog.getBuilder().setPositiveButton(getString(R.string.dialog_button_ok), new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
@@ -111,20 +112,10 @@ public class AllRoomsActivity extends Activity {
 
     void roomNameEntry(DialogBuildHelper dialog){
         String name = dialog.getInputText().trim();
-        if (name.equals("")) {
-            Toast.makeText(getApplicationContext(),
-                    getString(R.string.toast_warning_empty_entry), Toast.LENGTH_SHORT).show();
-            dialog.cancelInput();
-        } else if (savedRoomsList.contains(name)) {
-            Toast.makeText(getApplicationContext(),
-                    getString(R.string.toast_warning_duplicate_entry), Toast.LENGTH_SHORT).show();
-        }
-        else {
-            Room room = createRoom(name);
-            createRoomInDatabase(room);
-            notifyCreatedRoom(name);
-            this.onResume();
-        }
+        Room room = createRoom(name);
+        createRoomInDatabase(room);
+        notifyCreatedRoom(name);
+        this.onResume();
     }
 
     Room createRoom(String name){

@@ -19,7 +19,6 @@ import java.util.UUID;
 public class _DebugDeviceControl {
 
     private Context context;
-    private RoomDetector detector;
     private BluetoothGattCallback mGattCallback;
     private UUID customServices = UUID.fromString("a739aa00-f6cd-1692-994a-d66d9e0ce048");
     private UUID ledCharacteristic = UUID.fromString("a739fffd-f6cd-1692-994a-d66d9e0ce048");
@@ -33,9 +32,8 @@ public class _DebugDeviceControl {
     private Handler handler;
     private Runnable toastPreparing, toastCompleted;
 
-    public _DebugDeviceControl(Context context, RoomDetector detector){
+    public _DebugDeviceControl(Context context){
         this.context = context;
-        this.detector = detector;
         this.command = this.disable;
         this.available = true;
         this.switchDevice = false;
@@ -61,9 +59,9 @@ public class _DebugDeviceControl {
                         Log.d("_GATT", "Discovering Services...");
                     }
                     else if (newState == BluetoothProfile.STATE_DISCONNECTED){
+                        available = true;
                         gatt.close();
                         Log.d("_GATT", "Connection Closed");
-                        available = true;
                     }
                 }
                 else { Log.d("_GATT", "OPERATION FAILED!"); }
