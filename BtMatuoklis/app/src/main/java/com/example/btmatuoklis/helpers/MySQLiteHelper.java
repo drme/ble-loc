@@ -6,6 +6,7 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 
+import com.example.btmatuoklis.R;
 import com.example.btmatuoklis.classes.Beacon;
 import com.example.btmatuoklis.classes.Room;
 
@@ -29,8 +30,11 @@ public class MySQLiteHelper extends SQLiteOpenHelper {
     private static final String KEY_BEACONID = "beaconid";
     private static final String KEY_RSSI = "rssi";
 
+    private String device_key;
+
     public MySQLiteHelper(Context context) {
         super(context, DATABASE_NAME, null, DATABASE_VERSION);
+        this.device_key = context.getString(R.string.key_sql_device);
     }
 
     @Override
@@ -159,7 +163,7 @@ public class MySQLiteHelper extends SQLiteOpenHelper {
     }
 
     private boolean _checkDevice(String string){
-        return (string != null && string.contains("device"));
+        return (string != null && string.contains(device_key));
     }
 
     public int getCalibrationID(int roomID, int beaconID){

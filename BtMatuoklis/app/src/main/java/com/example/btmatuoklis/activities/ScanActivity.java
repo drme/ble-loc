@@ -49,6 +49,7 @@ public class ScanActivity extends Activity {
 
     short sleepMin, sleepMax, sleepFast, sampleTime;
 
+    
     Handler handler;
     Runnable background;
     Room environment;
@@ -66,7 +67,6 @@ public class ScanActivity extends Activity {
         getActionBar().setSubtitle(getString(R.string.subtitle_scan));
         detectedRoom = (TextView)findViewById(R.id.textScan_DetectedRoom);
         displayBeaconsList = (ExpandableListView)findViewById(R.id.listScan_BeaconsList);
-
         
         setDefaultValues();
         createBT();

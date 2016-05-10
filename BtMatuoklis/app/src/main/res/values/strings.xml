@@ -36,9 +36,9 @@
     <string name="dialog_assign_beacons">Ar tikrai norite šiam kambariui priskirti daugiau švyturėlių?</string>
     <string name="dialog_remove_all_rooms">Ar tikrai norite pašalinti visas patalpas?</string>
     <string name="dialog_remove_room">Ar tikrai norite pašalinti patalpą?</string>
-    <string name="dialog_remove_calibration">Ar tikrai norite pašalinti įrenginio kalibracines reikšmes?</string>
+    <string name="dialog_remove_calibration">Ar tikrai norite pašalinti surinktas įrenginio parametrizacijos patalpoje reikšmes?</string>
     <string name="dialog_remove_beacon">Ar tikrai norite pašalinti BTLE įrenginį?</string>
-    <string name="dialog_export_room_csv">Ar tikrai norite eksportuoti šio kambario kalibracines reikšmes?</string>
+    <string name="dialog_export_room_csv">Ar tikrai norite eksportuoti šios patalpos parametrizacijos reikšmes?</string>
 
     <!--Toast informaciniai tekstai-->
     <string name="toast_warning_wrong_range">Netinkamas intervalas!</string>
@@ -56,7 +56,7 @@
     <string name="beacon_mac">MAC:</string>
     <string name="beacon_rssi">RSSI:</string>
     <string name="beacon_rssi_current">Last:</string>
-    <string name="beacon_calibration_number">Kalibracijos RSSI reikšmių:</string>
+    <string name="beacon_calibration_number">Parametrizacijos reikšmių:</string>
     <string name="beacon_range">Apytikslis atstumas:</string>
 
     <!--Bendrai naudojami tekstai-->
@@ -89,21 +89,21 @@
 
     <!--RoomActivity elementu tekstai-->
     <string name="roomactivity_text_name">Pavadinimas:</string>
-    <string name="roomactivity_button_calibrate">Kalibruoti švyturėlius</string>
-    <string name="roomactivity_button_finish_calib">Baigti kalibraciją</string>
-    <string name="roomactivity_button_resume_calib">Tęsti kalibraciją</string>
+    <string name="roomactivity_button_calibrate">Parametrizuoti patalpą</string>
+    <string name="roomactivity_button_finish_calib">Baigti parametrizaciją</string>
+    <string name="roomactivity_button_resume_calib">Tęsti parametrizaciją</string>
 
     <!--BeaconActivity elementu tekstai-->
     <string name="beaconactivity_text_name">Patalpa:</string>
-    <string name="beaconactivity_text_saved_rssi">Išsaugotos RSSI reikšmės:\u0020</string>
-    <string name="beaconactivity_text_rssi_num">RSSI Kiekis:</string>
-    <string name="beaconactivity_text_rssi_average">RSSI reikšmių vidurkis:</string>
-    <string name="beaconactivity_text_rssi_max">RSSI Max:</string>
-    <string name="beaconactivity_text_rssi_min">RSSI Min:</string>
-    <string name="beaconactivity_title_chart">RSSI reikšmių histograma</string>
+    <string name="beaconactivity_text_saved_rssi">Parametrizacijos reikšmės:\u0020</string>
+    <string name="beaconactivity_text_rssi_num">Reikšmių Kiekis:</string>
+    <string name="beaconactivity_text_rssi_average">Reikšmių vidurkis:</string>
+    <string name="beaconactivity_text_rssi_max">Max:</string>
+    <string name="beaconactivity_text_rssi_min">Min:</string>
+    <string name="beaconactivity_title_chart">Reikšmių histograma</string>
 
     <!--CSVExportHelper klases tekstai-->
-    <string name="exportcsv_name_calibrate">kalibracija</string>
+    <string name="exportcsv_name_calibrate">param</string>
     <string name="exportcsv_column_beacon">BeaconName</string>
     <string name="exportcsv_column_mac">BeaconMac</string>
     <string name="exportcsv_column_rssi">RSSI</string>
@@ -125,8 +125,8 @@
     <string name="settingsactivity_debug_slider_generator">Generatorius</string>
     <string name="settingsactivity_debug_hint_generator">Netikrų įrenginių/reikšmių generatorius</string>
     <string name="settingsactivity_debug_beacons">Generuojamų Įrenginių Kiekis</string>
-    <string name="settingsactivity_debug_rssi_min">Minimali Generuojama RSSI Reikšmė</string>
-    <string name="settingsactivity_debug_rssi_max">Maksimali Generuojama RSSI Reikšmė</string>
+    <string name="settingsactivity_debug_rssi_min">Minimali Generuojama Reikšmė</string>
+    <string name="settingsactivity_debug_rssi_max">Maksimali Generuojama Reikšmė</string>
 
     <!--_DebugBeaconGenerator naudojami tekstai-->
     <string name="gen_beacon_name">Beacon</string>
