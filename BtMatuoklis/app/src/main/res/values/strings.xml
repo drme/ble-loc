@@ -129,8 +129,8 @@
     <string name="settingsactivity_debug_rssi_max">Maksimali Generuojama Reikšmė</string>
 
     <!--_DebugBeaconGenerator naudojami tekstai-->
-    <string name="gen_beacon_name">Beacon</string>
-    <string name="gen_beacon_mac">MAC</string>
+    <string name="gen_beacon_name">DebugBeacon</string>
+    <string name="gen_beacon_mac">DE:B0:60:00:00:</string>
 
     <!--Papildomi ActionBar elementu tekstai-->
     <string name="bartext_device_add">Priskirti BTLE įrenginius valdymui</string>

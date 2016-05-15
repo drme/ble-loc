@@ -20,7 +20,7 @@ public class _DebugBeaconGenerator {
     public void generate(int generatedBeacons, int generatedRSSIMin, int generatedRSSIMax){
         int number = this.numGen(1, generatedBeacons);
         this.name = this.defaultName+number;
-        this.mac = this.defaultMAC+number;
+        this.mac = this.macAppend(this.defaultMAC, number);
         this.rssi = (byte)this.numGen(generatedRSSIMin, generatedRSSIMax);
     }
 
@@ -29,6 +29,16 @@ public class _DebugBeaconGenerator {
     public String getMAC(){ return this.mac; }
 
     public byte getRSSI(){ return this.rssi; }
+
+    private String macAppend(String mac, int number){
+        String string = mac;
+        if (number > 9){ string += number; }
+        else {
+            string += 0;
+            string += number;
+        }
+        return string;
+    }
 
     public int numGen(int min, int max){
         Random random = new Random();

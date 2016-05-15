@@ -76,8 +76,8 @@ public class AssignActivity extends Activity {
         setDefaultValues();
         setListListener();
         createBT();
-        checkBT();
-        createBTLECallBack();
+        //checkBT();
+        //createBTLECallBack();
         createThread();
         continuousScan(true);
     }
@@ -212,6 +212,7 @@ public class AssignActivity extends Activity {
         BluetoothManager bluetoothManager =
                 (BluetoothManager)getSystemService(Context.BLUETOOTH_SERVICE);
         mBluetoothAdapter = bluetoothManager.getAdapter();
+        if (mBluetoothAdapter != null && mBluetoothAdapter.isEnabled()){ createBTLECallBack(); }
     }
 
     //Patikriname ar Bluetooth telefone yra ijungtas
@@ -238,6 +239,7 @@ public class AssignActivity extends Activity {
             };
         }
         else {
+            mLEScanner = mBluetoothAdapter.getBluetoothLeScanner();
             mScanCallback = new ScanCallback() {
                 @Override
                 @TargetApi(Build.VERSION_CODES.LOLLIPOP)
@@ -284,7 +286,7 @@ public class AssignActivity extends Activity {
     }
 
     private void assignLogic(){
-        if (!settings.isGeneratorEnabled()) {
+        if (!settings.isGeneratorEnabled() && mBluetoothAdapter != null && mBluetoothAdapter.isEnabled()) {
             if (Build.VERSION.SDK_INT < Build.VERSION_CODES.LOLLIPOP){
                 mBluetoothAdapter.startLeScan(mLeScanCallback);
                 threadSleep(sampleTime);

@@ -49,7 +49,6 @@ public class ScanActivity extends Activity {
 
     short sleepMin, sleepMax, sleepFast, sampleTime;
 
-    
     Handler handler;
     Runnable background;
     Room environment;
@@ -70,8 +69,8 @@ public class ScanActivity extends Activity {
         
         setDefaultValues();
         createBT();
-        checkBT();
-        createBTLECallBack();
+        //checkBT();
+        //createBTLECallBack();
         createThreads();
         continuousScan(true);
     }
@@ -101,18 +100,7 @@ public class ScanActivity extends Activity {
         BluetoothManager bluetoothManager =
                 (BluetoothManager)getSystemService(Context.BLUETOOTH_SERVICE);
         mBluetoothAdapter = bluetoothManager.getAdapter();
-    }
-
-    //Patikriname ar Bluetooth telefone yra ijungtas
-    //Jei ne - paprasoma ijungti
-    void checkBT(){
-        if (mBluetoothAdapter == null || !mBluetoothAdapter.isEnabled()) {
-            Intent enableBtIntent = new Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE);
-            startActivityForResult(enableBtIntent, Settings.REQUEST_ENABLE_BT);
-        }
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            mLEScanner = mBluetoothAdapter.getBluetoothLeScanner();
-        }
+        if (mBluetoothAdapter != null && mBluetoothAdapter.isEnabled()){ createBTLECallBack(); }
     }
 
     void createBTLECallBack(){
@@ -127,6 +115,7 @@ public class ScanActivity extends Activity {
             };
         }
         else {
+            mLEScanner = mBluetoothAdapter.getBluetoothLeScanner();
             mScanCallback = new ScanCallback() {
                 @Override
                 @TargetApi(Build.VERSION_CODES.LOLLIPOP)
@@ -199,7 +188,7 @@ public class ScanActivity extends Activity {
     }
 
     private void scanLogic(){
-        if (!settings.isGeneratorEnabled()){
+        if (!settings.isGeneratorEnabled() && mBluetoothAdapter != null && mBluetoothAdapter.isEnabled()){
             if (Build.VERSION.SDK_INT < Build.VERSION_CODES.LOLLIPOP){
                 mBluetoothAdapter.startLeScan(mLeScanCallback);
                 //To-do: "adaptyvus" sleep laiko paskaiciavimas pagal aptiktu beaconu kieki
