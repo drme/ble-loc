@@ -32,6 +32,13 @@ public class Room {
         this._devices = new ArrayList<Beacon>();
     }
 
+    public Room(int id, String name, ArrayList<Beacon> beacons){
+        this.id = id;
+        this.name = name;
+        this.beacons = beacons;
+        this._devices = new ArrayList<Beacon>();
+    }
+
     public void setName(String name){
         this.name = name;
     }
