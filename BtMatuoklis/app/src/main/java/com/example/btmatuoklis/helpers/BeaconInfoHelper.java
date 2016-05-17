@@ -7,14 +7,14 @@ import com.example.btmatuoklis.classes.Beacon;
 
 public class BeaconInfoHelper {
 
-    String name, mac, rssi, rssi_now, num_calib, range;
+    String name, mac, rssi, rssi_now, num_param, range;
 
     public BeaconInfoHelper(Context context){
         this.name = context.getString(R.string.beacon_name);
         this.mac = context.getString(R.string.beacon_mac);
         this.rssi = context.getString(R.string.beacon_rssi);
         this.rssi_now = context.getString(R.string.beacon_rssi_current);
-        this.num_calib = context.getString(R.string.beacon_calibration_number);
+        this.num_param = context.getString(R.string.beacon_parametrisation_number);
         this.range = context.getString(R.string.beacon_range);
     }
 
@@ -30,9 +30,9 @@ public class BeaconInfoHelper {
         return info;
     }
 
-    public String getCalibrationInfo(Beacon beacon){
+    public String getParametrisationInfo(Beacon beacon){
         String info = this.getInfo(beacon);
-        info += "\n"+this.num_calib+" "+beacon.getFullRSSI().size();
+        info += "\n"+this.num_param +" "+beacon.getFullRSSI().size();
         return info;
     }
 }

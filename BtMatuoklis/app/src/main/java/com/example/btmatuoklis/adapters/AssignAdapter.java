@@ -22,15 +22,15 @@ public class AssignAdapter extends BaseExpandableListAdapter {
     private static int simpleItem = android.R.id.text1;
     private int groupLayout, simpleItemLayout, checkItemLayout;
     private LayoutInflater inflater;
-    private RoomsArray enviroment;
+    private RoomsArray scanArray;
     private ArrayList<Integer> selected;
     private BeaconInfoHelper infohelper;
 
-    public AssignAdapter(Context context, RoomsArray enviroment, ArrayList<Integer> selected){
+    public AssignAdapter(Context context, RoomsArray scanArray, ArrayList<Integer> selected){
         this.groupLayout = R.layout.list_group;
         this.simpleItemLayout = android.R.layout.simple_list_item_1;
         this.checkItemLayout = R.layout.list_multiple_choice;
-        this.enviroment = enviroment;
+        this.scanArray = scanArray;
         this.selected = selected;
         this.infohelper = new BeaconInfoHelper(context);
         this.inflater = (LayoutInflater)context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
@@ -38,30 +38,30 @@ public class AssignAdapter extends BaseExpandableListAdapter {
 
     @Override
     public int getGroupCount() {
-        return this.enviroment.getArray().size();
+        return this.scanArray.getArray().size();
     }
 
     @Override
     public int getChildrenCount(int groupPosition) {
-        return this.enviroment.getArray().get(groupPosition).getBeacons().size();
+        return this.scanArray.getArray().get(groupPosition).getBeacons().size();
     }
 
     @Override
-    public Object getGroup(int groupPosition) { return this.enviroment.getArray().get(groupPosition); }
+    public Object getGroup(int groupPosition) { return this.scanArray.getArray().get(groupPosition); }
 
     @Override
     public Object getChild(int groupPosition, int childPosition) {
-        return this.enviroment.getArray().get(groupPosition).getBeacons().get(childPosition);
+        return this.scanArray.getArray().get(groupPosition).getBeacons().get(childPosition);
     }
 
     @Override
     public long getGroupId(int groupPosition) {
-        return this.enviroment.getArray().get(groupPosition).getName().hashCode();
+        return this.scanArray.getArray().get(groupPosition).getName().hashCode();
     }
 
     @Override
     public long getChildId(int groupPosition, int childPosition) {
-        return this.enviroment.getArray().get(groupPosition).getBeacons().get(childPosition).getMAC().hashCode();
+        return this.scanArray.getArray().get(groupPosition).getBeacons().get(childPosition).getMAC().hashCode();
     }
 
     @Override
@@ -71,8 +71,8 @@ public class AssignAdapter extends BaseExpandableListAdapter {
 
     @Override
     public View getGroupView(int groupPosition, boolean isExpanded, View convertView, ViewGroup parent) {
-        String title = this.enviroment.getArray().get(groupPosition).getName();
-        title += " ("+this.enviroment.getArray().get(groupPosition).getBeacons().size()+")";
+        String title = this.scanArray.getArray().get(groupPosition).getName();
+        title += " ("+this.scanArray.getArray().get(groupPosition).getBeacons().size()+")";
         if (convertView == null){ convertView = inflater.inflate(this.groupLayout, null); }
         TextView text = (TextView)convertView.findViewById(R.id.text1);
         text.setText(title);
@@ -81,7 +81,7 @@ public class AssignAdapter extends BaseExpandableListAdapter {
 
     @Override
     public View getChildView(int groupPosition, int childPosition, boolean isLastChild, View convertView, ViewGroup parent) {
-        Beacon beacon = this.enviroment.getArray().get(groupPosition).getBeacons().get(childPosition);
+        Beacon beacon = this.scanArray.getArray().get(groupPosition).getBeacons().get(childPosition);
         String info = infohelper.getCurrentInfo(beacon);
         View view = convertView;
         if (groupPosition > 0){

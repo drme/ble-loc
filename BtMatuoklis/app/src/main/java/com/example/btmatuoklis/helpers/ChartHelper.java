@@ -25,11 +25,11 @@ public class ChartHelper {
 
     public void setFullChart(GraphView graph, Beacon beacon){
         ArrayList<Byte> uniqueRSSIs = beacon.getUniqueRSSIs();
-        ArrayList<Byte> frequnecies = beacon.countRSSIFrequencies();
+        ArrayList<Byte> frequencies = beacon.countRSSIFrequencies();
         int size = uniqueRSSIs.size();
         DataPoint[] data = new DataPoint[size];
         for (int i = 0; i < size; i++){
-            data[i] = new DataPoint(uniqueRSSIs.get(i), frequnecies.get(i));
+            data[i] = new DataPoint(uniqueRSSIs.get(i), frequencies.get(i));
         }
         NumberFormat nf = NumberFormat.getInstance();
         nf.setMaximumFractionDigits(0);
@@ -38,7 +38,7 @@ public class ChartHelper {
         graph.getViewport().setYAxisBoundsManual(true);
         graph.getViewport().setMinX(beacon.getRSSIMin());
         graph.getViewport().setMaxX(beacon.getRSSIMax());
-        graph.getViewport().setMaxY(Collections.max(frequnecies));
+        graph.getViewport().setMaxY(Collections.max(frequencies));
         BarGraphSeries<DataPoint> series = new BarGraphSeries<DataPoint>(data);
         series.setSpacing(5);
         graph.addSeries(series);
@@ -46,11 +46,11 @@ public class ChartHelper {
 
     public void setFullSpacedChart(GraphView graph, Beacon beacon){
         ArrayList<Byte> uniqueRSSIs = beacon.getSpacedRSSIs();
-        ArrayList<Byte> frequnecies = beacon.countSpacedRSSIFrequencies();
+        ArrayList<Byte> frequencies = beacon.countSpacedRSSIFrequencies();
         int size = uniqueRSSIs.size();
         DataPoint[] data = new DataPoint[size];
         for (int i = 0; i < size; i++){
-            data[i] = new DataPoint(uniqueRSSIs.get(i), frequnecies.get(i));
+            data[i] = new DataPoint(uniqueRSSIs.get(i), frequencies.get(i));
         }
         NumberFormat nf = NumberFormat.getInstance();
         nf.setMaximumFractionDigits(0);
@@ -59,7 +59,7 @@ public class ChartHelper {
         graph.getViewport().setYAxisBoundsManual(true);
         graph.getViewport().setMinX(beacon.getRSSIMin());
         graph.getViewport().setMaxX(beacon.getRSSIMax());
-        graph.getViewport().setMaxY(Collections.max(frequnecies));
+        graph.getViewport().setMaxY(Collections.max(frequencies));
         BarGraphSeries<DataPoint> series = new BarGraphSeries<DataPoint>(data);
         series.setSpacing(5);
         graph.addSeries(series);

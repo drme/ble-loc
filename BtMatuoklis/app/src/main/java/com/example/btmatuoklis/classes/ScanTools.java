@@ -86,7 +86,7 @@ public class ScanTools{
         return true;
     }
 
-    public void calibratePrepare(Room room){
+    public void parametrizePrepare(Room room){
         this.prepareSample();
         ArrayList<Beacon> temp = room.getBeacons();
         ArrayList<Beacon> beacons = this.sample.getBeacons();
@@ -95,22 +95,22 @@ public class ScanTools{
         }
     }
 
-    public void calibrateSample(String mac, byte rssi, ArrayList<String> macs){
+    public void parametrizeSample(String mac, byte rssi, ArrayList<String> macs){
         if (macs.contains(mac)){ this.sample.findBeacon(mac).getFullRSSI().add(rssi); }
     }
 
-    public void calibrateAppend(Room room){
+    public void parametrisationAppend(Room room){
         ArrayList<Beacon> beacons = this.sample.getBeacons();
         for (int i = 0; i < beacons.size(); i++){
             Beacon beacon = beacons.get(i);
             if (!beacon.getFullRSSI().isEmpty()){
-                this.calibrate(beacon.getMAC(), beacon.getRSSIAverage(), room);
+                this.parametrize(beacon.getMAC(), beacon.getRSSIAverage(), room);
             }
         }
         for (int i = 0; i < beacons.size(); i++){ beacons.get(i).getFullRSSI().clear(); }
     }
 
-    public void calibrate(String mac, byte rssi, Room room){
+    public void parametrize(String mac, byte rssi, Room room){
         room.findBeacon(mac).getFullRSSI().add(rssi);
     }
 }

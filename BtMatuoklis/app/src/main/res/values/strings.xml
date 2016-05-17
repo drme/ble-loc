@@ -36,7 +36,7 @@
     <string name="dialog_assign_beacons">Ar tikrai norite šiam kambariui priskirti daugiau švyturėlių?</string>
     <string name="dialog_remove_all_rooms">Ar tikrai norite pašalinti visas patalpas?</string>
     <string name="dialog_remove_room">Ar tikrai norite pašalinti patalpą?</string>
-    <string name="dialog_remove_calibration">Ar tikrai norite pašalinti surinktas įrenginio parametrizacijos patalpoje reikšmes?</string>
+    <string name="dialog_remove_parametrisation">Ar tikrai norite pašalinti surinktas įrenginio parametrizacijos patalpoje reikšmes?</string>
     <string name="dialog_remove_beacon">Ar tikrai norite pašalinti BTLE įrenginį?</string>
     <string name="dialog_export_room_csv">Ar tikrai norite eksportuoti šios patalpos parametrizacijos reikšmes?</string>
 
@@ -56,7 +56,7 @@
     <string name="beacon_mac">MAC:</string>
     <string name="beacon_rssi">RSSI:</string>
     <string name="beacon_rssi_current">Last:</string>
-    <string name="beacon_calibration_number">Parametrizacijos reikšmių:</string>
+    <string name="beacon_parametrisation_number">Parametrizacijos reikšmių:</string>
     <string name="beacon_range">Apytikslis atstumas:</string>
 
     <!--Bendrai naudojami tekstai-->
@@ -89,9 +89,9 @@
 
     <!--RoomActivity elementu tekstai-->
     <string name="roomactivity_text_name">Pavadinimas:</string>
-    <string name="roomactivity_button_calibrate">Parametrizuoti patalpą</string>
-    <string name="roomactivity_button_finish_calib">Baigti parametrizaciją</string>
-    <string name="roomactivity_button_resume_calib">Tęsti parametrizaciją</string>
+    <string name="roomactivity_button_parametrize">Parametrizuoti patalpą</string>
+    <string name="roomactivity_button_finish_param">Baigti parametrizaciją</string>
+    <string name="roomactivity_button_resume_param">Tęsti parametrizaciją</string>
 
     <!--BeaconActivity elementu tekstai-->
     <string name="beaconactivity_text_name">Patalpa:</string>
@@ -103,7 +103,7 @@
     <string name="beaconactivity_title_chart">Reikšmių histograma</string>
 
     <!--CSVExportHelper klases tekstai-->
-    <string name="exportcsv_name_calibrate">param</string>
+    <string name="exportcsv_name_paramtrize">param</string>
     <string name="exportcsv_column_beacon">BeaconName</string>
     <string name="exportcsv_column_mac">BeaconMac</string>
     <string name="exportcsv_column_rssi">RSSI</string>

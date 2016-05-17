@@ -71,10 +71,10 @@ public class SettingsActivity extends PreferenceActivity {
         debugBeacons.setSummary(getString(R.string.settingsactivity_subtext_value)+" "+settings.getDebugBeacons());
         debugRSSIMin.setSummary(getString(R.string.settingsactivity_subtext_value)+" "+settings.getDebugRSSIMin());
         debugRSSIMax.setSummary(getString(R.string.settingsactivity_subtext_value)+" "+settings.getDebugRSSIMax());
-        toogleDebugSettings(settings.isGeneratorEnabled());
+        toggleDebugSettings(settings.isGeneratorEnabled());
     }
 
-    void toogleDebugSettings(boolean toggle){
+    void toggleDebugSettings(boolean toggle){
         debugBeacons.setEnabled(toggle);
         debugRSSIMin.setEnabled(toggle);
         debugRSSIMax.setEnabled(toggle);

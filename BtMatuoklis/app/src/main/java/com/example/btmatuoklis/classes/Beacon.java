@@ -13,8 +13,6 @@ public class Beacon {
     private ArrayList<Byte> rssi;
     private int id;
 
-    //private RangeCalculator calculator = new RangeCalculator();
-
     public Beacon(String name, String mac){
         this.name = name;
         this.mac = mac;

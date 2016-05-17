@@ -32,7 +32,7 @@ public class CSVExportHelper {
         if (!exportDir.exists()) {
             exportDir.mkdirs();
         }
-        res[0] = context.getString(R.string.exportcsv_name_calibrate)+"."+room.getName()+".csv";
+        res[0] = context.getString(R.string.exportcsv_name_paramtrize)+"."+room.getName()+".csv";
         File file = new File(exportDir, res[0]);
         try {
             file.createNewFile();

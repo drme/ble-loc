@@ -71,7 +71,7 @@ public class Room {
         return res;
     }
 
-    public ArrayList<Boolean> getCalibratedBeacons(){
+    public ArrayList<Boolean> getParametrizedBeacons(){
         ArrayList<Boolean> res = new ArrayList<Boolean>();
         for (int i = 0; i < this.beacons.size(); i++){
             if (this.beacons.get(i).getFullRSSI().size() == 0){
@@ -119,13 +119,13 @@ public class Room {
 
     //Grazina false, jeigu bent vienas irenginys neturi
     //nei vienos RSSI reiksmes kalibravimo masyve
-    public boolean isCalibrated(){
-        return !getCalibratedBeacons().contains(false);
+    public boolean isParametrized(){
+        return !getParametrizedBeacons().contains(false);
     }
 
     //Grazina true, jeigu bent vienas irenginys turi
     //nors viena RSSI reiksme kalibravimo masyve
-    public boolean isCalibrationStarted(){ return getCalibratedBeacons().contains(true); }
+    public boolean isParametrisationStarted(){ return getParametrizedBeacons().contains(true); }
 
     public int getID() {
         return id;

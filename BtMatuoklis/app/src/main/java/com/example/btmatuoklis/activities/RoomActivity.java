@@ -63,7 +63,7 @@ public class RoomActivity extends Activity {
     LinkAdapter listAdapter;
     ExpandableListView displayBeaconsList;
     TextView displayRoomName;
-    Button buttonCalibrate;
+    Button buttonParametrize;
     String room_key, beacon_key, simple_beacon_key;
     
     @Override
@@ -73,13 +73,11 @@ public class RoomActivity extends Activity {
         getActionBar().setSubtitle(getString(R.string.subtitle_existing_room));
         displayRoomName = (TextView)findViewById(R.id.textSingleRoom_Name);
         displayBeaconsList = (ExpandableListView)findViewById(R.id.listSingleRoom_BeaconsList);
-        buttonCalibrate = (Button)findViewById(R.id.buttonSingleRoom_Calibrate);
+        buttonParametrize = (Button)findViewById(R.id.buttonSingleRoom_Parametrize);
 
         setDefaultValues();
         checkBeacons();
         createBT();
-        //checkBT();
-        //createBTLECallBack();
         createThread();
         setListListener(true);
     }
@@ -101,8 +99,8 @@ public class RoomActivity extends Activity {
         exportItem = menu.findItem(R.id.action_export);
         settingsItem = menu.findItem(R.id.action_settings);
         if (currentRoom.getBeacons().isEmpty()){ this.finish(); }
-        else if (!currentRoom.isCalibrationStarted()){ restoreCalibrateButton(); }
-        else { resumeCalibrateButton(); }
+        else if (!currentRoom.isParametrisationStarted()){ restoreParametrizeButton(); }
+        else { resumeParametrizeButton(); }
         return super.onPrepareOptionsMenu(menu);
     }
 
@@ -133,9 +131,9 @@ public class RoomActivity extends Activity {
         startActivity(new Intent(getBaseContext(), SettingsActivity.class));
     }
 
-    public void onCalibrateButtonClick(View view){
-        if (!globalVariable.isScanning()) { startCalibration(); }
-        else { finishCalibration(); }
+    public void onParametrizeButtonClick(View view){
+        if (!globalVariable.isScanning()) { startParametrisation(); }
+        else { finishParametrisation(); }
     }
 
     void setDefaultValues(){
@@ -150,11 +148,9 @@ public class RoomActivity extends Activity {
         currentRoom = globalVariable.getRoomsArray().getArray().get(roomIndex);
         roomMACs = currentRoom.getMACList();
         roomArray.getArray().add(new Room(getString(R.string.category_assigned_beacons), currentRoom.getBeacons()));
-
         if (!currentRoom._getDevices().isEmpty()){
             roomArray.getArray().add(new Room(getString(R.string.category_unassigned_devices), currentRoom._getDevices()));
         }
-
         database = new MySQLiteHelper(this);
         exportCSV = new CSVExportHelper(this);
         _generator = new _DebugBeaconGenerator(this);
@@ -206,25 +202,25 @@ public class RoomActivity extends Activity {
     }
 
     //Veiksmai kalibracijai pradeti
-    void startCalibration(){
+    void startParametrisation(){
         getActionBar().getCustomView().setVisibility(View.VISIBLE);
         getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
         setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LOCKED);
         setListListener(false);
-        buttonCalibrate.setText(getString(R.string.roomactivity_button_finish_calib));
+        buttonParametrize.setText(getString(R.string.roomactivity_button_finish_param));
         enableMenuItem(assignItem, false);
         enableMenuItem(exportItem, false);
         enableMenuItem(settingsItem, false);
-        scantools.calibratePrepare(currentRoom);
+        scantools.parametrizePrepare(currentRoom);
         continuousScan(true);
     }
 
     //Veiksmai veiksmai kalibracijai baigti
-    void finishCalibration(){
+    void finishParametrisation(){
         getActionBar().getCustomView().setVisibility(View.INVISIBLE);
         getWindow().clearFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
         setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_UNSPECIFIED);
-        buttonCalibrate.setText(getString(R.string.roomactivity_button_resume_calib));
+        buttonParametrize.setText(getString(R.string.roomactivity_button_resume_param));
         setListListener(true);
         saveRSSIInDatabase();
         enableMenuItem(assignItem, true);
@@ -234,14 +230,14 @@ public class RoomActivity extends Activity {
     }
 
     void saveRSSIInDatabase(){
-        int roomdID = currentRoom.getID();
+        int roomID = currentRoom.getID();
         int beaconID;
-        ArrayList<Boolean> calibratedDevices = currentRoom.getCalibratedBeacons();
+        ArrayList<Boolean> parametrizedDevices = currentRoom.getParametrizedBeacons();
         String rssi;
-        for (int i = 0; i < calibratedDevices.size(); i++){
+        for (int i = 0; i < parametrizedDevices.size(); i++){
             rssi = currentRoom.getBeacons().get(i).getFullRSSI().toString();
             beaconID = currentRoom.getBeacons().get(i).getID();
-            database.updateCalibration(roomdID, beaconID, rssi);
+            database.updateParametrisation(roomID, beaconID, rssi);
         }
     }
 
@@ -253,9 +249,9 @@ public class RoomActivity extends Activity {
     }
 
     //Veiksmai pradinei mygtuko isvaizdai atstayti, kai nera kalibraciniu reiksmiu
-    void restoreCalibrateButton(){
+    void restoreParametrizeButton(){
         continuousScan(false);
-        buttonCalibrate.setText(getString(R.string.roomactivity_button_calibrate));
+        buttonParametrize.setText(getString(R.string.roomactivity_button_parametrize));
         setListListener(true);
         enableMenuItem(assignItem, true);
         enableMenuItem(exportItem, false);
@@ -263,9 +259,9 @@ public class RoomActivity extends Activity {
     }
 
     //Veiksmai mygtuko isvaizdai nustatyti, kai yra kalibraciniu reiksmiu
-    void resumeCalibrateButton(){
+    void resumeParametrizeButton(){
         continuousScan(false);
-        buttonCalibrate.setText(getString(R.string.roomactivity_button_resume_calib));
+        buttonParametrize.setText(getString(R.string.roomactivity_button_resume_param));
         setListListener(true);
         enableMenuItem(assignItem, true);
         enableMenuItem(exportItem, true);
@@ -299,7 +295,7 @@ public class RoomActivity extends Activity {
         continuousScan(false);
         database.deleteBeacons(currentRoom.getBeaconsIDs());
         database.deleteRoom(currentRoom.getID());
-        database.deleteCalibrations(currentRoom.getID());
+        database.deleteParametrisations(currentRoom.getID());
         globalVariable.getRoomsArray().getArray().remove(roomIndex);
         if (globalVariable.getRoomsArray().getArray().isEmpty()){
             database.clearDB();
@@ -333,24 +329,11 @@ public class RoomActivity extends Activity {
         dialog.showDialog();
     }
 
-    //Sukuriamas Bluetooth adapteris
     public void createBT(){
         BluetoothManager bluetoothManager =
                 (BluetoothManager)getSystemService(Context.BLUETOOTH_SERVICE);
         mBluetoothAdapter = bluetoothManager.getAdapter();
         if (mBluetoothAdapter != null && mBluetoothAdapter.isEnabled()){ createBTLECallBack(); }
-    }
-
-    //Patikriname ar Bluetooth telefone yra ijungtas
-    //Jei ne - paprasoma ijungti
-    void checkBT(){
-        if (mBluetoothAdapter == null || !mBluetoothAdapter.isEnabled()) {
-            Intent enableBtIntent = new Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE);
-            startActivityForResult(enableBtIntent, settings.REQUEST_ENABLE_BT);
-        }
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            mLEScanner = mBluetoothAdapter.getBluetoothLeScanner();
-        }
     }
 
     void createBTLECallBack(){
@@ -359,7 +342,7 @@ public class RoomActivity extends Activity {
                 @Override
                 public void onLeScan(BluetoothDevice device, int rssi, byte[] scanRecord) {
                     if (settings.showNullDevices() | device.getName() != null){
-                        scantools.calibrateSample(device.getAddress(), (byte)rssi, roomMACs);
+                        scantools.parametrizeSample(device.getAddress(), (byte)rssi, roomMACs);
                     }
                 }
             };
@@ -371,7 +354,7 @@ public class RoomActivity extends Activity {
                 @TargetApi(Build.VERSION_CODES.LOLLIPOP)
                 public void onScanResult(int callbackType, ScanResult result) {
                     if (settings.showNullDevices() | result.getDevice().getName() != null){
-                        scantools.calibrateSample(result.getDevice().getAddress(), (byte)result.getRssi(), roomMACs);
+                        scantools.parametrizeSample(result.getDevice().getAddress(), (byte)result.getRssi(), roomMACs);
                     }
                 }
             };
@@ -380,7 +363,6 @@ public class RoomActivity extends Activity {
 
     void createThread(){
         handler = new Handler();
-        //nustatytu intervalu vykdo scanAppend
         background = new Runnable() {
             @Override
             public void run() {
@@ -390,7 +372,6 @@ public class RoomActivity extends Activity {
         };
     }
 
-    //Nuolatos pradedamas ir stabdomas scanAppend
     void continuousScan(boolean enable){
         globalVariable.setScanning(enable);
         if (enable){ new Thread(background).start(); }
@@ -399,8 +380,8 @@ public class RoomActivity extends Activity {
     private class ScanTask extends AsyncTask<Void, Void, Boolean>{
         @Override
         protected Boolean doInBackground(Void... params) {
-            calibrateLogic();
-            scantools.calibrateAppend(currentRoom);
+            parametrisationLogic();
+            scantools.parametrisationAppend(currentRoom);
             return true;
         }
         @Override
@@ -410,7 +391,7 @@ public class RoomActivity extends Activity {
         }
     }
 
-    private void calibrateLogic(){
+    private void parametrisationLogic(){
         if (!settings.isGeneratorEnabled() && mBluetoothAdapter != null && mBluetoothAdapter.isEnabled()) {
             if (Build.VERSION.SDK_INT < Build.VERSION_CODES.LOLLIPOP){
                 mBluetoothAdapter.startLeScan(mLeScanCallback);
@@ -427,7 +408,7 @@ public class RoomActivity extends Activity {
             int cycles = _generator.numGen(0, settings.getDebugBeacons()*5);
             for (int i = 0; i < cycles; i++) {
                 _generator.generate(settings.getDebugBeacons(), settings.getDebugRSSIMin(), settings.getDebugRSSIMax());
-                scantools.calibrateSample(_generator.getMAC(), _generator.getRSSI(), roomMACs);
+                scantools.parametrizeSample(_generator.getMAC(), _generator.getRSSI(), roomMACs);
             }
             threadSleep(sampleTime);
         }

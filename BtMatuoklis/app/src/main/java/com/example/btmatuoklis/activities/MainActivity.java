@@ -10,7 +10,6 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.Toast;
 
 import com.example.btmatuoklis.R;
 import com.example.btmatuoklis.classes.GlobalClass;
@@ -84,15 +83,12 @@ public class MainActivity extends Activity {
         loadBeacons();
     }
 
-    //Sukuriamas Bluetooth adapteris
     public void createBT(){
         BluetoothManager bluetoothManager =
                 (BluetoothManager)getSystemService(Context.BLUETOOTH_SERVICE);
         mBluetoothAdapter = bluetoothManager.getAdapter();
     }
 
-    //Patikriname ar Bluetooth telefone yra ijungtas
-    //Jei ne - paprasoma ijungti
     void checkBT(){
         if (mBluetoothAdapter == null || !mBluetoothAdapter.isEnabled()) {
             Intent enableBtIntent = new Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE);

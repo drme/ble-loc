@@ -37,22 +37,17 @@ public class ScanActivity extends Activity {
     GlobalClass globalVariable;
     Settings settings;
     ScanTools scantools;
-
     BluetoothAdapter mBluetoothAdapter;
     BluetoothAdapter.LeScanCallback mLeScanCallback;
-
     BluetoothLeScanner mLEScanner;
     ScanCallback mScanCallback;
-
     _DebugBeaconGenerator _generator;
     _DebugDeviceControl _control;
-
     short sleepMin, sleepMax, sleepFast, sampleTime;
-
     Handler handler;
     Runnable background;
     Room environment;
-    RoomsArray roomsArray, enviromentArray;
+    RoomsArray roomsArray, scanArray;
     RoomDetector detector;
     ScanAdapter adapter;
     TextView detectedRoom;
@@ -69,8 +64,6 @@ public class ScanActivity extends Activity {
         
         setDefaultValues();
         createBT();
-        //checkBT();
-        //createBTLECallBack();
         createThreads();
         continuousScan(true);
     }
@@ -95,7 +88,6 @@ public class ScanActivity extends Activity {
         startActivity(new Intent(getBaseContext(), SettingsActivity.class));
     }
 
-    //Sukuriamas Bluetooth adapteris
     public void createBT(){
         BluetoothManager bluetoothManager =
                 (BluetoothManager)getSystemService(Context.BLUETOOTH_SERVICE);
@@ -128,16 +120,14 @@ public class ScanActivity extends Activity {
         }
     }
 
-    //Nustatomos "default" reiksmes
-    //Jeigu programa leidziama ne pirma karta - nustatomos issaugotos reiksmes
     void setDefaultValues(){
         globalVariable = (GlobalClass) getApplicationContext();
         settings = MainActivity.settings;
         scantools = new ScanTools();
         environment = new Room();
         roomsArray = globalVariable.getRoomsArray();
-        enviromentArray = new RoomsArray();
-        enviromentArray.getArray().add(new Room(getString(R.string.category_unassigned_beacons)));
+        scanArray = new RoomsArray();
+        scanArray.getArray().add(new Room(getString(R.string.category_unassigned_beacons)));
         detector = new RoomDetector(this);
         _generator = new _DebugBeaconGenerator(this);
         _control = new _DebugDeviceControl(ScanActivity.this);
@@ -145,13 +135,12 @@ public class ScanActivity extends Activity {
         sleepMax = (short)getResources().getInteger(R.integer.scan_sleep_max);
         sleepFast = (short)getResources().getInteger(R.integer.sleep_fast);
         sampleTime = (short)getResources().getInteger(R.integer.scan_sample_min);
-        adapter = new ScanAdapter(this, roomsArray, enviromentArray);
+        adapter = new ScanAdapter(this, roomsArray, scanArray);
         displayBeaconsList.setAdapter(adapter);
     }
 
     void createThreads(){
         handler = new Handler();
-        //Background Runnable - paleidziamas scan AsyncTask
         background = new Runnable() {
             @Override
             public void run() {
@@ -161,7 +150,6 @@ public class ScanActivity extends Activity {
         };
     }
 
-    //Nuolatos pradedamas ir stabdomas scanAppend
     void continuousScan(boolean enable){
         globalVariable.setScanning(enable);
         if (enable){ new Thread(background).start(); }
@@ -171,8 +159,8 @@ public class ScanActivity extends Activity {
         @Override
         protected Boolean doInBackground(Void... params) {
             scanLogic();
-            scantools.scanAppend(roomsArray, enviromentArray);
-            int index = detector.getDetectedRoomIndex(roomsArray, enviromentArray);
+            scantools.scanAppend(roomsArray, scanArray);
+            int index = detector.getDetectedRoomIndex(roomsArray, scanArray);
             roomName = detector.getDetectedRoomName(roomsArray, index);
             _control.checkDevices(roomsArray, index);
             return true;

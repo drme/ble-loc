@@ -15,11 +15,11 @@ import java.util.ArrayList;
 public class MySQLiteHelper extends SQLiteOpenHelper {
 
     private static final int DATABASE_VERSION = 1;
-    private static final String DATABASE_NAME = "CalibrationDB";
+    private static final String DATABASE_NAME = "ParametrisationDB";
 
     private static final String TABLE_ROOMS = "rooms";
     private static final String TABLE_BEACONS = "beacons";
-    private static final String TABLE_CALIBRATIONS = "calibrations";
+    private static final String TABLE_PARAMETRISATIONS = "parametrisations";
 
     private static final String KEY_ID = "id";
     private static final String KEY_NAME = "name";
@@ -43,19 +43,19 @@ public class MySQLiteHelper extends SQLiteOpenHelper {
                 " INTEGER PRIMARY KEY AUTOINCREMENT, "+KEY_NAME+" TEXT)";
         String CREATE_BEACONS_TABLE = "CREATE TABLE "+TABLE_BEACONS+" ("+KEY_ID+
                 " INTEGER PRIMARY KEY AUTOINCREMENT, "+KEY_NAME+" TEXT, "+KEY_MAC+" TEXT)";
-        String CREATE_CALIBRATIONS_TABLE = "CREATE TABLE "+TABLE_CALIBRATIONS+" ("+KEY_ID+
+        String CREATE_PARAMETRISATION_TABLE = "CREATE TABLE "+ TABLE_PARAMETRISATIONS +" ("+KEY_ID+
                 " INTEGER PRIMARY KEY AUTOINCREMENT, "+KEY_ROOMID+" INTEGER, "+KEY_BEACONID+
                 " INTEGER, "+KEY_RSSI+" TEXT)";
         database.execSQL(CREATE_BEACONS_TABLE);
         database.execSQL(CREATE_ROOMS_TABLE);
-        database.execSQL(CREATE_CALIBRATIONS_TABLE);
+        database.execSQL(CREATE_PARAMETRISATION_TABLE);
     }
 
     @Override
     public void onUpgrade(SQLiteDatabase database, int oldVersion, int newVersion) {
         database.execSQL("DROP TABLE IF EXISTS "+TABLE_ROOMS);
         database.execSQL("DROP TABLE IF EXISTS " + TABLE_BEACONS);
-        database.execSQL("DROP TABLE IF EXISTS " + TABLE_CALIBRATIONS);
+        database.execSQL("DROP TABLE IF EXISTS " + TABLE_PARAMETRISATIONS);
         this.onCreate(database);
     }
 
@@ -100,13 +100,13 @@ public class MySQLiteHelper extends SQLiteOpenHelper {
         return id;
     }
 
-    public void addCalibration(int roomID, int beaconID, String rssi){
+    public void addParametrisation(int roomID, int beaconID, String rssi){
         SQLiteDatabase database = this.getWritableDatabase();
         ContentValues values = new ContentValues();
         values.put(KEY_ROOMID, roomID);
         values.put(KEY_BEACONID, beaconID);
         values.put(KEY_RSSI, rssi);
-        database.insert(TABLE_CALIBRATIONS, null, values);
+        database.insert(TABLE_PARAMETRISATIONS, null, values);
         database.close();
     }
 
@@ -127,10 +127,10 @@ public class MySQLiteHelper extends SQLiteOpenHelper {
     public void loadAllBeacons(ArrayList<Room> rooms){
         SQLiteDatabase database = this.getReadableDatabase();
         String query = "SELECT "+TABLE_BEACONS+"."+KEY_ID+", "+TABLE_BEACONS+"."+KEY_NAME+
-                ", "+TABLE_BEACONS+"."+KEY_MAC+", "+TABLE_CALIBRATIONS+"."+KEY_RSSI+
-                " FROM "+TABLE_BEACONS+" INNER JOIN "+TABLE_CALIBRATIONS+
-                " ON ("+TABLE_BEACONS+"."+KEY_ID+" = "+TABLE_CALIBRATIONS+"."+KEY_BEACONID+
-                ") WHERE "+TABLE_CALIBRATIONS+"."+KEY_ROOMID+" = ?";
+                ", "+TABLE_BEACONS+"."+KEY_MAC+", "+ TABLE_PARAMETRISATIONS +"."+KEY_RSSI+
+                " FROM "+TABLE_BEACONS+" INNER JOIN "+ TABLE_PARAMETRISATIONS +
+                " ON ("+TABLE_BEACONS+"."+KEY_ID+" = "+ TABLE_PARAMETRISATIONS +"."+KEY_BEACONID+
+                ") WHERE "+ TABLE_PARAMETRISATIONS +"."+KEY_ROOMID+" = ?";
         for (int i = 0; i < rooms.size(); i++) {
             Room room = rooms.get(i);
             Cursor cursor = database.rawQuery(query, new String[]{Integer.toString(room.getID())});
@@ -166,9 +166,9 @@ public class MySQLiteHelper extends SQLiteOpenHelper {
         return (string != null && string.contains(device_key));
     }
 
-    public int getCalibrationID(int roomID, int beaconID){
+    public int getParametrisationID(int roomID, int beaconID){
         SQLiteDatabase database = this.getReadableDatabase();
-        String query = "SELECT "+KEY_ID+" FROM "+TABLE_CALIBRATIONS+
+        String query = "SELECT "+KEY_ID+" FROM "+ TABLE_PARAMETRISATIONS +
                 " WHERE "+KEY_ROOMID+" = ? AND "+KEY_BEACONID+" = ?";
         Cursor cursor = database.rawQuery(query,
                 new String[]{String.valueOf(roomID),
@@ -182,12 +182,12 @@ public class MySQLiteHelper extends SQLiteOpenHelper {
         return id;
     }
 
-    public int updateCalibration(int roomID, int beaconID, String rssi){
-        int id = getCalibrationID(roomID, beaconID);
+    public int updateParametrisation(int roomID, int beaconID, String rssi){
+        int id = getParametrisationID(roomID, beaconID);
         SQLiteDatabase database = this.getWritableDatabase();
         ContentValues values = new ContentValues();
         values.put(KEY_RSSI, rssi);
-        int i = database.update(TABLE_CALIBRATIONS, values, KEY_ID+" = ?",
+        int i = database.update(TABLE_PARAMETRISATIONS, values, KEY_ID+" = ?",
                 new String[] { String.valueOf(id)});
         database.close();
         return i;
@@ -227,22 +227,22 @@ public class MySQLiteHelper extends SQLiteOpenHelper {
         }*/
     }
 
-    public void deleteCalibration(int id) {
+    public void deleteParametrisation(int id) {
         SQLiteDatabase database = this.getWritableDatabase();
-        database.delete(TABLE_CALIBRATIONS, KEY_ID+" = ?", new String[]{String.valueOf(id)});
+        database.delete(TABLE_PARAMETRISATIONS, KEY_ID+" = ?", new String[]{String.valueOf(id)});
         database.close();
     }
 
-    public void deleteCalibrations(int id) {
+    public void deleteParametrisations(int id) {
         SQLiteDatabase database = this.getWritableDatabase();
-        database.delete(TABLE_CALIBRATIONS, KEY_ROOMID+" = ?", new String[]{String.valueOf(id)});
+        database.delete(TABLE_PARAMETRISATIONS, KEY_ROOMID+" = ?", new String[]{String.valueOf(id)});
         database.close();
     }
 
     public void clearDB(){
         deleteTable(TABLE_ROOMS);
         deleteTable(TABLE_BEACONS);
-        deleteTable(TABLE_CALIBRATIONS);
+        deleteTable(TABLE_PARAMETRISATIONS);
     }
 
     public void deleteTable(String table){

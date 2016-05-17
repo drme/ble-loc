@@ -44,11 +44,11 @@ public class _DebugDeviceControl {
         this.roomDeviceMACs = new ArrayList<String>();
         this.prevDeviceMACs = new ArrayList<String>();
         this.prevRoomIndex = -2;
-        this.createGattCallbak();
+        this.createGattCallback();
         this.createNotifications();
     }
 
-    private void createGattCallbak(){
+    private void createGattCallback(){
         mGattCallback = new BluetoothGattCallback() {
             @Override
             public void onConnectionStateChange(BluetoothGatt gatt, int status, int newState) {
@@ -77,7 +77,6 @@ public class _DebugDeviceControl {
                 else {
                     Log.d("_GATT", "CHARACTERISTIC NOT FOUND!");
                     gatt.disconnect();
-                    //continuousScan(true);
                 }
             }
 

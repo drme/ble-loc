@@ -48,7 +48,7 @@ public class AssignActivity extends Activity {
     ScanTools scantools;
     Room currentRoom;
     ArrayList<String> allMACs;
-    RoomsArray enviromentArray;
+    RoomsArray scanArray;
     MySQLiteHelper database;
     BluetoothAdapter mBluetoothAdapter;
     BluetoothAdapter.LeScanCallback mLeScanCallback;
@@ -76,8 +76,6 @@ public class AssignActivity extends Activity {
         setDefaultValues();
         setListListener();
         createBT();
-        //checkBT();
-        //createBTLECallBack();
         createThread();
         continuousScan(true);
     }
@@ -125,16 +123,16 @@ public class AssignActivity extends Activity {
         scantools = new ScanTools();
         allMACs = globalVariable.getRoomsArray().getFullMACList();
         allMACs.addAll(globalVariable.getRoomsArray()._getFullDeviceMACList());
-        enviromentArray = new RoomsArray();
-        enviromentArray.getArray().add(new Room(getString(R.string.category_assigned_beacons)));
-        enviromentArray.getArray().add(new Room(getString(R.string.category_unassigned_beacons)));
+        scanArray = new RoomsArray();
+        scanArray.getArray().add(new Room(getString(R.string.category_assigned_beacons)));
+        scanArray.getArray().add(new Room(getString(R.string.category_unassigned_beacons)));
         currentRoom = globalVariable.getRoomsArray().getArray().get(roomIndex);
         database = new MySQLiteHelper(this);
         _generator = new _DebugBeaconGenerator(this);
         sleepTime = (short)getResources().getInteger(R.integer.sleep_fast);
         sampleTime = (short)getResources().getInteger(R.integer.scan_sample_min);
         selectedBeacons = new ArrayList<Integer>();
-        adapter = new AssignAdapter(this, enviromentArray, selectedBeacons);
+        adapter = new AssignAdapter(this, scanArray, selectedBeacons);
         displayBeaconsList.setAdapter(adapter);
     }
 
@@ -183,7 +181,7 @@ public class AssignActivity extends Activity {
 
     void saveSelectedBeacons(boolean simpleBeacon){
         for (int i = 0; i < selectedBeacons.size(); i++){
-            Beacon temp = enviromentArray.getArray().get(1).getBeacons().get(selectedBeacons.get(i));
+            Beacon temp = scanArray.getArray().get(1).getBeacons().get(selectedBeacons.get(i));
             Beacon beacon = new Beacon(temp.getName(), temp.getMAC());
             if (simpleBeacon){ currentRoom.getBeacons().add(beacon); }
             else { currentRoom._getDevices().add(beacon); }
@@ -197,8 +195,8 @@ public class AssignActivity extends Activity {
         database.addBeacon(beacon);
         int id = database.getLastBeaconID();
         beacon.setID(id);
-        if (simpleBeacon){ database.addCalibration(currentRoom.getID(), id, null); }
-        else { database.addCalibration(currentRoom.getID(), id, sql_device_key); }
+        if (simpleBeacon){ database.addParametrisation(currentRoom.getID(), id, null); }
+        else { database.addParametrisation(currentRoom.getID(), id, sql_device_key); }
     }
 
     void notifyAssignedBeacons(){
@@ -207,24 +205,11 @@ public class AssignActivity extends Activity {
                 Toast.LENGTH_SHORT).show();
     }
 
-    //Sukuriamas Bluetooth adapteris
     public void createBT(){
         BluetoothManager bluetoothManager =
                 (BluetoothManager)getSystemService(Context.BLUETOOTH_SERVICE);
         mBluetoothAdapter = bluetoothManager.getAdapter();
         if (mBluetoothAdapter != null && mBluetoothAdapter.isEnabled()){ createBTLECallBack(); }
-    }
-
-    //Patikriname ar Bluetooth telefone yra ijungtas
-    //Jei ne - paprasoma ijungti
-    void checkBT(){
-        if (mBluetoothAdapter == null || !mBluetoothAdapter.isEnabled()) {
-            Intent enableBtIntent = new Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE);
-            startActivityForResult(enableBtIntent, settings.REQUEST_ENABLE_BT);
-        }
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            mLEScanner = mBluetoothAdapter.getBluetoothLeScanner();
-        }
     }
 
     void createBTLECallBack(){
@@ -254,8 +239,6 @@ public class AssignActivity extends Activity {
 
     void createThread(){
         handler = new Handler();
-        //Background Runnable:
-        //nustatytu intervalu vykdo scanAppend
         background = new Runnable() {
             @Override
             public void run() {
@@ -265,7 +248,6 @@ public class AssignActivity extends Activity {
         };
     }
 
-    //Nuolatos pradedamas ir stabdomas scanAppend
     void continuousScan(boolean enable){
         globalVariable.setScanning(enable);
         if (enable){ new Thread(background).start(); }
@@ -275,7 +257,7 @@ public class AssignActivity extends Activity {
         @Override
         protected Boolean doInBackground(Void... params) {
             assignLogic();
-            scantools.assignAppend(allMACs, enviromentArray);
+            scantools.assignAppend(allMACs, scanArray);
             return true;
         }
         @Override

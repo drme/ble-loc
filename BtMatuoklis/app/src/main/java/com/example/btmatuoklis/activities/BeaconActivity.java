@@ -64,7 +64,6 @@ public class BeaconActivity extends Activity {
         chartName = (TextView)findViewById(R.id.textBeacon_title_chart1);
         chart = (GraphView)findViewById(R.id.viewBeacon_chart1);
 
-
         setDefaultValues();
         setRSSIdata();
     }
@@ -159,26 +158,26 @@ public class BeaconActivity extends Activity {
         displayArrayFrame.setOnLongClickListener(new View.OnLongClickListener() {
             @Override
             public boolean onLongClick(View v) {
-                removeCalibrationConfirm();
+                removeParametrisationConfirm();
                 return false;
             }
         });
     }
 
-    void removeCalibration(){
-        database.updateCalibration(currentRoom.getID(), currentBeacon.getID(), null);
+    void removeParametrisation(){
+        database.updateParametrisation(currentRoom.getID(), currentBeacon.getID(), null);
         currentBeacon.getFullRSSI().clear();
         Toast.makeText(getApplicationContext(), getString(R.string.toast_info_removed), Toast.LENGTH_SHORT).show();
         BeaconActivity.this.finish();
     }
 
-    void removeCalibrationConfirm() {
+    void removeParametrisationConfirm() {
         DialogBuildHelper dialog = new DialogBuildHelper(BeaconActivity.this, getString(R.string.dialog_title_remove),
-                getString(R.string.dialog_remove_calibration), android.R.drawable.ic_dialog_alert);
+                getString(R.string.dialog_remove_parametrisation), android.R.drawable.ic_dialog_alert);
         dialog.getBuilder().setPositiveButton(getString(R.string.dialog_button_ok), new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
-                removeCalibration();
+                removeParametrisation();
             }
         });
         dialog.setNegative(getString(R.string.dialog_button_cancel));
@@ -186,8 +185,8 @@ public class BeaconActivity extends Activity {
     }
 
     void removeBeacon(){
-        int id = database.getCalibrationID(currentRoom.getID(), currentBeacon.getID());
-        database.deleteCalibration(id);
+        int id = database.getParametrisationID(currentRoom.getID(), currentBeacon.getID());
+        database.deleteParametrisation(id);
         database.deleteBeacon(currentBeacon.getID());
         if (simpleBeacon) { currentRoom.getBeacons().remove(beaconIndex); }
         else { currentRoom._getDevices().remove(beaconIndex); }

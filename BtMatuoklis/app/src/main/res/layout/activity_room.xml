@@ -22,15 +22,15 @@
         android:layout_alignParentEnd="true"
         android:layout_alignParentStart="true"
         android:layout_below="@+id/textSingleRoom_Name"
-        android:layout_above="@+id/buttonSingleRoom_Calibrate"
+        android:layout_above="@+id/buttonSingleRoom_Parametrize"
         tools:listitem="@layout/list_group" />
 
     <Button
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="@string/roomactivity_button_calibrate"
-        android:id="@+id/buttonSingleRoom_Calibrate"
+        android:text="@string/roomactivity_button_parametrize"
+        android:id="@+id/buttonSingleRoom_Parametrize"
         android:layout_alignParentBottom="true"
         android:layout_centerHorizontal="true"
-        android:onClick="onCalibrateButtonClick" />
+        android:onClick="onParametrizeButtonClick" />
 </RelativeLayout>

@@ -25,15 +25,15 @@ public class ScanAdapter extends BaseExpandableListAdapter {
     private int groupLayout, itemLayout;
     private int verAPI, lollipopAPI;
     private LayoutInflater inflater;
-    private RoomsArray rooms, enviroment;
+    private RoomsArray roomsArray, scanArray;
     private BeaconInfoHelper infohelper;
     private ChartHelper charthelper;
 
-    public ScanAdapter(Context context, RoomsArray rooms, RoomsArray enviroment) {
+    public ScanAdapter(Context context, RoomsArray roomsArray, RoomsArray scanArray) {
         this.groupLayout = R.layout.list_group;
         this.itemLayout = R.layout.list_scan_item;
-        this.rooms = rooms;
-        this.enviroment = enviroment;
+        this.roomsArray = roomsArray;
+        this.scanArray = scanArray;
         this.infohelper = new BeaconInfoHelper(context);
         this.charthelper = new ChartHelper();
         this.verAPI = Build.VERSION.SDK_INT;
@@ -43,20 +43,20 @@ public class ScanAdapter extends BaseExpandableListAdapter {
 
     @Override
     public int getGroupCount() {
-        return this.enviroment.getArray().size();
+        return this.scanArray.getArray().size();
     }
 
     @Override
     public int getChildrenCount(int groupPosition) {
-        return this.enviroment.getArray().get(groupPosition).getBeacons().size();
+        return this.scanArray.getArray().get(groupPosition).getBeacons().size();
     }
 
     @Override
-    public Object getGroup(int groupPosition) { return this.enviroment.getArray().get(groupPosition); }
+    public Object getGroup(int groupPosition) { return this.scanArray.getArray().get(groupPosition); }
 
     @Override
     public Object getChild(int groupPosition, int childPosition) {
-        return this.enviroment.getArray().get(groupPosition).getBeacons().get(childPosition);
+        return this.scanArray.getArray().get(groupPosition).getBeacons().get(childPosition);
     }
 
     @Override
@@ -76,8 +76,8 @@ public class ScanAdapter extends BaseExpandableListAdapter {
 
     @Override
     public View getGroupView(int groupPosition, boolean isExpanded, View convertView, ViewGroup parent) {
-        String title = this.enviroment.getArray().get(groupPosition).getName();
-        title += " ("+this.enviroment.getArray().get(groupPosition).getBeacons().size()+")";
+        String title = this.scanArray.getArray().get(groupPosition).getName();
+        title += " ("+this.scanArray.getArray().get(groupPosition).getBeacons().size()+")";
         if (convertView == null){ convertView = inflater.inflate(this.groupLayout, null); }
         TextView text = (TextView)convertView.findViewById(R.id.text1);
         text.setText(title);
@@ -87,9 +87,9 @@ public class ScanAdapter extends BaseExpandableListAdapter {
     @Override
     public View getChildView(int groupPosition, int childPosition, boolean isLastChild, View convertView, ViewGroup parent) {
         Byte rssiMin = 0;
-        Beacon beacon = this.enviroment.getArray().get(groupPosition).getBeacons().get(childPosition);
+        Beacon beacon = this.scanArray.getArray().get(groupPosition).getBeacons().get(childPosition);
         String info = this.infohelper.getCurrentInfo(beacon);
-        Beacon temp = this.rooms.findBeacon(beacon.getMAC());
+        Beacon temp = this.roomsArray.findBeacon(beacon.getMAC());
         if (temp != null && !temp.getFullRSSI().isEmpty()){ rssiMin = Collections.min(temp.getFullRSSI()); }
         View view = convertView;
         ChartHolder chartholder;
