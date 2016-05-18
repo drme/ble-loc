@@ -30,6 +30,7 @@
     <integer name="scan_sample_min">1500</integer>
     <integer name="scan_sample_max">5000</integer>
     <integer name="max_range">100</integer>
+    <integer name="max_name_length">30</integer>
 
 
     <!--[Laikinai naudojami]-->

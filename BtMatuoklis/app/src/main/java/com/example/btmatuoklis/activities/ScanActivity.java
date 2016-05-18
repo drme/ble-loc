@@ -53,6 +53,7 @@ public class ScanActivity extends Activity {
     TextView detectedRoom;
     ExpandableListView displayBeaconsList;
     String roomName;
+    boolean callbackCreated;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -92,7 +93,6 @@ public class ScanActivity extends Activity {
         BluetoothManager bluetoothManager =
                 (BluetoothManager)getSystemService(Context.BLUETOOTH_SERVICE);
         mBluetoothAdapter = bluetoothManager.getAdapter();
-        if (mBluetoothAdapter != null && mBluetoothAdapter.isEnabled()){ createBTLECallBack(); }
     }
 
     void createBTLECallBack(){
@@ -118,6 +118,7 @@ public class ScanActivity extends Activity {
                 }
             };
         }
+        callbackCreated = true;
     }
 
     void setDefaultValues(){
@@ -135,6 +136,7 @@ public class ScanActivity extends Activity {
         sleepMax = (short)getResources().getInteger(R.integer.scan_sleep_max);
         sleepFast = (short)getResources().getInteger(R.integer.sleep_fast);
         sampleTime = (short)getResources().getInteger(R.integer.scan_sample_min);
+        callbackCreated = false;
         adapter = new ScanAdapter(this, roomsArray, scanArray);
         displayBeaconsList.setAdapter(adapter);
     }
@@ -177,6 +179,7 @@ public class ScanActivity extends Activity {
 
     private void scanLogic(){
         if (!settings.isGeneratorEnabled() && mBluetoothAdapter != null && mBluetoothAdapter.isEnabled()){
+            if (!callbackCreated){ createBTLECallBack(); }
             if (Build.VERSION.SDK_INT < Build.VERSION_CODES.LOLLIPOP){
                 mBluetoothAdapter.startLeScan(mLeScanCallback);
                 //To-do: "adaptyvus" sleep laiko paskaiciavimas pagal aptiktu beaconu kieki

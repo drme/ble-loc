@@ -63,6 +63,7 @@ public class AssignActivity extends Activity {
     ArrayList<Integer> selectedBeacons;
     Button buttonAccept;
     String room_key, simple_beacon_key, sql_device_key;
+    boolean callbackCreated;
     boolean simple_beacon;
 
     @Override
@@ -132,6 +133,7 @@ public class AssignActivity extends Activity {
         sleepTime = (short)getResources().getInteger(R.integer.sleep_fast);
         sampleTime = (short)getResources().getInteger(R.integer.scan_sample_min);
         selectedBeacons = new ArrayList<Integer>();
+        callbackCreated = false;
         adapter = new AssignAdapter(this, scanArray, selectedBeacons);
         displayBeaconsList.setAdapter(adapter);
     }
@@ -209,7 +211,6 @@ public class AssignActivity extends Activity {
         BluetoothManager bluetoothManager =
                 (BluetoothManager)getSystemService(Context.BLUETOOTH_SERVICE);
         mBluetoothAdapter = bluetoothManager.getAdapter();
-        if (mBluetoothAdapter != null && mBluetoothAdapter.isEnabled()){ createBTLECallBack(); }
     }
 
     void createBTLECallBack(){
@@ -235,6 +236,7 @@ public class AssignActivity extends Activity {
                 }
             };
         }
+        callbackCreated = true;
     }
 
     void createThread(){
@@ -269,6 +271,7 @@ public class AssignActivity extends Activity {
 
     private void assignLogic(){
         if (!settings.isGeneratorEnabled() && mBluetoothAdapter != null && mBluetoothAdapter.isEnabled()) {
+            if (!callbackCreated){ createBTLECallBack(); }
             if (Build.VERSION.SDK_INT < Build.VERSION_CODES.LOLLIPOP){
                 mBluetoothAdapter.startLeScan(mLeScanCallback);
                 threadSleep(sampleTime);

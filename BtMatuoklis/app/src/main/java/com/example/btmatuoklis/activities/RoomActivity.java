@@ -65,6 +65,7 @@ public class RoomActivity extends Activity {
     TextView displayRoomName;
     Button buttonParametrize;
     String room_key, beacon_key, simple_beacon_key;
+    boolean callbackCreated;
     
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -156,6 +157,7 @@ public class RoomActivity extends Activity {
         _generator = new _DebugBeaconGenerator(this);
         sleepTime = (short)getResources().getInteger(R.integer.sleep_fast);
         sampleTime = (short)getResources().getInteger(R.integer.scan_sample_min);
+        callbackCreated = false;
         listAdapter = new LinkAdapter(this, roomArray);
         displayBeaconsList.setAdapter(listAdapter);
         displayRoomName.setText(getString(R.string.roomactivity_text_name) + " " + currentRoom.getName());
@@ -333,7 +335,6 @@ public class RoomActivity extends Activity {
         BluetoothManager bluetoothManager =
                 (BluetoothManager)getSystemService(Context.BLUETOOTH_SERVICE);
         mBluetoothAdapter = bluetoothManager.getAdapter();
-        if (mBluetoothAdapter != null && mBluetoothAdapter.isEnabled()){ createBTLECallBack(); }
     }
 
     void createBTLECallBack(){
@@ -359,6 +360,7 @@ public class RoomActivity extends Activity {
                 }
             };
         }
+        callbackCreated = true;
     }
 
     void createThread(){
@@ -393,6 +395,7 @@ public class RoomActivity extends Activity {
 
     private void parametrisationLogic(){
         if (!settings.isGeneratorEnabled() && mBluetoothAdapter != null && mBluetoothAdapter.isEnabled()) {
+            if (!callbackCreated){ createBTLECallBack(); }
             if (Build.VERSION.SDK_INT < Build.VERSION_CODES.LOLLIPOP){
                 mBluetoothAdapter.startLeScan(mLeScanCallback);
                 threadSleep(sampleTime);

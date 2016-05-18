@@ -5,6 +5,7 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.graphics.Color;
 import android.text.Editable;
+import android.text.InputFilter;
 import android.text.InputType;
 import android.text.TextWatcher;
 import android.widget.EditText;
@@ -20,12 +21,14 @@ public class DialogBuildHelper {
     EditText input;
     int theme = AlertDialog.THEME_HOLO_DARK;
     int inputType = InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_FLAG_CAP_SENTENCES;
+    int nameLength;
     int color = Color.WHITE;
     ArrayList<String> names;
     String existingError;
 
     public DialogBuildHelper(Context context, String title, String message, int icon) {
         this.context = context;
+        this.nameLength = context.getResources().getInteger(R.integer.max_name_length);
         builder = new AlertDialog.Builder(this.context, theme);
         builder.setTitle(title);
         builder.setMessage(message);
@@ -38,8 +41,10 @@ public class DialogBuildHelper {
     }
 
     public void setInput(){
+        InputFilter[] lengthFilter = new InputFilter[]{new InputFilter.LengthFilter(this.nameLength)};
         input = new EditText(this.context);
         input.setInputType(inputType);
+        input.setFilters(lengthFilter);
         input.setTextColor(color);
         builder.setView(input);
     }
