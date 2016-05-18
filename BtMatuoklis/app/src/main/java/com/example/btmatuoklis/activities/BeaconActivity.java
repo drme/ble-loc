@@ -190,14 +190,6 @@ public class BeaconActivity extends Activity {
         database.deleteBeacon(currentBeacon.getID());
         if (simpleBeacon) { currentRoom.getBeacons().remove(beaconIndex); }
         else { currentRoom._getDevices().remove(beaconIndex); }
-        if (currentRoom.getBeacons().isEmpty()){
-            database.deleteRoom(currentRoom.getID());
-            globalVariable.getRoomsArray().getArray().remove(roomIndex);
-            if (globalVariable.getRoomsArray().getArray().isEmpty()){
-                database.clearDB();
-                globalVariable.getRoomsArray().getArray().clear();
-            }
-        }
         Toast.makeText(getApplicationContext(), getString(R.string.toast_info_removed), Toast.LENGTH_SHORT).show();
         BeaconActivity.this.finish();
     }

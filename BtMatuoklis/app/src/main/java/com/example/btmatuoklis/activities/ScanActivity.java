@@ -55,6 +55,7 @@ public class ScanActivity extends Activity {
     String roomName;
     boolean callbackCreated;
 
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
